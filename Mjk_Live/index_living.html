@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>点播视频</title>
+  <link rel="stylesheet" type="text/css" href="H_index/css/index_living.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="jquerydanmu/dist/css/danmuplayer.css">
+  <!--  DanmuPlayer (//github.com/chiruom/danmuplayer/) - Licensed under the MIT license-->
+
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="jquerydanmu/dist/js/lib/jquery-1.11.1.min.js"></script>
+<script src="jquerydanmu/dist/js/danmuplayer.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="build/three.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="build/mxreality.js"></script>
+<script src="build/ptools.js"></script>
+ <script type="text/javascript">
+   window.onload=function () {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     //判断管理员或普通用户
+     jiny();
+     selectvideo();
+     pd();
+     selecpl();
+     sptj();
+     if ($.cookie("djsendtime"+str)=="null"||$.cookie("djsendtime"+str) == undefined){
+       fwl();
+
+     }else {
+       fwlcookie();
+     }
+   }
+
+
+
+   function fwlcookie() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     //读取cookie
+     if ($.cookie("djsendtime"+str) != undefined && !isNaN($.cookie("djsendtime"+str))) {  //读取到了cookie值
+
+
+       var djsendtime = $.cookie("djsendtime"+str);
+       var now = new Date().getTime();  //当前时间戳
+       var locksecends = parseInt((djsendtime - now) / 1000);
+       if (locksecends <= 0) {
+         $.cookie("djsendtime"+str, null);
+       } else {
+         LockButton('#btnSend', locksecends);
+       }
+     }
+
+   }
+
+   // 按钮倒计时
+   var LockButton = function (btnObjId, locksecends) {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     //1.获取当前系统时间
+     //2.获取 locksecends 后的系统时间
+     //3.用cookie保存到期时间
+     //4.每次加载后获取cookie中保存的时间
+     //5.用到期时间减去当前时间获取倒计时
+     var djsendtime = $.cookie("djsendtime"+str);
+     if (djsendtime == null || djsendtime == undefined || djsendtime == 'undefined' || djsendtime == 'null') {
+       var now = new Date().getTime();  //当前时间戳
+       var endtime = locksecends * 1000 + now;  //结束时间戳
+       $.cookie("djsendtime"+str, endtime);  //将结束时间保存到cookie
+     }
+     $(btnObjId).addClass('disabled').attr('disabled', 'disabled').text('(' + locksecends + ')秒后重新获取');
+     $('body').off('click', '#btnSendSMS');
+     var timer = setInterval(function () {
+       locksecends--;
+       $(btnObjId).text('(' + locksecends + ')秒后重新获取');
+       if (locksecends <= 0) {
+         //倒计时结束清除cookie值
+         $.cookie("djsendtime"+str, null);
+         $(btnObjId).removeClass('disabled').removeAttr('disabled').text('重新获取');
+         $('body').on('click', btnObjId);
+         clearInterval(timer);
+       }
+     }, 1000);
+   };
+
+   //访问量
+   function fwl() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     $.ajax({
+       type: 'GET',
+       url: "http://127.0.0.1:8084/video/selectfwl",
+       async:false,
+       data :{
+         "videoId":str,
+       },
+       success: function (data) {
+         LockButton('#btnSend', 60);
+       },
+       error: function () {
+         alert("网络连接失败");
+       }
+     });
+   }
+
+   //视频推荐
+   function sptj() {
+    var uid= $("#auid").text();
+     $.ajax({
+       type: 'GET',
+       url: "http://127.0.0.1:8084/video/selectbytime",
+       async:false,
+       data :{
+         "userid":uid,
+       },
+       success: function (datas) {
+         ///清空节点
+         $("#tjspk").empty()
+         //取出后端传过来的list值
+         var chargeRuleLogs = datas;
+         //对list值进行便利
+         $.each(chargeRuleLogs, function (index, n) {
+           var unixTimestamp = new Date(n.channelBtime);
+           Date.prototype.toLocaleString = function () {
+             return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+           };
+           commonTime = unixTimestamp.toLocaleString();
+           var rowTr = document.createElement('tr');
+           //找到html的tr节点
+           rowTr.className = "tr_node";
+           var child = `   <div class="tjk">
+           <a href="index_living.html?id=${n.video_id}">
+              <img  src="${n.video_cover}" class="tjkimg">
+              </a>
+                <div class="sptj">
+                  <p>${n.video_name}</p>
+                   <p>
+                     <img src="H_index/img/eye.png"> ${n.play_auth}
+                   </p>
+                </div>
+              </div>`;
+
+           //将信息追加
+           $("#tjspk").append(child);
+         })
+       },
+       error: function () {
+         alert("错误");
+       }
+     });
+   }
+
+   var banned=[];
+   function jiny() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的 id
+     var i=0;
+     $.ajax({
+       type: 'GET',
+       url: "http://127.0.0.1:8084/video/selectBannedByVid",
+       async:false,
+       data :{
+         "videoId":str,
+
+       },
+       success: function (data) {
+         if (data.length!=0){
+           for (i=0;i<data.length;i++){
+             banned.push(data[i].userId);
+
+           }
+         }else {
+           banned=null;
+         }
+
+       },
+       error: function () {
+         alert("错误");
+       }
+     });
+
+   }
+
+   function pd() {
+     var ausid =$("#auid").html();
+     var ad =localStorage.getItem("admin");
+     var token = localStorage.getItem(ausid+"tokenuser");//获取本地存储的token值
+     if (ad==ausid) {
+       $("#wdl").hide();
+       $('#name').attr("value", "管理员");
+       $('#userid').attr("value",ausid);
+       $("#beforeL").attr("style","display:none;");
+       $("#afterL").attr("style","display:block;");
+       $("#afterLsp").html("管理员");
+
+     }
+     if ((token==null||token=="")&&(ad==null||ad=="")){
+       var r ="        ";
+       $("#wdl").show();
+       $("#afterL").attr("style","display:none;");
+     }else {
+       $.ajax({
+         type: "get",
+         async: false,//同步
+         cache: false,//不缓存
+         url: "http://127.0.0.1:8083/login/indexselectByUid",
+         data: {},
+         beforeSend: function (request) {
+           request.setRequestHeader("token", localStorage.getItem(ausid+"tokenuser"));
+         },
+         success: function (datas) {
+
+           $("#wdl").hide();
+
+
+           $('#name').attr("value", datas.userName);
+           $('#userid').attr("value",ausid);
+           $("#beforeL").attr("style","display:none;");
+           $("#afterL").attr("style","display:block;");
+           $("#afterLsp").html(datas.userName);
+           $("#userid").val(datas.userId);
+
+           if (banned==null){
+
+           }else {
+             for(j = 0; j < banned.length; j++) {
+               if (datas.userId==banned[j]){
+                 $(".textsent").attr("readonly","readonly");
+                 $(".hfspeak").attr("readonly","readonly");
+                 $(".textsent").text("禁言中...");
+                 $(".hfspeak").text("禁言中...");
+                 j=banned.length;
+               }else {
+
+               }
+
+             }
+           }
+         },
+         error: function (datas) {
+         }
+       });
+
+     }
+   }
+   //视频信息
+   function selectvideo() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     $.ajax({
+       type: "get",
+       async: false,//同步
+       cache: false,//不缓存
+       url: "http://127.0.0.1:8084/video/selectVideoDetail",
+       data: {
+         "videoId":str,
+       },
+
+       success: function (datas) {
+            $("#vname").text(datas.videoName);
+            $("#textinfo").text(datas.videoBrief);
+
+            $("#datetime").text(datas.videoBtime);
+            $("#auid").text(datas.userId);
+            $("#bfl").text(datas.playAuth);
+
+
+         vingC(datas.videoType,datas.videoUrl);
+       },
+       error: function (datas) {
+       }
+     });
+
+   }
+   function vingC(type,src) {
+
+     if (type==1){
+       $("#pt").css('display','none');
+       $("#example").css('display','block');
+       init(src);
+     }else if (type==2){
+       $("#example").css('display','none');
+       $("#pt").css('display','block');
+       ptving(src);
+     }
+   }
+   //普通H5
+   //普通播放器
+   function ptving(src) {
+     $("#pt").attr("src",src);
+   }
+   //VR
+   function init(spurl)  {
+     var HtPurl="";
+//播放器
+
+     if (spurl==null){
+
+     }else {
+       HtPurl =spurl;
+     }
+     var scene, renderer;
+     var container;
+     //renderer = new THREE.WebGLRenderer();
+     AVR.debug = true;
+     if (!AVR.Broswer.isIE() && AVR.Broswer.webglAvailable()) {
+       renderer = new THREE.WebGLRenderer();
+     } else {
+       renderer = new THREE.CanvasRenderer();
+     }
+     renderer.setPixelRatio(window.devicePixelRatio);
+     container = document.getElementById('example');
+     container.appendChild(renderer.domElement);
+     scene = new THREE.Scene();
+
+     // fov 选项可调整初始视频远近
+     var vr = new VR(scene, renderer, container, {"fov": 50});
+
+     // vr.playText="<img src='img/play90.png' width='40' height='40'/>";
+     vr.vrbox.radius = 600;
+     if (AVR.isCrossScreen()) {
+       // 调整vr视窗偏移量
+       vr.effect.separation = 1.2;
+     }
+     vr.loadProgressManager.onLoad = function () {
+       // 视频静音
+       vr.video.muted = true;
+       vr.VRObject.getObjectByName("__mxrealityDefault").visible = true;
+     }
+     AVR.useGyroscope=false;
+     vr.init(function () {
+     });
+     vr.playPanorama(HtPurl , vr.resType.sliceVideo);
+     vr.video.setAttribute("loop", "loop");
+     vr.video.crossOrigin = "Anonymous";
+
+     vr.video.onended = function () {
+     }
+   }
+   //评论信息 父
+   function selecpl() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     $.ajax({
+       type : "get",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8084/video/selectpl",
+       data :{
+        "videoId":str,
+
+       },
+
+       success : function(datas) {
+         ///清空节点
+         $("#d_plq").empty()
+         //取出后端传过来的list值
+         var chargeRuleLogs = datas;
+         //对list值进行便利
+
+         $.each(chargeRuleLogs, function (index, n) {
+           var unixTimestamp = new Date(n.channelBtime);
+           Date.prototype.toLocaleString = function () {
+             return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+           };
+           commonTime = unixTimestamp.toLocaleString();
+
+           var rowTr = document.createElement('tr');
+           //找到html的tr节点
+
+
+           rowTr.className = "tr_node";
+           var child = `    <div class="sping" id="sp${n.commentId}" >
+            <img class="spimg" src="H_index/img/per.png">
+            <span class="rsp"  >
+                         <p><span  id="uname${n.commentId}">${n.userName}</span>
+                         <div class="hf" id="hf${n.commentId}"  onclick="hfspeak(${n.commentId})">回复</div>
+                         </p>
+                         <div class="hdnr"><span>${n.commentContent}</span>
+                         </div>
+              <div class="pl" id="pl${n.commentId}">
+                 <textarea class="hfspeak" id="hftext${n.commentId}"  ></textarea>
+
+                <img src="H_index/img/senttext.png" onclick="inserthf(${n.commentId})">
+              </div>
+
+              <i class="hfsah" id="hfsah${n.commentId}" onclick="sahhf(${n.commentId})">展开回复</i>
+<div id="bighfk${n.commentId}">
+
+
+  </div>
+                         </span>
+            <div class="ctime">${n.commentTime}</div>
+          </div>`;
+
+           //将信息追加
+           $("#d_plq").append(child);
+
+
+
+         })
+         var uid= $("#userid").val();
+
+         if (banned==null){
+
+         }else {
+           for(j = 0; j < banned.length; j++) {
+             if (uid==banned[j]){
+               $(".textsent").attr("readonly","readonly");
+               $(".hfspeak").attr("readonly","readonly");
+               $(".textsent").text("禁言中...");
+               $(".hfspeak").text("禁言中...");
+               j=banned.length;
+             }else {
+
+             }
+
+           }
+         }
+       },
+       error: function (datas) {
+       }
+     });
+
+
+   }
+
+   //主：新增留言
+   function insertcomment() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     var uid = $("#userid").val();
+     //comment
+     var com =$("#textsent").val();
+     $("#hftext").val("");
+     var uname =$("#afterLsp").text();
+
+
+     $.ajax({
+       type : "get",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8084/video/insertSelective",
+       data :{
+
+         "videoId":str,
+         "commentContent":com,
+         "userId": uid,
+         "userName":uname,
+         "pid":0,
+
+       },
+
+       success : function(datas) {
+        location.reload();
+       },
+       error: function (datas) {
+       }
+     });
+
+   }
+   //从：新增回复
+   function inserthf(id) {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     //userid
+     var uid = $("#userid").val();
+     //comment
+     var com =$("#hftext"+id).val();
+     $("#hftext"+id).val("");
+     var uname =$("#afterLsp").text();
+     //被回复者
+     var buser=$("#uname"+id).text();
+
+     var tid =$("#tid"+id).val();
+     if (tid==""||tid==null){
+       tid=id
+     }
+     $.ajax({
+       type : "get",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8084/video/insertSelective",
+       data :{
+
+         "videoId":str,
+         "commentContent":com,
+         "userId": uid,
+         "userName":uname,
+         "pid":id,
+         "touserId":tid,
+         "tousername":buser,
+
+       },
+
+       success : function(datas) {
+         location.reload();
+       },
+       error: function (datas) {
+       }
+     });
+
+
+   }
+   function numberL() {
+     var phone =$("#phone").val();
+     okphone = /^1[3456789]\d{9}$/;
+     if(phone.test(okphone)){
+       var npyz =document.getElementById("NewPhoneSpan");
+       npyz.style.display="none";
+     }else {
+       var er =document.getElementById("NewPhoneSpan");
+       er.style.display="block";
+       $("#NewPhoneSpan").val(" ");
+     }
+
+   }
+   function sinc() {
+     var lphone =$("#phone").val();
+     $.ajax({
+       type : "get",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8083/sms/Loginbyphone",
+       data :{
+         "phone":lphone,
+       },
+
+       success : function(datas) {
+         if (datas==1 || datas==2){
+           setTimeout("alert('验证码已发送，注意查收')",3000);
+           return true;
+
+         }else {
+           setTimeout("alert('发送失败')",3000);
+           return false;
+         }
+       },
+       error: function (datas) {
+       }
+     });
+
+   }
+   function Ilogin() {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+
+     var yp =$("#phone").val();
+     var yc =$("#LCode").val();
+     $.ajax({
+       type : "get",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8083/sms/indexoginyz",
+       data :{
+         "phone":yp,
+         "code":yc,
+       },
+
+       success : function(datas) {
+         var ausid =$("#auid").html();
+         if (datas==null||datas==""){
+           alert("登录失败:账号或密码错误");
+         }else if (datas!=null||datas!=""){
+           $("#beforeL").attr("style", "display:none;");
+           $("#afterL").attr("style", "display:block;");
+
+
+           if (datas.userCompany != null && datas.userId == ausid) {
+             $("#afterLsp").html("管理员");
+             $("#or").show();
+             var date = new Date().getTime();
+             localStorage.setItem("admin", datas.userId, date + 43200000);
+           } else {
+             $("#afterLsp").html(datas.userName);
+             var date = new Date().getTime();
+             $("#or").hide();
+             localStorage.setItem(ausid + "tokenuser", datas.userId, date + 43200000);
+           }
+         }
+         location.reload();
+       },
+       error: function (datas) {
+       }
+     });
+   }
+   function out(){
+     alert("确认退出")
+     var ausid =$("#auid").html();
+     localStorage.removeItem(ausid+'tokenuser');
+     localStorage.removeItem('admin');
+     top.location.reload();
+   }
+   function toH() {
+
+     window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+   }
+   function userad() {
+
+     location.href="http://127.0.0.1:8088/channel_personal.html";
+   }
+ //  回复框
+   function hfspeak(id) {
+     if($('#pl'+id).is(':hidden')){//如果当前隐藏
+        $("#hf"+id).text("取消");
+       $('#pl'+id).show();//那么就显示div
+     }else{//否则
+       $('#pl'+id).hide();//就隐藏div
+       $("#hf"+id).text("回复");
+     }
+   }
+ //  展开收起回复
+   function sahhf(id) {
+     var search = location.search;//获取链接？后的字符串
+     var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+     var v =$("#hfsah"+id).text();
+     if (v=="收起回复"){
+       $("#bighfk"+id).hide();
+       $("#hfsah"+id).text("展开回复");
+     }else if (v=="展开回复"){
+       $("#bighfk"+id).show();
+       $("#hfsah"+id).text("收起回复");
+
+       $.ajax({
+         type:"get",
+         url:"http://127.0.0.1:8084/video/selecthf",
+         data:{
+           "videoId":str,
+
+           "touid":id,
+         },
+         dataType:"json",
+         success:function(datas){
+           ///清空节点
+           $("#bighfk"+id).empty()
+           //取出后端传过来的list值
+           var chargeRuleLogs = datas;
+           //对list值进行便利
+
+           $.each(chargeRuleLogs, function (index, n) {
+             var unixTimestamp = new Date(n.channelBtime);
+             Date.prototype.toLocaleString = function () {
+               return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+             };
+             commonTime = unixTimestamp.toLocaleString();
+
+             var rowTr = document.createElement('tr');
+             //找到html的tr节点
+
+
+             rowTr.className = "tr_node";
+             var child = `
+                          <div class="hfly">
+                             <img src="H_index/img/per.png" class="hftx">
+                             <div class="hfm"><span  id="uname${n.commentId}">${n.userName}</span>
+                                <div class="hf" id="hf${n.commentId}"   onclick="hfspeak(${n.commentId})">回复</div></div>
+                              <div class="hfnr"><i class="qz">回复 ${n.tousername} : &nbsp;</i><span>${n.commentContent}</span>
+                               <div class="hfpl" id="pl${n.commentId}" >
+                                     <textarea class="hfspeak" id="hftext${n.commentId}"></textarea>
+                                     <input id="tid${n.commentId}" value="${n.touserId}" style="display: none">
+                                    <img src="H_index/img/senttext.png" onclick="inserthf(${n.commentId})">
+                              </div>
+                         </div>
+                             <div class="htime">${n.commentTime}</div>
+                           </div>
+  `;
+             //将信息追加
+             $("#bighfk"+id).append(child);
+
+           })
+           var uid= $("#userid").val();
+
+           if (banned==null){
+
+           }else {
+             for(j = 0; j < banned.length; j++) {
+               if (uid==banned[j]){
+                 $(".textsent").attr("readonly","readonly");
+                 $(".hfspeak").attr("readonly","readonly");
+                 $(".textsent").text("禁言中...");
+                 $(".hfspeak").text("禁言中...");
+                 j=banned.length;
+               }else {
+
+               }
+
+             }
+           }
+         },
+         error:function(){
+
+         }
+       })
+     }
+   }
+
+ </script>
+<script>
+  <!--登录-->
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#btn').click(function () {
+      var count = 60;
+      var countdown = setInterval(CountDown, 1000);
+      function CountDown() {
+        $("#btn").attr("disabled", true);
+        $("#btn").val("请" + count + "秒后再试");
+        if (count == 0) {
+          $("#btn").val("发送验证码").removeAttr("disabled");
+          clearInterval(countdown);
+        }
+        count--;
+      }
+    })
+  });
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+</script>
+<body style=" background-color: #f9f9f9;">
+<div class="ttop">
+  <!--  logo-->
+  <div class="t1">
+  </div>
+  <!--  type-->
+  <div class="t2">
+    <div id="sy">
+      <a href="" id="syto">
+        首页
+      </a>
+    </div>
+    <div id="zb">
+      <a href="" id="zbto">
+        直播
+      </a>
+    </div>
+    <div id="sp">
+      <a href="" id="spto">
+        视频
+      </a>
+    </div>
+
+  </div>
+  <!--  login-->
+  <!--  login-->
+  <div class="t3">
+
+    <div class="dl"   id="beforeL" data-toggle="modal" data-target="#indexLohin" >
+      未登录
+    </div>
+    <div id="afterL" >
+      <span id="afterLsp"></span>
+      <input id="userid" value="" style="display: none">
+      <i class="fa fa-sort-desc" id="span_fa"></i>
+      <div id="li">
+        <div>
+
+          <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+          <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+          <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+        </div>
+
+      </div>
+<!--      <div class="erji" id="erji">-->
+<!--        <div onclick="perinfo()">1) 个人信息</div>-->
+<!--        <div onclick="liveing()">2) 直播统计</div>-->
+<!--        <div onclick="setting()">3) 系统通知</div>-->
+<!--      </div>-->
+    </div>
+  </div>
+
+</div>
+<div class="cen">
+  <div class="top">
+    <span id="auid" style="display: none"></span>
+  <div class="vname" id="vname">
+    视频名称
+  </div>
+    <div class="ch2">
+      <div class="datetime" id="datetime">2020-11-06 </div>
+      <div class="gk">
+        <img src="H_index/img/eye.png"> &nbsp <i id="bfl">500</i>
+      </div>
+      <div class="fx">
+        <img src="H_index/img/fxb.png"> &nbsp <i>分享</i>
+      </div>
+      <div class="dz">
+        <img src="H_index/img/dzb.png"> &nbsp <i>点赞</i>
+      </div>
+    </div>
+  </div>
+  <div class="vplay">
+    <div id="vrplay"  class="col-xs-12" style="    height: 100%;">
+    <div id="example" style="width: 100%;
+	          height: 100%;">
+
+    </div>
+      <video src=""   controls id="pt" ></video>
+    </div>
+
+  </div>
+  <div class="end">
+    <div class="left">
+      <div class="info">
+        <div class="vinfo" id="vinfo">视频简介</div>
+        <textarea class="textinfo" readonly="readonly" id="textinfo">
+
+
+        </textarea>
+      </div>
+      <div class="taking">
+         <div class="vinfo"> 留言板</div>
+        <p style="    margin-left: 10px;">--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+      <div>
+        <div class="wdl" id="wdl"><i STYLE="color: #ffaf4b;">登录 </i>  后发表评论</div>
+        <textarea class="textsent" id="textsent" ></textarea>
+        <img src="H_index/img/senttext.png" onclick="insertcomment()">
+
+      </div>
+        <div class="d_plq" id="d_plq">
+
+
+          <div class="sping"  >
+            <img class="spimg" src="H_index/img/per.png">
+            <span class="rsp"  >
+                         <p>rew
+
+                         <div class="hf" id="hf" onclick="hfspeak()">取消</div>
+                         </p>
+                         <div class="hdnr"><span>${}</span>
+
+                         </div>
+              <div class="pl" id="pl">
+                 <textarea class="hfspeak"></textarea>
+                <img src="H_index/img/senttext.png">
+              </div>
+
+<!--              回复-->
+              <i class="hfsah" id="hfsah" onclick="sahhf()">收起回复</i>
+
+<div>
+                          <div class="hfly">
+
+                             <img src="H_index/img/per.png" class="hftx">
+                             <div class="hfm">用户名
+                               <div class="hf"   onclick="hfspeak()">取消</div></div>
+                              <div class="hfnr"><i class="qz">回复 rew : &nbsp;</i><span>频不错哟,六年 踩踩猜测呃呃呃呃呃呃呃呃呃呃呃呃啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊是</span>
+                     <div class="hfpl" id="pl1" style="display: block">
+                                     <textarea class="hfspeak"></textarea>
+                                    <img src="H_index/img/senttext.png" >
+              </div>
+
+                         </div>
+                             <div class="htime">2020-5-15 16：40</div>
+                           </div>
+
+  </div>
+                         </span>
+            <div class="ctime">2020-5-15 11：40</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="right">
+        <p readonly="tj">推荐视频</p>
+      <hr>
+      <div id="tjspk">
+
+
+      </div>
+    </div>
+  </div>
+
+</div>
+<!--模态框-->
+<!--         //首页登录-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="indexLohin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel4">登录美吉克直播</h4>
+      </div>
+      <div class="modal-body">
+        <input type=text class="form-control" id="phone" name="phone" placeholder="账号" onblur="numberL()">
+        <span style="display: none; color: red" id="NewPhoneSpan">邮箱格式错误</span>
+        <!--        //确认密码-->
+        <input type="text" class="form-control" id="LCode" name="IsPassWord" placeholder=" 请输入验证码" >
+        <div id="SCode" onclick="sinc()">
+
+          <input type="button" id="btn" value="发送验证码" /></div>
+
+      </div>
+
+      <div class="buLogin">
+        <button onclick="Ilogin()"  type="button" class="btn btn-default" data-dismiss="modal" id="loginB">登录</button>
+      </div>
+
+      <div class="modal-footer">
+
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal -->
+</div>
+</body>
+</html>

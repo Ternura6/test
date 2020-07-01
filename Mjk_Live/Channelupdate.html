@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑</title>
+  <link rel="stylesheet" href="js/laydate/laydate/theme/default/laydate.css">
+  <link rel="stylesheet" type="text/css" href="H_channel/css/Channelupdate.css" />
+
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap-datetimepicker.css" rel="stylesheet">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap-datetimepicker.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap-datetimepicker.min.js"></script>
+<script src="js/laydate/laydate/laydate.js"></script>
+<script src="http://pv.sohu.com/cityjson"></script>
+
+<script>
+  var ips = "127.0.0.1";
+  var ip = "";
+  var uid="";
+  window.onload=function () {
+    getIp();
+    var t =localStorage.getItem("token");
+    if (t==null){
+      alert("身份过期，请重新验证");
+      location.href = "Login.html";
+    }else {
+      setTimeout(function(){ session();},1000);
+    }
+    parse();
+    test();//
+    LocalRefresh();
+  };
+  //获取客户端ip
+  //获取客户端ip
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+
+        }else
+        if (datas=="0"){
+          alert("该账号已断开连接");
+          location.href = "Login.html";
+        }else if (datas="3"){
+          alert("没有登陆信息，返回登陆");
+          location.href = "Login.html";
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  function parse(search){
+    // var search=location.search;//获取链接？后的字符串
+    // var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://"+ips+":8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+
+        }else {
+          $('#span_id').html(datas.userName);
+          uid=datas.userId;
+          var ll = $("#setupId tr").length
+          if (ll==3){
+            $("#addjw").attr("disabled","disabled");
+          }
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+
+    });
+    laydate.render({
+      elem: '#startTime', //指定元素
+      type:'datetime',
+      trigger: 'click',
+      theme: 'molv',
+      format: 'yyyy-MM-dd HH:mm:ss',
+      btns: ['clear', 'confirm','now'],
+    });
+
+  }
+  var dateTime = null;
+
+  function changepic() {
+    $("#img3").empty();
+
+    var reads = new FileReader();
+    f = document.getElementById('file').files[0];
+    reads.readAsDataURL(f);
+    reads.onload = function (e) {
+      document.getElementById('img3').src = this.result;
+      $("#img3").css("display", "block");
+    };
+  }
+
+  function changepic2() {
+    $("#img2").empty();
+
+    var reads = new FileReader();
+    f = document.getElementById('file2').files[0];
+    reads.readAsDataURL(f);
+    reads.onload = function (e) {
+      document.getElementById('img2').src = this.result;
+      $("#img2").css("display", "block");
+    };
+  }
+  function zl() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#zl").css('background-color', '#5cbbff');
+    $("#zl").siblings().css('background-color', '#5cbbff00');
+    $("#ls-bj").css('display','none');
+    $("#ls-hd").css('display','none');
+    location.href="Channelinfo.html?id="+str;
+  }
+  function  Liveset() {
+    $("#liveSetting").css('background-color', '#5cbbff');
+    $("#liveSetting").children("span").css('color','white');
+    $("#liveSetting").siblings().css('background-color', '#5cbbff00');
+    $("#liveSetting").siblings().children("span").css('color','black');
+    $("#ls-bj").css('display','block');
+    $("#ls-hd").css('display','block');
+
+  }
+  function bj() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#ls-bj").css('background-color', '#5cbbff');
+    $("#ls-bj").siblings().css('background-color', '#5cbbff00');
+    location.href="Channelupdate.html?channelId="+str;
+  }
+  function hd() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#ls-hd").css('background-color', '#5cbbff');
+    $("#ls-hd").siblings().css('background-color', '#5cbbff00');
+    location.href="Channelspeak.html?id="+str;
+  }
+
+  $(function () {
+    var text=$('#channelName').val();
+    var len =text.length;
+    var flag = true;
+    $('#channelName').on('compositionstart',function(){
+      flag = false;
+    })
+    $('#channelName').on('compositionend',function(){
+      flag = true;
+    })
+    $('#channelName').on('input',function(){
+      var cthis = this;
+      setTimeout(function(){
+        if(flag){
+          console.log($(cthis).val());
+          $('#channelName').next().find('span').html(len)
+          $("#channelName").keyup(function () {
+            var text =$(cthis).val();
+            len = text.length;
+            if (len > 15) {
+              alert("直播名称过长")
+              $('#channelName').val(text.substring(0,15));
+
+              text=$('#channelName').val();
+              len =text.length;
+            }
+            $(this).next().find('span').html(len);
+          })
+        }
+      },0)
+
+    })
+
+  });
+  <!--  直播简介-->
+  $(function () {
+    var text=$('#channelBrief').val();
+    var len =text.length;
+    $('#channelBrief').next().find('span').html(len)
+    $('#channelBrief').keyup(function () {
+      var text = $(this).val();
+      len = text.length;
+      if (len > 300) {
+        alert("直播名称过长")
+        $('#channelBrief').val(text.substring(0,300));
+        text=$('#channelBrief').val();
+        len =text.length;
+      }
+      $(this).next().find('span').html(len);
+    })
+  });
+  function jwZH() {
+
+    var ll = $("#setupId tr").length
+    if (ll>=3){
+      $("#addjw").attr("disabled","disabled");
+    }
+  }
+  function toH() {
+
+    window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+  }
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+
+  function out(){
+
+    var flag = confirm("确定退出该账号！");
+    if(flag==true) {
+      $.ajax({
+        type: "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/logintext/outlogin",
+        data: {},
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (datas) {
+          localStorage.removeItem('token');
+
+          location.href = "Login.html";
+        },
+        error: function (datas) {
+        }
+      });
+    }
+  }
+
+
+
+
+</script>
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+  //关闭模态框时清空数据
+  $(function (){
+    $('#myModal').on('hidden.bs.modal', function (){
+      $('#vrId').prop("checked", false);
+      $('#coId').prop("checked", false);
+      $('#setupNameId').val("");
+      $('#setupAddressId').val("");
+    });
+    // $('#mineModal').on('hidden.bs.modal',function () {
+    //   $('#typeOne').prop("checked", false);
+    //   $('#typeTwo').prop("checked", false);
+    //   $('#setupName').val("");
+    //   $('#setupAddress').val("");
+    // })
+  });
+
+
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color", "rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href = "Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color", "rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href = "Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color", "rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color", "rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+  })
+</script>
+<body  style="background-color: #f5f5f5; width:1900px;height: 120%;overflow: auto;">
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+    <div id="li">
+      <div>
+
+        <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+        <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+        <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+      </div>
+
+    </div>
+<!--    <div class="erji" id="erji">-->
+<!--      <div onclick="perinfo()">1) 个人信息</div>-->
+<!--      <div onclick="liveing()">2) 直播统计</div>-->
+<!--      <div onclick="setting()">3) 系统通知</div>-->
+<!--    </div>-->
+  </div>
+</div>
+<!--标题-->
+<div class="InfoTitle">
+  <div class="lin1">
+    <div class="liveName" id="liveName">
+      直播名称
+    </div>
+    <div class="status">
+      <p class="stau">状态</p>
+    </div>
+  </div>
+  <p id="livetim">
+    2020-01-31 12：30
+  </p>
+
+</div>
+<div class="IfAbout">
+  <div class="left">
+    <div class="zl" onclick="zl()" id="zl">
+      <span>总览</span>
+    </div>
+    <div class="liveSetting" id="liveSetting" onclick="Liveset()">
+      <span>直播设置</span>
+    </div>
+    <div class="ls-bj" id="ls-bj" onclick="bj()">
+      <span>编辑</span>
+    </div>
+    <div class="ls-hd" id="ls-hd" onclick="hd()">
+      <span>互动</span>
+    </div>
+  </div>
+  <div class="right">
+    <div class="insert-table">
+      <form id="UpdateForm">
+        <input type="hidden" name="channelId" id="channelId" value="{$channelId}">
+        <table cellpadding="0" cellspacing="0"  class="tb">
+          <tr>
+            <td class="addname">
+              <span style="color: red">*</span>
+              频道名称
+            </td>
+            <td>
+              <input  type="text" class="form-control" name="channelName" maxlength="30" value="" id="channelName" placeholder="请输入直播频道名称">
+
+              <i class="channelname"> <span class="text-count" id="text-channelName">0</span> /15</i>
+            </td>
+          </tr>
+          <tr>
+            <td class="addname">
+              <span style="color: red">*</span>
+              直播类型
+            </td>
+            <td>
+              <input type="radio" name="channelType" id="VRType" value="2" style="height: 15px;"> <span>VR</span>
+              <input type="radio" name="channelType" id="COType" value="1" style="height: 15px;"> <span>普通</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="addname">
+              <span style="color: red">*</span>
+              直播时间
+            </td>
+            <td>
+              <input type="radio" name="channelStatus" id="nowBegin" value="0" style="height: 15px;"> <span>立即开始</span>
+              <p><input type="radio" name="channelStatus" id="orderBegin" value="1" style="height: 15px;"> <span>预定开始</span>
+                <input  type="text" id="startTime" name="channelBtime">
+              </p>
+
+
+            </td>
+          </tr>
+          <td class="addname">
+            <span style="color: red">*</span>
+            设置观看模式
+          </td>
+          <td>
+            <p>
+              <input type="radio" name="channelPattern" id="GKPattern" value="0" style="height: 15px;"> <span>公开观看</span>
+            </p>
+            <input type="radio" name="channelPattern" id="MMPattern" value="1" style="height: 15px;"> <span>密码观看</span>
+            <input type="text" name="channelPassword" id="password">
+          </td>
+          </tr>
+
+          <tr>
+            <td class="addname">
+              <span style="color: red">*</span>
+              视频接入方式 &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td>
+              <input type="radio" name="channelWay" id="COWay" value="1" style="height: 15px;"> <span>推流</span>
+              <input type="radio" name="channelWay" id="VRWay" value="0" style="height: 15px;"> <span>拉流</span>
+
+              <p>
+                <input type="text" class="form-control" name="mainPush" id="mainAddress" placeholder="系统默认生成一串推流地址">
+                <input type="text" class="form-control" name="passivePush" id="passiveAddress">
+                <button type="button" id="" class="btn btn-info" onclick="copyUrl()"> 复制</button>
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="addname">
+              <span style="color: red">*</span>
+              是否同步录制 &nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+            <td>
+              <input type="radio" name="channelRecord" id="TRecord" value="0" style="height: 15px;"> <span>是</span>
+              <input type="radio" name="channelRecord" id="FRecord" value="0" style="height: 15px;"> <span>否</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="addname">
+              <span style="color: red">*</span>
+              频道封面
+            </td>
+            <td>
+
+              <div id="imgPreview">
+                <div id="prompt3">
+                    <span id="imgSpan">
+                          点击上传
+                             <br />
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                      <!--AUI框架中的图标-->
+                    </span>
+                  <input type="file" id="file" name="channelCover"   class="filepath" onchange="changepic(this)" accept="image/jpg,image/jpeg,image/png,image/PNG">
+                  <input id="coverimg" name="channelCover" style="display: none" value="">
+                  <!--当vaule值改变时执行changepic函数，规定上传的文件只能是图片-->
+                </div>
+                <img src="#" id="img3" />
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="addname">
+              <span>&nbsp;</span>
+              频道背景
+            </td>
+            <td>
+              <div id="imgPreview2">
+                <div id="prompt2">
+                    <span id="imgSpan2">
+                          点击上传
+                             <br />
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                      <!--AUI框架中的图标-->
+                    </span>
+                  <input type="file" id="file2" name="channelBackground"   class="filepath" onchange="changepic2(this)" accept="image/jpg,image/jpeg,image/png,image/PNG">
+                  <input id="bjimg" name="channelBackground" style="display: none" value="">
+                  <!--当vaule值改变时执行changepic函数，规定上传的文件只能是图片-->
+                </div>
+                <img src="#" id="img2" />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="addname">
+              <span>&nbsp;</span>
+              直播简介
+            </td>
+            <td>
+              <div class="text">
+                <textarea id="channelBrief" name="channelBrief" class="form-control" rows="6" maxlength="300" ></textarea>
+                <i> <span class="text-count" id="text-channelBrief">0</span> /300</i>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="addname">
+              <span>&nbsp;</span>
+              机位
+            </td>
+            <td style="padding-top: 20px">
+              <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" id="addjw">
+                添加机位
+              </button>
+              <!--<form id="setupForm">-->
+              <!-- 模态框（Modal） -->
+              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                      </button>
+                      <h4 class="modal-title" id="myModalLabel">
+                        添加机位信号
+                      </h4>
+                    </div>
+                    <div class="modal-body">
+                      <input type="hidden" name="sid" id="sid">
+                      <font color="#dc143c">*</font>直播类型&nbsp;&nbsp;
+                      <input type="radio" name="setupType" value="2" id="vrId"  style="height: 15px;"> <span>VR</span>
+                      <input type="radio" name="setupType" value="1" id="coId"  style="height: 15px;"> <span>普通</span><br>
+                      <p></p>
+
+                      <font color="#dc143c">*</font>机位名称&nbsp;&nbsp;
+                      <input type="text" name="setupName" id="setupNameId" style="height: 30px;"><br>
+                      <p></p>
+
+                      <font color="#dc143c">*</font>机位地址&nbsp;&nbsp;
+                      <input type="text" name="setupAddress" id="setupAddressId" style="height: 30px;">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                      </button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal"  aria-hidden="false" onclick="addSetup()">
+                        添加
+                      </button>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+              </div>
+
+              <div class="modal fade" id="mineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                      </button>
+                      <h4 class="modal-title" id="mineModalLabel">
+                        修改机位信号
+                      </h4>
+                    </div>
+                    <div class="modal-body">
+                      <input type="hidden" name="sid" id="sid1">
+                      <font color="#dc143c">*</font>直播类型&nbsp;&nbsp;
+                      <input type="radio" name="setupType" id="typeOne" value="1" style="height: 15px;"> <span>VR</span>
+                      <input type="radio" name="setupType" id="typeTwo" value="0" style="height: 15px;"> <span>普通</span><br>
+                      <p></p>
+
+                      <font color="#dc143c">*</font>机位名称&nbsp;&nbsp;
+                      <input type="text" name="setupName" id="setupName" style="height: 30px;"><br>
+                      <p></p>
+
+                      <font color="#dc143c">*</font>机位地址&nbsp;&nbsp;
+                      <input type="text" name="setupAddress" id="setupAddress" style="height: 30px;">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                      </button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateSetup()">
+                        修改
+                      </button>
+                    </div>
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+              </div>
+              <!--</form>-->
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*最多支持三路信号
+              <p></p>
+              <table id="setupId" style="margin: 0px !important;"></table>
+              <div id="jidiv">
+
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+
+            <td>
+              <button type="button" id="update" class="btn btn-info" onclick="ToUpdate()"> 保存</button>
+              <button type="button" class="btn btn-default" onclick="ToClose()">取消</button>
+
+            </td>
+          </tr>
+
+        </table>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+</body>
+<script>
+
+  var a=GetRequest();
+
+  console.log("id:"+a['channelId']); //打印出传过来的id
+
+  function GetRequest() {
+    //alert(location.href)
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for (var i = 0; i < strs.length; i++) {
+        theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest;
+  }
+
+  function minDate(){
+    var now = new Date();
+    return now.getFullYear()+"-" + (now.getMonth()+1) + "-" + now.getDate();
+  }
+  $(function () {
+    $('#datetimepicker14').datetimepicker({
+      // locale: 'zh-cn',
+      format: "yyyy-mm-dd HH:mm:ss"
+    }).on('changeDate',function(ev){
+      dateTime = $("#datetimepicker14").val();
+    });
+
+  });
+
+  //机位的修改
+  function upsetjw(id) {
+    $('#'+id).parents("div").children("input").eq(0).prop('disabled', false);
+    // value1.prop('disabled', false);
+    $('#'+id).parents("div").children("input").eq(1).prop('disabled', false);
+    // value2.prop('disabled', false);
+    $('#'+id).parents("div").children("input").eq(2).prop('disabled', false);
+    // value3.prop('disabled', false);
+    $('#'+id).parents("div").children("span").eq(0).hide();
+    // span1.hide();
+    $('#'+id).parents("div").children("span").eq(1).show();
+    // span2.show();
+
+  }
+  function savejw(id) {
+    $('#'+id).parents("div").children("input").eq(0).prop('disabled', true);
+    // value1.prop('disabled', false);
+    $('#'+id).parents("div").children("input").eq(1).prop('disabled', true);
+    // value2.prop('disabled', false);
+    $('#'+id).parents("div").children("input").eq(2).prop('disabled', true);
+    // value3.prop('disabled', false);
+    $('#'+id).parents("div").children("span").eq(0).show();
+    // span1.show();
+    $('#'+id).parents("div").children("span").eq(1).hide();
+    // span2.hide();
+  }
+
+  function  dele(id) {
+    //alert($('#'+id).parent().attr('id'));
+    jwcount=jwcount-1;
+    $("#"+$('#'+id).parent().attr('id')).remove();
+    // alert( $("#setup"+id));
+    // $("#setup"+id).remove();
+
+  }
+
+  function addSetup() {
+
+    if($("#setupId tr").length>2){
+      alert("最多支持三路信号!");
+
+      return;
+    }
+    var  checkedvrId=$("#vrId").prop("checked");
+    var  checkedcoId=$("#coId").prop("checked");
+    if (checkedcoId==false && checkedvrId==false){
+
+      $("#myModal").modal('show');
+
+    }
+
+    $.ajax({
+      url: "http://"+ips+":8084/live/insertSetup?channelId="+a['channelId'],
+      type: 'post',
+      // data: $("#UpdateForm").serialize(),
+      data: {
+        "setupType": $("input[name=setupType]:checked").val(),
+        "setupName": $("#setupNameId").val(),
+        "setupAddress": $("#setupAddressId").val(),
+      },
+      success: function (data) {
+        //局部刷新
+        LocalRefresh();
+        var ll = $("#setupId tr").length;
+
+        if (ll>=2){
+          $("#addjw").attr("disabled","disabled");
+        }
+      },
+      error: function () {
+        // alert("添加失败！");
+      }
+    })
+  }
+
+  function createRandomId() {//生成随机ID
+    return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + (new Date()).getTime() + '-' + Math.random().toString().substr(2, 5);
+  }
+
+  var sid = "";
+  var jwcount=0;
+  /*function LocalRefresh() {
+    $.ajax({
+      type: 'GET',
+      url: "http://"+ip+":8084/live/selectSetup",
+      dataType: "json",
+      data:{channelId: a['channelId']},
+      success: function (data) {
+        var divId = createRandomId();
+        //i = i + 1;
+        var idname = "setup" + divId;
+        var typename = "typeName" + divId;
+        var nameId = "nameId" + divId;
+        var addressid = "addressId" + divId;
+        var upid = "update" + divId;
+        var saveid = "save" + divId;
+        var dele = "delete" + divId;
+        var setupName = data.setupName;
+        var setupAddress = data.setupAddress;
+
+
+        var chargeRuleLogs = data;
+        //对list值进行便利
+        $.each(chargeRuleLogs, function (index, n) {
+          var unixTimestamp = new Date(n.channelBtime);
+          Date.prototype.toLocaleString = function () {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+          };
+          commonTime = unixTimestamp.toLocaleString();
+
+          var rowTr = document.createElement('tr');
+          //找到html的tr节点
+
+          if (n.setupType == 0) {
+            setupTypeName = "VR";
+            jwcount = jwcount + 1
+          } else if (n.setupType == 1) {
+            setupTypeName = "普通";
+            jwcount = jwcount + 1
+          }
+
+          rowTr.className = "tr_node";
+          var child = $(" <div class=\"jw\" id=" + idname + " >"+ "<input type='hidden' value="+ n.sid+" class='sid'/>"
+            + "类型 :" + "<input id=" + typename + "  style=\"border: hidden\" value=" + setupTypeName + ">"
+            + "机位名称:" + "<input id=" + nameId + "  style=\"border: hidden\" value=" + n.setupName + ">"
+            + "直播地址:" + "<input id=" + addressid + "   style=\"border: hidden\" value=" + n.setupAddress + ">" +
+            "<span  onclick= 'savejw(this.id)'  id=" + saveid + "  value=\"保存\"  style='display: none'>保存</span>" +
+            " <span id=" + dele + "   value=\"删除\"   onclick= 'dele(this.id)'>删除</span> </div>");
+
+          //将信息追加
+          $("#jidiv").append(child);
+        });
+        sid = $("#n.sid").val();
+      }
+
+    })
+  }*/
+  /*function addSetup() {
+    if ( jwcount> 2) {
+      alert("最多三个机位")
+    } else {
+      var divId = createRandomId();
+      jwcount=jwcount+1
+      var idname = "setup" + divId;
+      var typename="typeName"+divId;
+      var nameId="nameId"+divId;
+      var addressid="addressId"+divId;
+      var upid="update"+divId;
+      var saveid="save"+divId;
+      var dele ="delete"+divId;
+      var setupName = document.getElementById("setupNameId").value;
+      var setupAddress = document.getElementById("setupAddressId").value;
+
+      if ($("input[name=setupType]:checked").val() == "0") {
+        setupTypeName = "VR";
+      } else if ($("input[name=setupType]:checked").val() == "1") {
+        setupTypeName = "普通";
+      }
+
+      var jw = $(" <div class=\"jw\" id=" + idname + " >"+
+        "类型 :" + "<input id=" + typename + "  disabled=\"disabled\"  style=\"border: hidden\" value=" + setupTypeName + ">"
+        + "机位名称:" + "<input id=" + nameId + "  disabled=\"disabled\"  style=\"border: hidden\" value=" + setupName + ">"
+        + "直播地址:" + "<input id=" + addressid + "  disabled=\"disabled\"  style=\"border: hidden\" value=" + setupAddress + ">" +
+        "<span  onclick= 'upsetjw(this.id)'  id=" + upid + "  value=\"修改\" >修改</span> " +
+        "<span  onclick= 'savejw(this.id)'  id=" + saveid + "  value=\"保存\"  style='display: none'>保存</span>" +
+        " <span id=" + dele + "   value=\"删除\"   onclick= 'dele(this.id)'>删除</span> </div>")
+
+      $("#jidiv").append(jw);
+
+    }
+
+  }*/
+  //局部刷新
+  function LocalRefresh(){
+    $.ajax({
+      type: 'GET',
+      url: "http://"+ips+":8084/live/selectSetup",
+      dataType: "json",
+      data: {channelId: a['channelId']},
+      success: function (data) {
+        $("#setupId").empty();
+        let htmlsetup='';
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].setupType=="0") {
+            setupType = "VR";
+          } else {
+            setupType = "普通";
+          }
+          htmlsetup+='<tr id="trSetup">' +
+            '<td>' + '直播类型：' + '</td>' + '<td>' + setupType + '</td>' +
+            '<td>' + '机位名称：' + '</td>' + '<td>' + data[i].setupName + '</td>'+
+            '<td>' + '直播地址：' + '</td>' + '<td>' + data[i].setupAddress + '</td>' +
+            '<td>' + '<a data-toggle="modal"  data-target="#mineModal" onclick="toUpdate('+data[i].sid+')">修改</a>' +
+            '<td>' + '<a onclick="toDelete('+data[i].sid+')">删除</a>'+'</td>' +
+            '</tr>';
+
+        }
+        document.getElementById("setupId").innerHTML = htmlsetup;
+
+      },
+      error:function (data) {
+
+      }
+    })
+  }
+
+  function toUpdate(sid) {
+    $.ajax({
+      type: "get",
+      url: "http://"+ips+":8084/live/selectSetupById",
+      data: {"sid": sid},
+      dataType: "json",
+      success: function (data) {
+
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].setupType == 0) {
+            $("#typeOne").attr("checked", true);
+          } else {
+            $("#typeTwo").attr("checked", true);
+          }
+          $("#setupName").val(data[i].setupName);
+          $("#setupAddress").val(data[i].setupAddress);
+          $("#sid").val(data[i].sid);
+        }
+      },
+      error: function () {
+        // alert("修改失败");
+      }
+    })
+  }
+
+  function updateSetup() {
+    var sid = $("#sid").val();
+    $.ajax({
+      type:"post",
+      url:"http://"+ips+":8084/live/updateSetup?sid="+sid,
+      data:{
+        "setupType": $("input[name=setupType]:checked").val(),
+        "setupName": $("#setupName").val(),
+        "setupAddress": $("#setupAddress").val(),
+        "channelId": a['channelId'],
+      },
+      success:function(){
+        LocalRefresh();
+
+      },
+      error:function () {
+        // alert("修改失败！！！")
+      }
+    })
+  }
+
+  function toDelete(sid) {
+    var flag = confirm("确认要删除VR直播机位吗？删除后不可恢复！");
+    if (flag == true) {
+      $.ajax({
+        type: "get",
+        url: "http://"+ips+":8084/live/deleteSetup",
+        data: {"sid": sid},
+        success: function () {
+          $("#addjw").attr("disabled",false);
+          LocalRefresh();
+        },
+        error: function () {
+          // alert("删除失败");
+        }
+      })
+    }
+
+  }
+
+
+  var port = "192.168.3.234:1935";
+  var pushDomain = "live";
+  var date = new Date();
+  var d = date.getTime();
+  $(function () {
+    //$("#passiveAddress").hide();
+    $('input[name=channelWay]').change(function () {
+      if($("input[name=channelWay]:checked").val()==0){
+        $("#passiveAddress").show();
+        $("#mainAddress").hide();
+        $("#mainAddress").val("");
+        $("#passiveAddress").attr("readonly",false);
+        $("#passiveAddress").val("");
+      }
+      else{
+        $("#passiveAddress").hide();
+        $("#mainAddress").show();
+        $("#mainAddress").attr("readonly",true);
+        var c = document.getElementById("mainAddress").innerHTML = "rtmp://" + port + "/" + pushDomain + "/" +d;
+        $("#mainAddress").val(c);
+        //$("#address").val("rtmp://live.hkstv.hk.lxdns.com/live/hks");
+
+      }
+    });
+
+    $('input[name=channelPattern]').change(function() {
+
+      if($("input[name=channelPattern]:checked").val()==0){
+
+        $("#password").attr("disabled",true);
+        $("#password").val("");
+      }
+      else{
+        $("#password").attr("disabled",false);
+        $("#password").val("");
+      }
+    });
+
+    $('input[name=channelStatus]').change(function() {
+      if($("input[name=channelStatus]:checked").val()=="0"){
+        $("#startTime").val('');
+        $('#startTime').attr("disabled",true);
+      }else{
+        $('#startTime').attr("disabled",false);
+      }
+    });
+
+    // $('input[name=channelStatus]').change(function() {
+    //   if($("input[name=channelStatus]:checked").val()=="0"){
+    //     $("#datetimepicker14").val('');
+    //     $('#datetimepicker14').attr("disabled",true);
+    //   }else{
+    //     $('#datetimepicker14').attr("disabled",false);
+    //   }
+    // });
+  });
+
+  function getMyDate(str){
+    var oDate = new Date(str),
+      oYear = oDate.getFullYear(),
+      oMonth = oDate.getMonth()+1,
+      oDay = oDate.getDate(),
+      oHour = oDate.getHours(),
+      oMin = oDate.getMinutes(),
+      oSen = oDate.getSeconds(),
+      oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+    return oTime;
+  };
+  //补0操作
+  function getzf(num){
+    if(parseInt(num) < 10){
+      num = '0'+num;
+    }
+    return num;
+  }
+
+  function test () {
+
+    var channelId = $("#channelId").val();
+
+    $(function () {
+      $.ajax({
+        type: "GET",
+        url: "http://"+ips+":8084/live/test",
+        data: {id: a['channelId']},
+        dataType: "json",
+        success: function (data) {
+          $("#liveName").text(data.channelName);
+          var Time = new Date(data.channelBtime).toLocaleString();
+          $("#livetim").text(Time);
+
+          $("#channelName").val(data.channelName);
+          $("#password").val(data.channelPassword);
+          var namelen =data.channelName.length;
+          $('#text-channelName').html(namelen);
+          $("#pushAddress").val(data.pushAddress);
+          $("#img3").attr("src",data.channelCover).css("display", "block");
+          $("#img2").attr("src",data.channelBackground).css("display", "block");
+          var coverimg = $("#img3")[0].src;
+          $("#coverimg").val(coverimg);
+
+          var bjimg = $("#img2")[0].src;
+          $("#bjimg").val(bjimg);
+          document.getElementById("channelBrief").innerHTML = data.channelBrief;
+          if (data.channelBrief!=null){
+            var Brieflen =data.channelBrief.length;
+          }else {
+            Brieflen =0;
+          }
+          $('#text-channelBrief').html(Brieflen);
+
+          var date = getMyDate(data.channelBtime);
+          $("input[name='channelBtime']").val(date);
+
+          if (data.channelType == 2) {
+            $("#VRType").attr("checked", true);
+          } else {
+            $("#COType").attr("checked", true);
+          }
+
+          if (data.channelPattern == 0) {
+            $("#password").attr("disabled",true);
+            $("#GKPattern").attr("checked", true);
+          } else {
+            $("#MMPattern").attr("checked", true);
+
+          }
+
+          if (data.channelRecord == 0) {
+            $("#TRecord").attr("checked", true);
+          } else {
+            $("#FRecord").attr("checked", true);
+          }
+
+          if (data.channelStatus == 1) {
+            $("#nowBegin").attr("checked", true);
+            $("#startTime").attr("disabled",true);
+          } else {
+            $("#orderBegin").attr("checked", true);
+          }
+
+          if (data.channelWay == 0) {
+            $("#VRWay").attr("checked", true);
+            $("#mainAddress").hide();
+            $("#passiveAddress").attr("value", data.passivePush);
+          } else {
+            $("#COWay").attr("checked", true);
+            $("#passiveAddress").hide();
+            $("#mainAddress").show();
+          }
+
+          if (data.channelWay) {
+            $("#mainAddress").attr("value", data.mainPush);
+          } else {
+            $("#passiveAddress").empty()
+          }
+          setTimeout(function(){ jwZH();},500);
+
+        },
+        error: function (data) {
+          //alert("出错了");
+        }
+      })
+    })
+
+    $(function () {
+      //调用局部刷新
+      LocalRefresh();
+    })
+  }
+
+  function ToUpdate() {
+
+    var cimg= $("#coverimg").val();
+
+
+    var bimg= $("#bjimg").val();
+
+
+    //file
+    var formData = new FormData();
+    formData.append("file", $("#file")[0].files[0]);
+    $.ajax({
+      type: "post",
+      url: "http://"+ips+":8084/live/uploadFile",
+      data: formData,
+      async: false,
+      cache: false,   // 不缓存
+      processData: false,   // jQuery不要去处理发送的数据
+      contentType: false,   // jQuery不要去设置Content-Type请求头
+      success: function (res) {
+       if (res!=null){
+        $("#coverimg").val(res);
+       }else {
+         $("#coverimg").val(cimg);
+       }
+
+      },
+      error: function () {
+        // alert("上传出错");
+      }
+
+    });
+    //bjfilee
+    var formData = new FormData();
+    formData.append("file", $("#file2")[0].files[0]);
+    $.ajax({
+      type: "post",
+      url: "http://"+ips+":8084/live/uploadFile",
+      data: formData,
+      async: false,
+      cache: false,   // 不缓存
+      processData: false,   // jQuery不要去处理发送的数据
+      contentType: false,   // jQuery不要去设置Content-Type请求头
+      success: function (res) {
+        if (res!=null){
+          $("#bjimg").val(res);
+        }else {
+          $("#bjimg").val(bimg);
+        }
+      },
+      error: function () {
+        // alert("上传出错");
+      }
+
+    });
+    // var dateTime = $("#datetimepicker14").val();
+
+    $.ajax({
+      type:"post",
+      url:"http://"+ips+":8084/live/updateChannel?channelId="+a['channelId'],
+      // data:$("#UpdateForm").serialize(),
+      data:{
+        "channelId":a['channelId'],
+        "channelName":$("#channelName").val(),
+        "channelType":$("input[name=channelType]:checked").val(),
+        "channelBtime":$("#startTime").val(),
+        "channelPattern":$("input[name=channelPattern]:checked").val(),
+        "channelWay":$("input[name=channelWay]:checked").val(),
+        "channelRecord":$("input[name=channelRecord]:checked").val(),
+        "channelBrief":$("#channelBrief").val(),
+        "mainPush":$("#mainAddress").val(),
+        "passivePush":$("#passiveAddress").val(),
+        "channelCover": $('#coverimg').val(),
+        "channelBackground": $('#bjimg').val(),
+        "channelStatus": $("input[name=channelStatus]:checked").val(),
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));
+      },
+      success:function(data){
+        location.href = "./Channelad.html";
+      },
+      error:function () {
+        // alert("直播修改失败！！！")
+      }
+    })
+
+    var sid = new Array();
+    $("input[name='checkId']:checked").each(function () {
+      sid.push($(this).val())
+    });
+
+    var ids = [];
+    for(item of $(".sid")){
+      ids += $(item).val() + ",";
+    }
+    console.log(ids);
+
+  }
+
+  function copyUrl() {
+    var mainUrl = document.getElementById("mainAddress");
+    var passiveUrl = document.getElementById("passiveAddress");
+    mainUrl.select(); // 选择对象
+    passiveUrl.select();
+    document.execCommand("Copy"); // 执行浏览器复制命令
+  }
+
+  function ToClose() {
+    location.href = "./Channelad.html";
+  }
+
+
+</script>
+</html>

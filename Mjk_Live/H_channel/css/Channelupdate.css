@@ -1,0 +1,335 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width:1900px;
+  height: 120%;
+
+}
+body{
+  margin: 0;
+  padding: 0;
+
+}
+.top{
+  height: 80px;
+  background-color: white;
+}
+.top1{
+  float: left;
+  width: 30%;
+  height: 100%;
+}
+.top2{
+  float: left;
+  width: 40%;
+  height: 100%;
+}
+.title1{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: #16c1f5;
+  cursor: pointer;
+}
+.title2{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title3{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title4{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.top3{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  font-size: large;
+  line-height: 5;
+}
+/*退出登录*/
+#li{
+  border: 1px solid #8080803b;
+  height: 115px;
+  width: 125px;
+  background-color: #ffffff;
+  display: none;
+  position: relative;
+  right: 0px;
+  /* list-style-type: none; */
+  list-style-type: none;
+  top: -10px;
+  z-index: 3;
+  text-align: center;
+  padding: 7px;
+
+}
+.erji{
+  background-color: #f9f9f9;
+  position: relative;
+  left: 111px;
+  bottom: 115px;
+  border: 1px solid gainsboro;
+  display: none;
+  padding: 5px;
+  width: 115px;
+}
+.erji div{
+
+  line-height: 1;
+  height: 22px;
+  margin: 5px;
+  font-size: smaller;
+  border-bottom: 1px solid gainsboro;
+  cursor: pointer;
+}
+#li ul{
+  padding: 5px;
+}
+.fa-sign-out{
+
+  float: left;
+  margin: 3px;
+
+}
+.fa-university{
+  float: left;
+  margin: 3px;
+}
+.fa-cog{
+  float: left;
+  margin: 3px;
+}
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+  width: 100px;
+}
+#span_fa{
+  cursor: pointer;
+}
+.InfoTitle{
+  width: 80%;
+  margin-top: 20px;
+  height: 80px;
+  background-color: #e6e7ea;
+}
+.lin1{
+  height: 60%;
+}
+.liveName{
+  float: left;
+  width: 245px;
+  height: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 2;
+  margin-left: 10px;
+}
+.status{
+  float: left;
+  width: 150px;
+  height: 100%;
+}
+.stau{
+  width: 95px;
+  height: 35px;
+  font-size: large;
+  text-align: center;
+  padding: 5px;
+  background-color: #64bdf1;
+  color: white;
+  border-radius: 10%;
+}
+.InfoTitle p{
+  margin-top: 3px;
+  margin-left: 10px;
+}
+.IfAbout{
+  width: 80%;
+  height: 80%;
+  margin-top: 50px;
+}
+.left{
+  float: left;
+  width: 20%;
+  height: 100%;
+  background-color: #ffffff;
+  border: 1px solid #f1f1f1;
+  margin-right: 3%;
+}
+.right{
+  width: 76%;
+  background-color: #ffffff;
+  border: 1px solid #f1f1f1;
+  height: 100%;
+  float: left;
+}
+.r-top{
+  width: 100%;
+  height: 550px;
+  margin-bottom: 20px;
+  background-color: white;
+  border: 1px solid whitesmoke;
+}
+.zl{
+  height: 80px;
+  background-color: #5cbbff00;
+  color: black;
+  text-align: center;
+  font-size: x-large;
+  padding: 15px;
+}
+.liveSetting{
+  height: 80px;
+  background-color: #5cbbff00;
+  color: #333;
+  text-align: center;
+  font-size: x-large;
+  padding: 15px;
+}
+.ls-bj{
+  height: 80px;
+  background-color: #5cbbff00;
+  color: #333;
+  text-align: center;
+  font-size: 20px;
+  padding: 15px;
+  background-color: rgb(65, 156, 228);
+
+}
+.ls-hd{
+  height: 80px;
+  background-color: #5cbbff00;
+  color: #333;
+  text-align: center;
+  font-size: 20px;
+  padding: 15px;
+
+}
+
+
+/*图片上传*/
+
+#imgPreview {
+  width: 280px;
+  height: 140px;
+  margin: 0px;
+  border: 1px dashed gray;
+  text-align: center;
+  border-radius: 10%;
+}
+#prompt3 {
+  position: relative;
+  left: 240px;
+  width: 100%;
+  height: 180px;
+  text-align: center;
+  position: relative;
+}
+#imgSpan {
+  position: absolute;
+  top: 60px;
+  left: 40px;
+}
+.filepath {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+#img3 {
+  display: block;
+  position: relative;
+  top: -180px;
+  height: 100%;
+  width: 100%;
+  display: none;
+  border-radius: 10%;
+}
+
+#imgPreview2 {
+  width: 280px;
+  height: 140px;
+  margin: 0px;
+  border: 1px dashed gray;
+  text-align: center;
+  border-radius: 10%;
+}
+#prompt2 {
+  position: relative;
+  left: 240px;
+  width: 100%;
+  height: 180px;
+  text-align: center;
+  position: relative;
+}
+#imgSpan2 {
+  position: absolute;
+  top: 60px;
+  left: 40px;
+}
+#img2 {
+  display: block;
+  position: relative;
+  top: -180px;
+  height: 100%;
+  width: 100%;
+  display: none;
+  border-radius: 10%;
+}
+
+
+/*table*/
+.insert-table{
+  height: 90%;
+}
+.insert-table form{
+  height: 100%;
+  width: 100%;
+  float: right;
+}
+.insert-table table{
+  width: 90%;
+  height: 100%;
+
+}
+.addname{
+  width: 15%;
+}
+
+.channelname{
+  margin-left: 90%;
+  position: relative;
+  top: -25px;
+}
+.btn-info{
+  float: left;
+  color: red;
+}

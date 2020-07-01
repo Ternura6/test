@@ -1,0 +1,326 @@
+*{
+  margin: 0px auto;
+  padding: 0px ;
+}
+html,body{
+  height: 100%;
+  width: 100%;
+}
+body{
+  margin: 0;
+  padding: 0;
+  background-color: #cacaca94;
+}
+.top{
+  height: 80px;
+  background-color: white;
+}
+.top1{
+  float: left;
+  width: 30%;
+  height: 100%;
+}
+.top2{
+  float: left;
+  width: 40%;
+  height: 100%;
+}
+.title1{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title2{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title3{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title4{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+
+.top3{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  font-size: large;
+  line-height: 5;
+}
+.cen{
+  margin-top: 50px;
+  /* border: 1px solid gainsboro; */
+  width: 1500px;
+  height: 1056px;
+}
+.left{
+  height: 100%;
+  width: 260px;
+  float: left;
+  background-color: #606163;
+  margin-right: 18px;
+}
+.le-top{
+  width: 90%;
+  height: 60px;
+  color: white;
+  border-bottom: 1px solid #757575;
+  text-align: center;
+  line-height: 2;
+  font-size: x-large;
+}
+.le-nr{
+  width: 100%;
+  color: #FFFFFF;
+  margin-top: 20px;
+}
+.le-p{
+  font-size: larger;
+  text-align: center;
+  width: 100%;
+  height: 50px;
+  line-height: 3;
+  cursor: pointer;
+
+}
+.le-p i{
+  color: #3DBDFF;
+}
+
+.right{
+  height: 100%;
+  width: 1220px;
+  float: left;
+  border: 1px solid #d9e4e8;
+  background-color: #d9e4e845;
+}
+.right3{
+  height: 100%;
+  width: 1220px;
+  float: left;
+  border: 1px solid #d9e4e8;
+  background-color: #d9e4e845;
+}
+.cr-top{
+  height: 40%;
+  width: 100%
+}
+.cr-top p{
+  padding: 5%;
+  font-weight: bold;
+  font-size: large;
+}
+.cr-top table{
+  margin-left: 10%;
+  width: 40%;
+  height: 30%;
+}
+#Uname{
+  border: 1px solid white;
+  background-color: white;
+  font-size: x-large;
+}
+#Company{
+  border: 1px solid white;
+  background-color: white;
+  font-size: x-large;
+}
+.col-right hr{
+  /* color: grey; */
+  border-top: 1px solid #ddd;
+
+  /* border: 0.5px; */
+  margin: auto;
+  width: 100%;
+}
+.cr-bottom{
+  height: 50%;
+  width: 100%;
+}
+.cr-bottom p{
+  padding: 5%;
+  font-weight: bold;
+  font-size: large;
+}
+.cpw{
+  height: 30%;
+  background-color: gainsboro;
+  width: 310px;
+  margin-left: 5%;
+  padding-top: 2%;
+  float: left;
+}
+.cph{
+  height: 30%;
+  background-color: gainsboro;
+  width: 310px;
+  margin-left: 5%;
+  padding-top: 2%;
+  float: left;
+}
+.cem{
+  height: 30%;
+  background-color: gainsboro;
+  width: 310px;
+  margin-left: 5%;
+  padding-top: 2%;
+  float: left;
+}
+.passw{
+  color: #2aabd2;
+  height: 100%;
+  margin: auto;
+  text-align: center;
+}
+.phone{
+  color: #f38856;;
+  height: 100%;
+  margin: auto;
+  text-align: center;
+}
+.email{
+  color: #a8d271;;
+  height: 100%;
+  margin: auto;
+  text-align: center;
+}
+.cpw-text{
+  padding: 0px;
+  text-align: center;
+}
+.t{
+  font-weight: bold;
+  font-size: large;
+}
+.cpw-logo{
+  text-align: end;
+}
+#SendCode{
+  float: left;
+  text-align: center;
+  height: 38px;
+  padding-top: 5px;
+  width: 30%;
+  border: 1px solid #80808047;
+}
+
+.modal-body{
+  margin: 10px;
+  height: 150px;
+}
+.modal-body input{
+  margin: 5px;
+}
+#NewEPCode{
+  width: 68%;
+  float: left;
+  margin: 5px;
+
+}
+#SendECode{
+  float: left;
+  text-align: center;
+  height: 38px;
+  padding-top: 5px;
+  width: 30%;
+  border: 1px solid #80808047;
+}
+/*退出登录*/
+#li{
+  border: 1px solid #8080803b;
+  height: 115px;
+  width: 125px;
+  background-color: #ffffff;
+  display: none;
+  position: relative;
+  right: 0px;
+  /* list-style-type: none; */
+  list-style-type: none;
+  top: -10px;
+  z-index: 3;
+  text-align: center;
+  padding: 7px;
+
+}
+.erji{
+  background-color: #f9f9f9;
+  position: relative;
+  left: 111px;
+  bottom: 115px;
+  border: 1px solid gainsboro;
+  display: none;
+  padding: 5px;
+  width: 115px;
+}
+.erji div{
+
+  line-height: 1;
+  height: 22px;
+  margin: 5px;
+  font-size: smaller;
+  border-bottom: 1px solid gainsboro;
+  cursor: pointer;
+}
+#li ul{
+  padding: 5px;
+}
+.fa-sign-out{
+
+  float: left;
+  margin: 3px;
+
+}
+.fa-university{
+  float: left;
+  margin: 3px;
+}
+.fa-cog{
+  float: left;
+  margin: 3px;
+}
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+  width: 100px;
+}
+#span_fa{
+  cursor: pointer;
+}
+#NewPCode{
+  float: left;
+  width: 68%;
+}
+.r3_top{
+  height: 55px;
+  border-bottom: 1px solid gainsboro;
+  width: 98%;
+  font-size: large;
+  line-height: 3;
+}

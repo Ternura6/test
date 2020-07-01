@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" http-equiv="x-ua-compatible" content="IE=8">
+    <title>登录</title>
+  <link rel="stylesheet" type="text/css" href="H_login/css/Login.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script>
+
+
+  var ip = "";
+
+  window.onload=function () {
+    var t =localStorage.getItem("token");
+
+     one();
+    getIp();
+    if (t!=null){
+      setTimeout(function(){ session();},1000);
+    }
+
+  };
+  //获取客户端ip
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  //查看该服务器是否有账号在线
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+          location.href="Channelad.html";
+        }else
+        if (datas=="0"){
+
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function login() {
+
+    var lophone= $("#phone").val();
+    var loPassword= $("#Password").val();
+    var lcode =$("#AutoCode").val();
+
+    if (lophone==""||loPassword==""){
+      alert("请输入账号信息");
+      return false;
+    }
+
+
+    if ($("#remember_password").is(':checked') == true) {
+      $.cookie("phone", lophone,{ expires: 3 }); // 存储一个带3天期限的 cookie
+      $.cookie("Password",loPassword, {expires: 3});
+    }else {
+      $.removeCookie('phone', { path:'/TestH5' });
+      $.removeCookie('Password', { path:'/TestH5' });
+    }
+    if (lcode==""){
+      alert("请填写验证码");
+    }else {
+      $.ajax({
+        type: "Post",
+        async: true,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/login/login",
+        data: {
+          "phone": lophone,
+          'Password': loPassword,
+        },
+
+        success: function (datas) {
+          if (datas == "0") {
+            alert("账户名或密码错误");
+
+          } else if (datas=="1"){
+            alert("该用户角色没有权限");
+          }else if (datas=="5"){
+            alert("该账号已在其他设备登录")
+            return;
+          }else if (datas=="2") {
+            alert("刚账号已被锁定！！！");
+          }
+          else {
+            var date = new Date().getTime();
+            localStorage.setItem("token", datas, date + 3*24*3600*1000);
+            ecookie();
+            //dates不等于null说明包含userid
+            dlxz(ip)
+          }
+        },
+        error: function (datas) {
+        },
+      });
+    }
+  }
+  function ecookie() {
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/live/changecooke",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+            $.cookie("admin", datas,{ expires: 3 }); // 存储一个带3天期限的 cookie
+        localStorage.setItem("admin", datas, date + 3*24*3600*1000);
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  function dlxz(ip) {
+
+
+    $.ajax({
+      type : "POST",
+      url : "http://127.0.0.1:8083/logintext/loginte",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+          location.href="Channelad.html";
+        }
+        else if (datas=="0"){
+
+          var flag = confirm("该账号当前在线，是否继续登录");
+          if(flag==true) {
+            location.href = "Channelad.html";
+          }
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function YZ() {
+    var number =$("#phone").val();
+    email=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    //邮箱正则表达式
+    phone = /^1[3456789]\d{9}$/;
+    //手机正则表达式
+    if (number=='' || email.test(number) ||phone.test(number)){
+      $.ajax({
+        type : "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url : "http://127.0.0.1:8083/login/Isnull",
+        data :{
+          "number":number,
+        },
+        success : function(datas) {
+          if (datas==0){
+            alert("没有该用户信息")
+            $("#phone").val("");
+          }
+        },
+        error: function (datas) {
+        }
+      });
+    }else {
+      $("#phone").val("");
+
+      alert("格式错误");
+    }
+  }
+ function one() {
+    // 第二次加载时判断是否存在cookie，存在的话直接把值付给用户名
+    if ($.cookie("phone") != null && $.cookie("Password") !=null ) {
+      $("#phone").val($.cookie("phone"));
+      $("#Password").val($.cookie("Password"));
+      $("#remember_password").attr('checked', true);
+    }
+  }
+
+  $(function () {
+    $("body").keydown(function() {
+      if (event.keyCode == "13") {//keyCode=13是回车键
+        $('#lgdl').click();//换成按钮的id即可
+      }
+    });
+  });
+
+
+</script>
+
+<body>
+<input type="hidden" id="getIp" value="">
+<div class="center">
+
+<!--  登录框左-->
+  <div class=" loleft">
+
+  </div>
+<!--  登录框右-->
+  <div class="  loright">
+<div class="loinput">
+  <div class="title">
+  <span>
+    美吉克直播
+  </span>
+  </div>
+  <div class="about">
+    <form >
+      <!--用户账户手机或邮箱-->
+      <div class="form-group has-feedback">
+        <div class="username">
+          <img src="H_login/img/perIOC.png">
+          <input type="text" class="form-control usercode" id="phone" name="phone" placeholder=" 手机或邮箱" onblur="YZ()">
+        </div>
+      </div>
+      <!--密码-->
+      <div class="form-group pwd-top has-feedback">
+        <div class="password">
+          <img src="H_login/img/passIOC.png">
+          <input type="password" class="form-control userpass" id="Password" name="Password" placeholder="密码">
+        </div>
+      </div>
+      <!-- 验证-->
+      <div class="form-group has-feedback yzm">
+        <div class=" AutoCode">
+          <img src="H_login/img/lockIOC.png">
+          <input type="text" autocomplete="off" class="form-control input-code" value="" id="AutoCode" placeholder="请输入验证码（区分大小写）" style="width: 100%;" onblur="sublim()">
+          </label>
+        </div>
+        <div class="AutoCode-img">
+          <canvas id="canvas"  onclick="dj()"
+                  style=" border: 1px solid #ccc;
+                          border-radius: 5px;
+                          height: 55px;
+                          padding-left: 0px;
+                          width: 100%;"></canvas>
+        </div>
+        <!--            <input type="text" value="" placeholder="请输入验证码（区分大小写）"-->
+        <!--                   style="height:43px;position: relative; top:-15px; font-size:20px;"id ="text">-->
+        <!--            <button class="btn" >提交</button>-->
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-login" id="lgdl" type="button" onclick="login()">登&nbsp;录</button>
+      </div>
+    </form>
+    <div class="row row-login">
+      <div class="col-xs-4">
+        <label>
+          <input type="checkbox" style="height: 15px;" id="remember_password"> <span>记住账号</span>
+        </label>
+      </div>
+      <div class="col-xs-3">
+        <a href="forgetpassword.html">
+          <span>忘记密码</span>
+        </a>
+      </div>
+      <div class="col-xs-3">
+        <a href="register.html">
+          <span>立即注册</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  </div>
+</div>
+
+</body>
+
+<script>
+  var show_num = [];
+  draw(show_num);
+  function dj(){
+    draw(show_num);
+  }
+  function sublim(){
+    var val=document.getElementById("AutoCode").value;
+    var num = show_num.join("");
+    if(val==''){
+       alert("请输入验证码");
+       return;
+    }else if(val == num){
+
+      document.getElementById(".input-val").value('');
+      draw(show_num);
+
+    }else{
+      alert('验证码错误！\n你输入的是:  '+val+"\n正确的是:  "+num+'\n请重新输入！');
+      document.getElementById("AutoCode").value='';
+      draw(show_num);
+    }
+
+
+
+  }
+  function draw(show_num) {
+    var canvas_width=document.getElementById('canvas').clientWidth;
+    var canvas_height=document.getElementById('canvas').clientHeight;
+    var canvas = document.getElementById("canvas");//获取到canvas的对象，演员
+    var context = canvas.getContext("2d");//获取到canvas画图的环境，演员表演的舞台
+    canvas.width = canvas_width;
+    canvas.height = canvas_height;
+    var sCode = "1,2,3,4,5,6,7,8,9,0,q,w,e,r,t,y,u,i,o,p,a,s,d,f,g,h,j,k,l,z,x,c,v,b,n,m";
+    var aCode = sCode.split(",");
+    var aLength = aCode.length;//获取到数组的长度
+
+    for (var i = 0; i <= 3; i++) {
+      var j = Math.floor(Math.random() * aLength);//获取到随机的索引值
+      var deg = Math.random() * 30 * Math.PI / 180;//产生0~30之间的随机弧度
+      var txt = aCode[j];//得到随机的一个内容
+      show_num[i] = txt;
+      var x = 10 + i * 20;//文字在canvas上的x坐标
+      var y = 20 + Math.random() * 8;//文字在canvas上的y坐标
+      context.font = "bold 23px 微软雅黑";
+
+      context.translate(x, y);
+      context.rotate(deg);
+
+      context.fillStyle = randomColor();
+      context.fillText(txt, 0, 0);
+
+      context.rotate(-deg);
+      context.translate(-x, -y);
+    }
+    for (var i = 0; i <= 5; i++) { //验证码上显示线条
+      context.strokeStyle = randomColor();
+      context.beginPath();
+      context.moveTo(Math.random() * canvas_width, Math.random() * canvas_height);
+      context.lineTo(Math.random() * canvas_width, Math.random() * canvas_height);
+      context.stroke();
+    }
+    for (var i = 0; i <= 30; i++) { //验证码上显示小点
+      context.strokeStyle = randomColor();
+      context.beginPath();
+      var x = Math.random() * canvas_width;
+      var y = Math.random() * canvas_height;
+      context.moveTo(x, y);
+      context.lineTo(x + 1, y + 1);
+      context.stroke();
+    }
+  }
+  function randomColor() {//得到随机的颜色值
+    var r = Math.floor(Math.random() * 256);
+    var g = Math.floor(Math.random() * 256);
+    var b = Math.floor(Math.random() * 256);
+    return "rgb(" + r + "," + g + "," + b + ")";
+  }
+
+</script>
+</html>

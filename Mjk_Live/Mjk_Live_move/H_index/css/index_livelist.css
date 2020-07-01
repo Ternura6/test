@@ -1,0 +1,84 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 100%;
+  height: 100%;
+  background-color: #ececec9e;
+}
+body{
+  margin: 0;
+  padding: 0;
+}
+.container-fluid{
+  height: 100%;
+}
+.top{
+  margin-top: 15px;
+  height: 5%;
+}
+.t1{
+  float: left;
+}
+
+.title{
+  float: left;
+  /* width: 729px; */
+  text-align: center;
+  font-size: 50px;
+  font-weight: 600;
+  margin-left: 270px;
+}
+.t2{
+  float: right;
+}
+.t2im2{
+  margin-left: 25px;
+}
+/*vlist*/
+.vlist{
+  width: 100%;
+  height: 87%;
+}
+.limode{
+  border: 1px solid gainsboro;
+  width: 45%;
+  height: 23%;
+  float: left;
+  margin: 1%;
+  margin-left: 3%;
+  margin-right: 2%;
+}
+.fm{
+  height: 75%;
+  width: 96%;
+  margin: 2%;
+  position: relative;
+}
+.bq{
+  position: absolute;
+}
+.tp{
+  height: 100%;
+  width: 100%;
+}
+.l-inifo{
+  margin: 2%;
+}
+.l-inifo span{
+  font-size: x-large;
+  color: #484646;
+}
+.watch{
+  float: right;
+}
+.count{
+  float: right;
+  font-size: large;
+  line-height: 2;
+  color: gray;
+}
+.pagediv{
+  height: 110px;
+}

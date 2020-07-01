@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>登录注册</title>
+  <link rel="stylesheet" type="text/css" href="H_login/css/login.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<body>
+<script>
+
+<!--  判断手机格式-->
+ function phoneyz() {
+   var phone =$("#phone").val();
+   okphone = /^1[3456789]\d{9}$/;
+   if (okphone.test(phone)){
+     $("#D_phone").hide();
+     $("#login").css("background-color","#5fbfef");
+     $("#login").css("color","#fffffff5");
+     }else {
+     $("#D_phone").show();
+   }
+  }
+//  发送验证码
+  function setcode() {
+  var display =$("#D_phone").css("display")
+  if (display=='block'){
+    return;
+  }
+  var phone =$("#phone").val();
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://192.168.3.252:8083/sms/Loginbyphone",
+      data :{
+        "phone":phone,
+      },
+
+      success : function(datas) {
+        if (datas==1 || datas==2){
+          setTimeout("alert('验证码已发送，注意查收')",3000);
+          return true;
+
+        }else {
+          setTimeout("alert('发送失败')",3000);
+          return false;
+        }
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+function Ilogin() {
+  var display =$("#D_phone").css("display")
+  if (display=='block'){
+    return;
+  }
+  var phone =$("#phone").val();
+  var code =$("#code").val();
+  $.ajax({
+    type : "get",
+    async: false,//同步
+    cache: false,//不缓存
+    url : "http://192.168.3.252:8083/sms/indexoginyz",
+    data :{
+      "phone":phone,
+      "code":code,
+    },
+
+    success : function(datas) {
+
+      if (datas==null||datas==""){
+        alert("登陆失败");
+      }else {
+   var date = new Date().getTime();
+     localStorage.setItem("tokenuser", datas.userId, date + 3*24*3600*1000);
+ var aa =document.referrer;
+
+ location.href=aa;
+      }
+    },
+    error: function (datas) {
+    }
+  });
+
+}
+<!--返回上一页-->
+function goback() {
+  window.history.go(-1)
+}
+</script>
+<script>
+  $(function () {
+    $('#btn').click(function () {
+      var count = 60;
+      var countdown = setInterval(CountDown, 1000);
+      function CountDown() {
+        $("#btn").attr("disabled", true);
+        $("#btn").val("请" + count + "秒后再试");
+        if (count == 0) {
+          $("#btn").val("发送验证码").removeAttr("disabled");
+          clearInterval(countdown);
+        }
+        count--;
+      }
+    })
+  });
+</script>
+<div class="container-fluid">
+<!--  top-->
+<div class="top">
+
+  <div class="t1"><img src="H_login/img/toLeft.png" onclick="goback()"></div>
+  <div class="title">
+    <span>美吉克直播</span>
+  </div>
+  <div class="t2"><img src="H_login/img/error.png"></div>
+</div>
+<!--  表单 登陆模块-->
+<div class="tb">
+  <div class="inphone">
+      <input class="phone" id="phone" name="phone" placeholder="请输入手机号" onblur="phoneyz()">
+    <span id="D_phone" style="display: none; color: red">手机号格式错误</span>
+       <div class="tb-img1">
+         <img src="H_login/img/+86.png" style="width: 40%;">
+         <img src="H_login/img/down.png" style="width: 20%;margin-left: 5%;">
+       </div>
+  </div>
+  <div class="incode">
+        <input class="code" id="code" name="code" placeholder="请输入收到的验证码">
+    <span id="D_code" style="display: none;color: red">验证码错误</span>
+       <div class="tb-img2">
+           <img src="H_login/img/1.png" style=" width: 3%;">
+           <div class="yz" >
+             <input type="button" id="btn" value="获取验证码" onclick="setcode()"/>
+
+           </div>
+       </div>
+  </div>
+  <div class="login" id="login" onclick="Ilogin()">
+    <span>登录
+    </span>
+  </div>
+</div>
+<!--  分界-->
+<div class="boundry">
+  <div class="hrleft">
+    <hr>
+  </div>
+  <div class="centext">
+    <span>其他方式登陆</span>
+  </div>
+  <div class="hrright">
+    <hr>
+  </div>
+</div>
+<!-- 微信快速登陆-->
+<div class="wx">
+<img src="H_login/img/wx.png">
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f7762326-1503-4e1a-a7b6-332eb63bcf0a" name="默认更改列表" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ZHz9dAZP3V4vvZtTSXjtum4jOr" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/video-js-4.12.11/video-js" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Mjk_Live_move\video-js-4.12.11\video-js" />
+      <recent name="E:\Mjk_Live_move\video-js-4.12.11" />
+      <recent name="E:\Mjk_Live_move" />
+      <recent name="E:\Mjk_Live_move\video6.6.2.js\js" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Mjk_Live_move\video-js-4.12.11\video-js" />
+      <recent name="E:\Mjk_Live_move" />
+      <recent name="E:\Mjk_Live_move\H_index\img" />
+      <recent name="E:\Mjk_Live_move\H_login\img" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.index_livechanneling.html">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Mjk_Live_move/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index_livechanneling.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Mjk_Live_move/index_livechanneling.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index_livelist.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Mjk_Live_move/index_livelist.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="login.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Mjk_Live_move/login.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="textvedio.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Mjk_Live_move/textvedio.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.index_livechanneling.html" />
+        <item itemvalue="JavaScript Debug.login.html" />
+        <item itemvalue="JavaScript Debug.index.html" />
+        <item itemvalue="JavaScript Debug.index_livelist.html" />
+        <item itemvalue="JavaScript Debug.textvedio.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f7762326-1503-4e1a-a7b6-332eb63bcf0a" name="默认更改列表" comment="" />
+      <created>1584510656670</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1584510656670</updated>
+      <workItem from="1584510683127" duration="14976000" />
+      <workItem from="1584583326840" duration="20738000" />
+      <workItem from="1584670106777" duration="12024000" />
+      <workItem from="1584685971641" duration="8687000" />
+      <workItem from="1584697198489" duration="2168000" />
+      <workItem from="1584929065782" duration="13161000" />
+      <workItem from="1585015542740" duration="18407000" />
+      <workItem from="1585100877000" duration="13750000" />
+      <workItem from="1585188519333" duration="6051000" />
+      <workItem from="1585275643495" duration="152000" />
+      <workItem from="1585275804330" duration="1582000" />
+      <workItem from="1585280238526" duration="216000" />
+      <workItem from="1585280468513" duration="5366000" />
+      <workItem from="1585534309557" duration="10503000" />
+      <workItem from="1585559288202" duration="13000" />
+      <workItem from="1585620737870" duration="2017000" />
+      <workItem from="1585706564196" duration="602000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="656" y="225" key="#Notifications" timestamp="1585203284286">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="225" key="#Notifications/0.0.1920.1040@0.0.1920.1040" timestamp="1585203284286" />
+    <state x="792" y="382" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1584947584586">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="792" y="382" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584947584586" />
+    <state x="1380" y="442" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1584586358164">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1380" y="442" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584586358164" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1585552440938">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1585552440938" />
+    <state width="1798" height="256" key="GridCell.Tab.0.bottom" timestamp="1585280084579">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1798" height="256" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585280084579" />
+    <state width="1798" height="256" key="GridCell.Tab.0.center" timestamp="1585280084579">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1798" height="256" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585280084579" />
+    <state width="1798" height="256" key="GridCell.Tab.0.left" timestamp="1585280084579">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1798" height="256" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585280084579" />
+    <state width="1798" height="256" key="GridCell.Tab.0.right" timestamp="1585280084579">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1798" height="256" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585280084579" />
+    <state width="1796" height="33" key="GridCell.Tab.1.bottom" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.1.center" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.1.left" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.1.right" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.2.bottom" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.2.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.2.center" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.2.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.2.left" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.2.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.2.right" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.2.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.3.bottom" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.3.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.3.center" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.3.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.3.left" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.3.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state width="1796" height="33" key="GridCell.Tab.3.right" timestamp="1584956481742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1796" height="33" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584956481742" />
+    <state x="-17" y="272" width="1720" height="818" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1584596720173">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-17" y="272" width="1720" height="818" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584596720173" />
+    <state x="579" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1584692552997">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="579" y="135" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584692552997" />
+    <state x="149" y="0" width="1553" height="974" key="dock-window-1" timestamp="1585032590975">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="149" y="0" width="1553" height="974" key="dock-window-1/0.0.1920.1040@0.0.1920.1040" timestamp="1585032590975" />
+    <state x="383" y="0" width="1553" height="974" key="dock-window-2" timestamp="1585032604224">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="383" y="0" width="1553" height="974" key="dock-window-2/0.0.1920.1040@0.0.1920.1040" timestamp="1585032604224" />
+    <state x="0" y="107" width="1553" height="979" key="dock-window-3" timestamp="1584686130985">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="0" y="107" width="1553" height="979" key="dock-window-3/0.0.1920.1040@0.0.1920.1040" timestamp="1584686130985" />
+    <state x="677" y="328" key="jetbrains.nodejs.interpreters-dialog" timestamp="1585552449769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="677" y="328" key="jetbrains.nodejs.interpreters-dialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585552449769" />
+    <state x="1382" y="361" width="672" height="678" key="search.everywhere.popup" timestamp="1584690490583">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1382" y="361" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1584690490583" />
+  </component>
+</project>

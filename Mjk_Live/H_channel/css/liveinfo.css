@@ -1,0 +1,297 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 1900px;
+
+  height: 1300px;
+
+}
+body{
+  margin: 0;
+  padding: 0;
+
+}
+.top{
+  height: 80px;
+  background-color: white;
+}
+.top1{
+  float: left;
+  width: 30%;
+  height: 100%;
+}
+.top2{
+  float: left;
+  width: 40%;
+  height: 100%;
+}
+.title1{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title2{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: #16c1f5;
+  cursor: pointer;
+}
+.title3{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title4{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+
+.top3{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  font-size: large;
+  line-height: 5;
+}
+/*退出登录*/
+#li{
+  border: 1px solid #8080803b;
+  height: 115px;
+  width: 125px;
+  background-color: #ffffff;
+  display: none;
+  position: relative;
+  right: 0px;
+  /* list-style-type: none; */
+  list-style-type: none;
+  top: -10px;
+  z-index: 3;
+  text-align: center;
+  padding: 7px;
+
+}
+.erji{
+  background-color: #f9f9f9;
+  position: relative;
+  left: 111px;
+  bottom: 115px;
+  border: 1px solid gainsboro;
+  display: none;
+  padding: 5px;
+  width: 115px;
+}
+.erji div{
+
+  line-height: 1;
+  height: 22px;
+  margin: 5px;
+  font-size: smaller;
+  border-bottom: 1px solid gainsboro;
+  cursor: pointer;
+}
+#li ul{
+  padding: 5px;
+}
+.fa-sign-out{
+
+  float: left;
+  margin: 3px;
+
+}
+.fa-university{
+  float: left;
+  margin: 3px;
+}
+.fa-cog{
+  float: left;
+  margin: 3px;
+}
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+  width: 100px;
+}
+#span_fa{
+  cursor: pointer;
+}
+.cen{
+  width: 1400px;
+  height: 1000px;
+  margin-top: 50px;
+  border: 1px solid #B7B7B7;
+  background-color: #FCFDFF;
+
+}
+.ctop{
+  height: 68px;
+  background-color: #F0F1F2;
+
+}
+.dv1{
+  height: 100%;
+  float: left;
+  width: 160px;
+}
+.back{
+  float: left;
+  width: 70px;
+  height: 36px;
+  margin-left: 35px;
+  margin-top: 15px;
+  background-color: #FFFFFF;
+  text-align: center;
+  line-height: 2;
+  cursor: pointer
+}
+.dv2{
+  float: left;
+  width: 160px;
+  height: 100%;
+  text-align: center;
+  line-height: 4;
+  color: #1890FF;
+  font-size: initial;
+  cursor: pointer
+}
+.dv3{
+  float: left;
+  width: 160px;
+  text-align: center;
+  line-height: 4;
+  font-size: initial;
+  cursor: pointer
+}
+.left{
+  width: 50%;
+  float: left;
+}
+.tb{
+  margin-left: 200px;
+  height: 380px;
+}
+
+.tn{
+  width: 100px;
+}
+.right{
+  width: 50%;
+  float: left;
+}
+#pt{
+  width: 500px;
+  height: 300px;
+  margin: 80px;
+}
+.taking{
+  width: 80%;
+  margin-top: 50px;
+  height: 750px;
+  overflow: auto;
+}
+/*聊天发言框*/
+.sping{
+  margin-top: 5px;
+  width: 97%;
+  height: auto;
+  /* border-bottom: 1px solid #b7b7b7; */
+  border: 0px;
+  background-color: rgba(255,255,255,.15);
+  border-bottom: 1px solid #ddd;
+}
+.sping:hover{
+  background-color: #ddd;
+}
+.spimg{
+  width: 55px;
+  border-radius: 55%;
+  float: left;
+  margin: 5px;
+}
+.rsp{
+  width: 77%;
+  left: 80px;
+  bottom: 75px;
+}
+.rsp p{
+  line-height: 0;
+  font-weight: bold;
+  margin-bottom: 30px;
+  position: relative;
+  bottom: -15px;
+}
+.hdnr{
+  word-break: normal;
+  width: 890px;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  margin: 2px;
+  min-height: 35px;
+}
+.gf{
+  float: left;
+  position: relative;
+  bottom: 25px;
+  left: 50px;
+  background-color: #9abeff;
+  color: white;
+  border-radius: 5px;
+}
+.ctime{
+  color: #909090;
+  float: right;
+}
+.buttwo{
+  float: right;
+  position: relative;
+  bottom: -30px;
+  right: -90px;
+  width: 90px;
+}
+.but1{
+  float: left;
+  width: 40px;
+  height: 23px;
+  background-color: #C23030;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+.but2{
+  float: left;
+  width: 40px;
+  height: 23px;
+  background-color: #1890FF;
+  color: white;
+  text-align: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+#cstatus{
+  width: 325px;
+  height: 100px;
+}

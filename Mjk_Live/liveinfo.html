@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视频详情</title>
+  <link rel="stylesheet" type="text/css" href="H_channel/css/liveinfo.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-paginator-master/src/bootstrap-paginator.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color", "rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href = "Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color", "rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href = "Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color", "rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color", "rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+
+  //  视频信息切换视频留言
+    $('#dv2').click(function () {
+       $('#dv2').css("color","#1890FF");
+       $('#dv2').siblings().css("color","#000000");
+       $('#livtake').hide();
+       $('#cnr').show();
+    });
+    $('#dv3').click(function () {
+      $('#dv3').css("color","#1890FF");
+      $('#dv3').siblings().css("color","#000000");
+      $('#cnr').hide();
+      $('#livtake').show();
+
+    })
+
+  })
+
+
+</script>
+<script type="text/javascript">
+    var search=location.search;//获取链接？后的字符串
+    var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+    var ip = "";
+  window.onload=function () {
+    getIp();
+    var t =localStorage.getItem("token");
+    if (t==null){
+      alert("身份过期，请重新验证");
+      location.href = "Login.html";
+    }else if(t!=null){
+      setTimeout(function(){ session();},1000);
+
+    }
+    parse();
+
+    selectvinfo();
+    sply(str);
+  }
+
+    //获取客户端ip
+    function getIp() {
+
+      $.ajax({
+        type : "get",
+        url : "http://127.0.0.1:8084/getIp/getIpforkh",
+        data :{},
+
+        success : function(datas) {
+
+          ip=datas;
+        },
+        error: function (datas) {
+        }
+      });
+
+    }
+    function session() {
+
+      $.ajax({
+        type : "get",
+        url : "http://127.0.0.1:8083/logintext/session",
+        data :{
+          "ip":ip,
+        },
+
+        beforeSend: function(request) {
+          request.setRequestHeader("token",localStorage.getItem("token"));},
+        success : function(datas) {
+          if (datas=="1"){
+
+          }else
+          if (datas=="0"){
+            alert("该账号已断开连接");
+            location.href = "Login.html";
+          }else if (datas="3"){
+            alert("没有登陆信息，返回登陆");
+            location.href = "Login.html";
+          }
+        },
+        error: function (datas) {
+        }
+      });
+    }
+    function toH() {
+      location.href="http://127.0.0.1:8088/Sweb/index"+uid +".html";
+    }
+
+    function out(){
+
+      var flag = confirm("确定退出该账号！");
+      if(flag==true) {
+        $.ajax({
+          type: "get",
+          async: false,//同步
+          cache: false,//不缓存
+          url: "http://127.0.0.1:8083/logintext/outlogin",
+          data: {},
+          beforeSend: function (request) {
+            request.setRequestHeader("token", localStorage.getItem("token"));
+          },
+          success: function (datas) {
+            localStorage.removeItem('token');
+
+            location.href = "Login.html";
+          },
+          error: function (datas) {
+          }
+        });
+      }
+    }
+
+
+    function userad() {
+      $("#erji").show();
+    }
+    function perinfo() {
+      location.href="http://127.0.0.1:8088/channel_personal.html"
+    }
+  function parse(search){
+    // var search=location.search;//获取链接？后的字符串
+    // var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+        }else {
+          $('#span_id').html(datas.userName);
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+
+  function selectvinfo() {
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8084/video/selectVideoDetail",
+      data :{
+        "videoId":str,
+      },
+
+      success : function(datas) {
+       $("#cname").text(datas.videoName);
+       if (datas.videoType==1){
+         $("#ctype").text("VR");
+       }else if (datas.videoType==2){
+         $("#ctype").text("普通");
+       }
+
+       $("#size").text(datas.videoFileSize);
+       $("#cstatus").text(datas.videoBrief);
+       $("#pt").attr("src",datas.videoUrl);
+      },
+      error: function (datas) {
+      }
+
+    });
+
+  }
+
+  function goback() {
+    window.history.back(-1);
+  }
+
+//  视频留言
+  function  sply(str) {
+
+    var banned=[];
+    var i=0;
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/video/selectBannedByVid",
+      async:false,
+      data :{
+        "videoId":str,
+
+      },
+      success: function (data) {
+        for (i=0;i<data.length;i++){
+          banned.push(data[i].userId);
+
+        }
+
+      },
+      error: function () {
+        alert("错误");
+      }
+    });
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8084/video/videoComment",
+      data :{
+        "videoId":str
+      },
+
+      success : function(datas) {
+        ///清空节点
+        $("#taking").empty()
+        var yan ="";
+        var j=0;
+        //取出后端传过来的list值
+        var chargeRuleLogs = datas;
+        //对list值进行便利
+
+        $.each(chargeRuleLogs, function (index, n) {
+
+          Date.prototype.toLocaleString = function () {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+          };
+
+
+          var rowTr = document.createElement('tr');
+          //找到html的tr节点
+
+          for(j = 0; j < banned.length; j++) {
+            if (n.userId==banned[j]){
+              yan="发言";
+              j=banned.length;
+            }else {
+              yan ="禁言";
+            }
+
+          }
+
+
+          rowTr.className = "tr_node";
+          var child = ` <div class="sping"   >
+        <img class="spimg" src="H_index/img/per.png">
+        <div class="ctime">${n.commentTime}</div>
+        <div class="buttwo">
+          <div class="but1" onclick="delepl(${n.commentId})">删除</div>
+          <div class="but2" onclick="banned(${n.commentId})" id="but2${n.commentId}">${yan}</div>
+        </div>
+        <span class="rsp"  >
+          <p class="Cauthor" id="Cauthor${n.commentId}">${n.userName}</p>
+         <i style="display:none;" id="vid${n.commentId}">${n.videoId}</i>
+           <i style="display:none;" id="uid${n.commentId}">${n.userId}</i>
+         <span class="hdnr"  > ${n.commentContent}</span>
+         </span>
+      </div>`;
+
+          //将信息追加
+          $("#taking").append(child);
+        })
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function delepl(id) {
+    //  单个删除
+
+      $.ajax({
+        type:"get",
+        url:'http://127.0.0.1:8084/video/deletebycid',
+        data:{"videoId":id},
+        contentType:'application/json',
+        success:function(data){
+          alert("ok");
+          location.reload();
+        },
+        error:function(data){
+          alert("出错了！");
+        }
+      })
+
+
+  }
+
+    //禁言
+    function banned(cid) {
+      var but = $("#but2"+cid).text();
+
+      var vid=$("#vid"+cid).text();
+      var uid=$("#uid"+cid).text();
+      if (but=="禁言"){
+
+
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/video/insertBanned",
+          async:false,
+          data :{
+            "videoId":vid,
+            "userId":uid,
+
+          },
+          success: function (data) {
+            location.reload();
+          },
+          error: function () {
+            alert("错误");
+          }
+        });
+      }else if (but=="发言"){
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/video/deleteBanned",
+          async:false,
+          data :{
+            "videoId":vid,
+            "userId":uid,
+
+          },
+          success: function (data) {
+            location.reload();
+          },
+          error: function () {
+            alert("错误");
+          }
+        });
+      }
+
+
+    }
+</script>
+<body style="background-color: #f5f5f5;">
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+    <div id="li">
+      <div>
+
+        <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+        <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+        <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+      </div>
+
+    </div>
+    <div class="erji" id="erji">
+      <div onclick="perinfo()">1) 个人信息</div>
+      <div onclick="liveing()">2) 直播统计</div>
+      <div onclick="setting()">3) 系统通知</div>
+    </div>
+  </div>
+
+</div>
+<div class="cen">
+  <div  class="ctop">
+<div class="dv1">
+  <div class="back" id="back" onclick="goback()">
+    返回
+
+  </div>
+</div>
+<div class="dv2" id="dv2">
+视频信息
+</div>
+<div class="dv3" id="dv3">
+视频留言
+</div>
+</div >
+<!--  视频信息-->
+  <div   class="cnr" id="cnr">
+  <div class="left">
+   <h3 style="    margin-left: 50px;">视频信息</h3>
+    <table class="tb">
+      <tr>
+        <td class="tn">视频名称：</td>
+        <td>
+          <span id="cname">99bbj</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="tn">视频类型：</td>
+        <td>
+          <span id="ctype">VR</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="tn">文件大小：</td>
+        <td>
+          <span id="size">233mb</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="tn">播放次数：</td>
+        <td>
+          <span id="playcount">100</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="tn">点赞数量：</td>
+        <td >
+          <span id="ccount">100</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="tn">上传时间：</td>
+        <td>
+              <span  id="cfun">
+                推流
+              </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="tn">视频简介：</td>
+        <td>
+          <textarea id="cstatus"> cscacacds</textarea>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+  <div class="right">
+    <video src="https://livemjk-img.oss-cn-beijing.aliyuncs.com//imgcover/20b14a59-cd0a-4d59-a13e-2002e0f150a4_0aea70276c07d855f164ba9af3ff5207.mp4"   controls id="pt"></video>
+  </div>
+  </div>
+  <!--视频留言-->
+  <div class="livtake" id="livtake" style="display: none">
+   <h3 id="livetk" style="margin-left: 50px;">视频留言</h3>
+
+    <div class="taking" id="taking">
+
+      <div class="sping"   >
+        <img class="spimg" src="H_index/img/per.png">
+        <div class="ctime">2020-5-9 17:50</div>
+        <div class="buttwo">
+          <div class="but1">删除</div>
+          <div class="but2">禁言</div>
+        </div>
+        <span class="rsp"  >
+         <p class="Cauthor">用户名</p>  <div class="gf">官方</div>
+         <span class="hdnr"  > 啦啦啦啦啦啦啦啦啦啦啦</span>
+         </span>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>

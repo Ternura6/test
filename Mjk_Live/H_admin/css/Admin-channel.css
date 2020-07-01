@@ -1,0 +1,296 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 100%;
+  height: 100%;
+
+}
+body{
+  margin: 0;
+  padding: 0;
+
+}
+.concent{
+  width: 1712px;
+  height: 845px;
+  background: white;
+  margin-top: 35px;
+}
+.left{
+  float: left;
+  width: 308px;
+  height: 100%;
+  background-color: #4c4c4c;
+}
+.right{
+  float: left;
+  width: 1404px;
+  height: 100%;
+  background-color: #fbfbfb;
+}
+.top1{
+  width: 100%;
+  height: 101px;
+}
+.ab2{
+  height: 745px;
+}
+.top2{
+  width: 100%;
+  height: 65px;
+  background-color: #eee;
+}
+.top3{
+  width: 100%;
+  height: 70%;
+}
+.left h2{
+  margin-top: 0px;
+}
+.title1{
+  height: 20%;
+}
+.title2{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  background-color: #42b3f5;
+  cursor:pointer;
+}
+.title3{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  cursor:pointer;
+}
+.title4{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  cursor:pointer;
+}
+.title5{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  cursor:pointer;
+}
+.top1 span{
+  font-size: xx-large;
+  font-weight: inherit;
+  line-height: 3;
+  margin-left: 50px;
+}
+#uname{
+  width: 8%;
+  float: right;
+  line-height: 5;
+  font-size: large;
+  cursor:pointer;
+}
+#ucz{
+  width: 7%;
+  float: right;
+  font-size: large;
+  line-height: 5;
+  color: #0a9df3;
+}
+.chooseT{
+  float: left;
+  width: 10%;
+  font-size: large;
+  font-weight: normal;
+  line-height: 4;
+  text-align: center;
+  cursor:pointer;
+}
+#ct1{
+  color: #42b3f5;
+  cursor:pointer;
+}
+#nameText{
+  width: 30%;
+  float: right;
+}
+.abif{
+  height: 745px;
+}
+
+/*直播信息面板*/
+.Channelinfo{
+  width: 100%;
+  height: 680px;
+}
+/*直播状态*/
+.channeltype{
+  height: 65%;
+  width: 95%;
+  }
+.channeltype h4{
+  font-weight: bolder;
+  margin-top: 20px;
+}
+.hr{
+  width: 95%;
+  border: 0.5px solid #80808029;
+}
+.channelauthor{
+  height: 24%;
+  width: 95%;
+}
+.mode1{
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+.mode2{
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+.tb{
+  width: 93%;
+  height: 100%;
+}
+.tb tr{
+  height: 44px;
+
+}
+.tb td{
+  text-align: left;
+  font-size: large;
+  color: #716969;
+}
+.tn{
+  width: 200px;
+  text-align: left;
+  font-size: large;
+  color: #716969;
+}
+.fm{
+  width: 70%;
+}
+.fm img{
+  width: 100%;
+  height: 100%;
+}
+.u-rl{
+  width: 70%;
+  margin-top: 30px;
+}
+.u-rl h5{
+  float: left;
+  margin-right: 10px;
+  font-size: larger;
+  color: #7d7979;
+}
+.u-rl input{
+  float: left;
+  width: 80%;
+  margin-bottom: 15px;
+}
+#copy{
+  margin-left: 73%;
+}
+.channelauthor h4{
+  font-weight: bolder;
+}
+.author{
+  float: left;
+  margin-left: 80px;
+}
+.ainfo{
+  width: 750px;
+  text-align: center;
+  height: 85px;
+  color: grey;
+  font-size: initial;
+}
+#about{
+  margin-left: 285px;
+  margin-top: 45px;
+  width: 65px;
+  height: 40px;
+  border-radius: 0px;
+}
+#lock{
+  margin-top: 45px;
+  width: 65px;
+  height: 40px;
+  border-radius: 0px;
+}
+.channeltaking{
+  width: 95%;
+  height: 660px;
+  overflow: auto;
+  display: block;
+  overflow: auto;
+}
+.channeltaking h4{
+  font-weight: bolder;
+  margin-top: 20px;
+}
+.kk{
+  height: 80px;
+  border-bottom: 0.5px solid #8080805e;
+}
+.kk img{
+  height: 75%;
+  width: 6%;
+  float: left;
+  /* margin-right: 10px; */
+  margin: 10px;
+}
+.out{
+  float: left;
+  width: 70%;
+  height: 95%;
+}
+.out p{
+  font-size: large;
+  color: gray;
+}
+.nr{
+  height: 40px;
+  white-space: normal;
+  word-break: break-all;
+  overflow: hidden;
+}
+.kk:hover{
+  background-color: #80808014;
+}
+.kk button{
+  display: block;
+  float: left;
+  margin: 5px;
+}
+.fm{
+  width: 70%;
+  height: 65%;
+}
+#fm img{
+  width: 100px;
+}
+.fmdiv{
+  width: 100px;
+  height: 70px;
+  margin-left: 0px;
+}
+.fmdiv img{
+  width: 100%;
+  height: 100%;
+}
+#table tr{
+  height: 75px;
+}
+.down{
+  text-align: inherit;
+  font-size: smaller;
+  color: #f9ab36;
+}

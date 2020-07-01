@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>直播信息</title>
+  <link rel="stylesheet" type="text/css" href="H_index/css/index_livechanneling.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="build/three.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="build/mxreality.js"></script>
+<script src="build/ptools.js"></script>
+<script type="text/javascript">
+  var search = location.search;//获取链接？后的字符串
+  var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+  var ws;
+  function ToggleConnectionClicked() {
+    try {
+      ws = new WebSocket("ws://192.168.3.100:8084/chatroom/"+str);//连接服务器
+      ws.onopen = function(event){
+        //alert("已经与服务器建立了连接rn当前连接状态："+this.readyState);
+		 console("已经与服务器建立了连接rn当前连接状态："+this.readyState);
+      };
+      ws.onmessage = function(event){
+        //返回值
+        // alert("接收到服务器发送的数据：rn"+event.data);
+        var name = $("#name").val();
+        var ul_li = $(" <div class=\"kk\">   <img src=\"H_index/img/ad.png\"> <div class=\"kk_about\"><div class=\"uname\">  <span>" + name + "</span></div> <div class=\"Sptext\"><span>" + event.data + "</span> </div>\n" +
+          "        </div>\n" +
+          "        </div>");
+
+        //将信息追加
+        var b = $("#Ps_speak");
+        b.append(ul_li);
+        $("#Ps_speak").scrollTop($("#Ps_speak")[0].scrollHeight);
+
+      };
+      ws.onclose = function(event){
+       // alert("已经与服务器断开连接rn当前连接状态："+this.readyState);
+		    console("已经与服务器断开连接rn当前连接状态："+this.readyState);
+      };
+      ws.onerror = function(event){
+       // alert("WebSocket异常！");
+	    console("WebSocket异常！");
+      };
+      };
+    } catch (ex) {
+      alert(ex.message);
+    }
+  };
+
+  function SendData() {
+    var font =$("#taking").val();
+
+    try{
+      ws.send(font);
+    }catch(ex){
+      alert(ex.message);
+    }
+  };
+
+  function seestate(){
+    alert(ws.readyState);
+  }
+
+  var lockReconnect = false;  //避免ws重复连接
+  var ws = null;          // 判断当前浏览器是否支持WebSocket
+  var wsUrl = "ws://192.168.3.100:8084/chatroom/" + str;
+  createWebSocket(wsUrl);   //连接ws
+
+  function createWebSocket(url) {
+    try{
+      if('WebSocket' in window){
+        ws = new WebSocket(url);
+      }
+      ToggleConnectionClicked();
+    }catch(e){
+      reconnect(url);
+      console.log(e);
+    }
+  }
+
+
+  // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+  window.onbeforeunload = function() {
+    ws.close();
+  }
+
+  function reconnect(url) {
+    if(lockReconnect) return;
+    lockReconnect = true;
+    setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+      createWebSocket(url);
+      lockReconnect = false;
+    }, 2000);
+  }
+
+  //心跳检测
+  var heartCheck = {
+    timeout: 1000,        //1分钟发一次心跳
+    timeoutObj: null,
+    serverTimeoutObj: null,
+    reset: function(){
+      clearTimeout(this.timeoutObj);
+      clearTimeout(this.serverTimeoutObj);
+      return this;
+    },
+    start: function(){
+      var self = this;
+      this.timeoutObj = setTimeout(function(){
+        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+        //onmessage拿到返回的心跳就说明连接正常
+        ws.send("ping");
+        console.log("ping!")
+        self.serverTimeoutObj = setTimeout(function(){//如果超过一定时间还没重置，说明后端主动断开了
+          ws.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+        }, self.timeout)
+      }, this.timeout)
+    }
+  }
+
+</script>
+<script>
+  window.onload=function () {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    var  token =localStorage.getItem("tokenuser");
+
+
+      //直播信息
+  $.ajax({
+    type: "GET",
+    url: 'http://127.0.0.1:8084/live/test',
+    data: {
+      "id": str
+    },
+    dataType: "json",
+    async: false,
+    success: function (data) {
+      $("#cname").html(data.channelName);
+      $("#cname1").html(data.channelName);
+      $("#cinfo").html(data.channelBrief);
+      $("#auid").html(data.userId);
+      $("#spanbt1").attr("value",data.httpPush);
+
+      $("#ctype").val(data.channelType);
+      if (data.channelType==2){
+        $("#spanbt1").attr("class","1");
+      }else {
+        $("#spanbt1").attr("class","0");
+
+      }
+
+
+
+    },
+    error: function (data) {
+    }
+  });
+  //作者信息
+  var auid =$("#auid").html();
+
+  $.ajax({
+    type: "get",
+    async: false,//同步
+    cache: false,//不缓存
+    url: "http://127.0.0.1:8083/login/seByUid",
+    data: {
+      "userId": auid,
+    },
+    success: function (datas) {
+      $("#vautor").html(datas.userName);
+
+    },
+    error: function (datas) {
+    }
+
+  });
+
+
+    //机位信息
+
+    $.ajax({
+      type: "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url:  "http://127.0.0.1:8084/live/selectSetup",
+      data: {
+        "channelId": str
+      },
+      dataType: "json",
+      success: function (datas) {
+
+        ///清空节点
+        $("#spanbt1").empty()
+        //取出后端传过来的list值
+        var chargeRuleLogs = datas;
+        //对list值进行便利
+        var ji ="";
+
+        $.each(chargeRuleLogs, function (index, n) {
+          var unixTimestamp = new Date(n.channelBtime);
+          Date.prototype.toLocaleString = function () {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+          };
+          commonTime = unixTimestamp.toLocaleString();
+
+          var rowTr = document.createElement('tr');
+          //找到html的tr节点
+
+          if (n.setupType==1){
+            ji="VR";
+          }else if (n.setupType==0){
+            ji="普通";
+          }
+          rowTr.className = "tr_node";
+          var child = ` <button class="bt" id="${n.sid}" onclick="chan(this.id)">${ji}</button>
+                       <input id="span${n.sid}" class="${n.setupType}"  style="display: none" value="${n.setupHttp}"> `;
+
+          //将信息追加
+          $("#jwdiv").append(child);
+        })
+
+      },
+      error: function (datas) {
+      }
+
+    });
+
+  vingC();
+    if (token == null) {
+      return;
+    } else {
+      $("#settp1").hide();
+      $("#taking").attr("placeholder","可以发言啦");
+    }
+  }
+  function vingC() {
+    var ty =$("#ctype").val();
+    if (ty==2){
+      $("#pt").css('display','none');
+      $("#example").css('display','block');
+      init();
+    }else if (ty==1){
+      $("#example").css('display','none');
+      $("#pt").css('display','block');
+      ptving();
+    }
+  }
+
+  //普通播放器
+  function ptving(surl) {
+    var src="";
+    if (surl==null){
+      src =$("#spanbt1").val();
+
+    }else {
+      src =surl;
+    }
+    $("#pt").attr("src",src);
+
+
+  }
+
+
+  //var vr=new VR(scene,renderer,container);
+  function init(spurl) {
+    var HtPurl="";
+//播放器
+
+    if (spurl==null){
+      HtPurl =$("#spanbt1").val();
+    }else {
+      HtPurl =spurl;
+    }
+    var  scene, renderer;
+    var container;
+    //renderer = new THREE.WebGLRenderer();
+    AVR.debug=true;
+    if( !AVR.Broswer.isIE() && AVR.Broswer.webglAvailable() ) {
+      renderer = new THREE.WebGLRenderer();
+    }else {
+      renderer = new THREE.CanvasRenderer();
+    }
+    renderer.setPixelRatio( window.devicePixelRatio );
+    container = document.getElementById('example');
+    container.appendChild(renderer.domElement);
+    scene = new THREE.Scene();
+
+    // fov 选项可调整初始视频远近
+    var vr=new VR(scene,renderer,container,{"fov":50});
+
+    //vr.playText="<img src='img/play90.png' width='40' height='40'/>";
+    vr.vrbox.radius=600;
+    if(AVR.isCrossScreen()) {
+      // 调整vr视窗偏移量
+      vr.effect.separation=1.2;
+    }
+    vr.loadProgressManager.onLoad=function () {
+      // 视频静音
+      vr.video.muted=true;
+      vr.VRObject.getObjectByName("__mxrealityDefault").visible = true;
+    }
+    //AVR.useGyroscope=false;
+    vr.init(function () {
+
+    });
+
+    vr.playPanorama(HtPurl,vr.resType.sliceVideo);
+    vr.video.setAttribute("loop","loop");
+    vr.video.crossOrigin="Anonymous";
+
+
+
+    vr.video.onended=function () {
+    }
+
+  }
+  //  机位
+  function chan(cs){
+    $("#"+cs).css({
+      "background-color": "#57b9ff",
+      "border": "#bad1dc",
+    });
+    $("#"+cs).siblings().css({
+      "background-color":"#eff3f5",
+      "color":"#333"
+    });
+
+    var ppp= $('#span'+cs).val();
+
+    var jitp =$('#span'+cs).prop("class");
+    if (jitp==1){
+      $("#example").empty()
+      $("#pt").css('display','none');
+      $("#example").css('display','block');
+      init(ppp);
+    }else if (jitp==0){
+      $("#pt").empty();
+      $("#example").css('display','none');
+      $("#pt").css('display','block');
+      ptving(ppp);
+    }
+
+  }
+
+  <!--返回上一页-->
+  function goback() {
+    window.history.go(-1)
+  }
+</script>
+<body>
+<div class="cen">
+  <div class="top">
+
+    <div class="t1">
+ 
+      <img src="H_index/img/logo.png" class="t1im2">
+    </div>
+    <div class="title">
+      <span id="cname">YYYM直播</span>
+    </div>
+ 
+  </div>
+
+
+  <div class="ving">
+    <input id="ctype" style="display: none" value="">
+    <div class="col-xs-12 col-cinfo">
+
+      <div id="example" style="width: 100%;
+	          height: 100%;
+	          position: absolute;
+	          left: 0px;
+	          display: none;
+	          /* top: 0px; */
+	          overflow: hidden;">
+      </div>
+      <video src="" style="width: 100%; height: 100%;"  controls id="pt"></video>
+
+    </div>
+  </div>
+  <div class="vabout">
+    <div class="p1">
+      <h4 id="cname1">YYYM直播</h4>
+      <div class="tright">
+      <img src="H_index/img/dmtp.png">
+      <img src="H_index/img/dmtext.png">
+      <span>|</span>
+        <img src="H_index/img/person-count.png">
+        <i>11</i>
+      </div>
+
+    </div>
+    <div class="p2">
+      <div class="t_jw">
+      <span>机位选择</span>
+      </div>
+      <div id="jwdiv">
+        <input id="spanbt1"   style="display: none" value=" " class="">
+    <button class="bt" id="bt1" style="  background-color: #57b9ff;  color: white;" onclick="chan(this.id)">主机位</button>
+      </div>
+    </div>
+  </div>
+  <div class="vsomething">
+    <ul class="nav nav-tabs" style="width: 50%;">
+      <li class="active"><a href="#speak" data-toggle="tab">直播互动</a></li>
+      <li><a href="#info" data-toggle="tab">直播简介</a></li>
+
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="speak">
+        <div class="PS_speak" id="Ps_speak">
+          <div class="kk">
+          <img src="H_index/img/ad.png">
+            <div class="kk_about">
+            <div class="uname">
+              <span>管理员007</span>
+            </div>
+            <div class="Sptext">
+              <span>aaaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaa</span>
+            </div>
+            </div>
+          </div>
+          <div class="kk">
+            <img src="H_index/img/ad.png">
+            <div class="kk_about">
+              <div class="uname">
+                <span>管理员007</span>
+              </div>
+              <div class="Sptext">
+              <span>aaaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaa</span>
+              </div>
+            </div>
+          </div>
+          <div class="kk">
+            <img src="H_index/img/ad.png">
+            <div class="kk_about">
+              <div class="uname">
+                <span>管理员007</span>
+              </div>
+              <div class="Sptext">
+              <span>aaaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaa</span>
+              </div>
+            </div>
+          </div>
+          <div class="kk">
+            <img src="H_index/img/ad.png">
+            <div class="kk_about">
+              <div class="uname">
+                <span>管理员007</span>
+              </div>
+              <div class="Sptext">
+              <span>aaaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaa</span>
+              </div>
+            </div>
+          </div>
+          <div class="kk">
+          <img src="H_index/img/ad.png">
+          <div class="kk_about">
+            <div class="uname">
+              <span>管理员007</span>
+            </div>
+            <div class="Sptext">
+              <span>aaaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaa</span>
+            </div>
+          </div>
+        </div>
+          <div class="kk">
+          <img src="H_index/img/ad.png">
+          <div class="kk_about">
+            <div class="uname">
+              <span>管理员007</span>
+            </div>
+            <div class="Sptext">
+              <span>aaaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaaaaaaaaaaaaaaaaa
+              aaaaaaa</span>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="tospeak">
+          <a href="login.html">
+          <img src="H_index/img/Plg.png" class="sentp1" id="settp1">
+          </a>
+          <input class="taking" id="taking" name="taking" placeholder="我来说两句">
+          <img src="H_index/img/sent_no.png" class="senttp2" id="senttp2" onclick="SendData()">
+        </div>
+      </div>
+      <div class="tab-pane" id="info">
+        <div class="infoByid">
+           <h6 id="cinfo">
+             直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac
+             直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac
+             直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac
+             直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac直播简介直播简介okocjsjclsjclsac
+           </h6>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

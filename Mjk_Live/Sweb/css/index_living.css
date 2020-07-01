@@ -1,0 +1,491 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  overflow: auto;
+  width: 1900px;
+  height: 2000px;
+
+
+}
+body{
+  margin: 0;
+  padding: 0;
+  zoom: 1;
+  overflow: auto;
+  background-color: #f9f9f9;
+}
+.ttop{
+  width: 1900px;
+  height: 110px;
+  background-color: white;
+  border-bottom: 1px solid #f3f3f3;
+}
+.fgx{
+  height: 60px;
+  width: 1900px;
+  /* margin-top: 80px; */
+  background: #80808026;
+  position: absolute;
+  top: 80px;
+
+}
+.t1{
+  float: left;
+  height: 80px;
+  width: 440px;
+
+}
+.t2{
+  float: left;
+  height: 80px;
+  width: 1070px;
+
+}
+.t3{
+  float: left;
+  height: 80px;
+  width: 382px;
+
+}
+/*title*/
+#sy{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  line-height: 3;
+  font-size: xx-large;
+  color: #0e0e0e;
+}
+#syto{
+  color: black;
+}
+#zb{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  line-height: 3;
+  font-size: xx-large;
+  color:  black;
+}
+#zbto{
+
+  color:  black;
+}
+#sp{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  line-height: 3;
+  font-size: xx-large;
+  color:#73b5e2;
+}
+#spto{
+  color: #73b5e2;
+  border-bottom: 5px solid #4186ec
+}
+.dl{
+  height: 80px;
+  text-align: center;
+  font-size: large;
+  line-height: 5;
+  color: #efac53;
+}
+/*退出登录*/
+#li{
+  border: 1px solid #8080803b;
+  height: 97px;
+  width: 125px;
+  background-color: #eeeeee;
+  display: none;
+  position: absolute;
+  right: 12%;
+  /* list-style-type: none; */
+  list-style-type: none;
+  top: 79px;
+  z-index: 1;
+}
+#li ul{
+  padding: 5px;
+}
+.fa-sign-out{
+
+  float: left;
+  margin: 3px;
+
+}
+.fa-university{
+  float: left;
+  margin: 3px;
+}
+.fa-cog{
+  float: left;
+  margin: 3px;
+}
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+}
+#span_fa{
+  cursor: pointer;
+}
+
+/*登陆后用户*/
+#afterL{
+  display: none;
+  height: 100%;
+  line-height: 3;
+  font-size: xx-large;
+  font-weight: bold;
+  color: #efac53;
+  margin-left: 100px;
+}
+#span_fa{
+  cursor: pointer;
+}
+.cen{
+  height: 1380px;
+  width: 1410px;
+  margin-top: 60px;
+}
+.top{
+  width: 100%;
+  height: 85px;
+  background-color: white;
+  border: 1px solid #f3f3f3;
+
+}
+.vname{
+  height: 40%;
+  font-size: x-large;
+  margin: 8px;
+}
+.ch2{
+  width: 100%;
+  margin-left: 10px;
+}
+.datetime{
+  float: left;
+  margin-right: 30px;
+}
+.gk{
+  float: left;
+  margin-right: 30px;
+}
+.fx{
+  float: left;
+  margin-right: 30px;
+  margin-left: 930px;
+}
+.dz{
+  float: left;
+  margin-right: 30px;
+}
+.vplay{
+  margin-top: 20px;
+  width: 100%;
+  height: 683px;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #f3f3f3;
+
+}
+#pt{
+  width: 100%;
+  height:100%;
+  object-fit: fill;
+}
+.end{
+  width: 100%;
+  height: 900px;
+  /* border: 1px solid gainsboro; */
+  margin-top: 15px;
+}
+.left{
+  float: left;
+  width: 950px;
+  height: 100%;
+}
+.info{
+  width: 100%;
+  height: 16%;
+  background-color: white;
+  border: 1px solid #f3f3f3;
+}
+.taking{
+  margin-top: 3%;
+  width: 100%;
+  height: 81%;
+  background-color: white;
+  border: 1px solid #f3f3f3;
+}
+.right{width: 420px;
+  height: 100%;
+  float: right;
+  background-color: white;
+  border: 1px solid #f3f3f3;
+
+}
+.textinfo{
+  width: 100%;
+  height: 70%;
+  border: 1px solid #f3f3f3;
+  color: #6b6969;
+  padding: 5px;
+  font-size: larger;
+
+}
+.vinfo{
+  height: 41px;
+  font-size: x-large;
+  margin-left: 10px;
+}
+.textsent{
+  border: 1px solid #c5c5c5;
+  width: 85%;
+  height: 70%;
+  margin-left: 32px;
+  color: #6b6969;
+  padding: 5px;
+  font-size: larger;
+}
+.wdl{    width: 896px;
+  height: 80px;
+  padding: 10px;
+  position: absolute;
+  margin-left: 32px;
+}
+.d_plq{
+  width: 100%;
+  height: 585px;
+  overflow-y: scroll;
+}
+.d_plq::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+.d_plq::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #535353;
+}
+.d_plq::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
+}
+/*聊天发言框*/
+.sping{
+  margin-top: 5px;
+  width: 900px;
+  height: auto;
+  /* border-bottom: 1px solid #b7b7b7; */
+  border: 0px;
+  background-color:#eee;
+  border-bottom: 1px solid #ddd;
+}
+.spimg{
+  width: 55px;
+  border-radius: 55%;
+  float: left;
+  margin: 5px;
+}
+.rsp{
+  width: 77%;
+  left: 80px;
+  bottom: 75px;
+}
+.rsp p{
+  line-height: 2;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+.hdnr{
+
+  word-break: normal;
+  width: 750px;
+  display: block;
+  /*white-space: pre-wrap;*/
+  word-wrap: break-word;
+  overflow: hidden;
+  margin: 2px;
+  min-height: 35px;
+}
+.hf{
+  float: right;
+  margin-right: 10px;
+  cursor: pointer;
+  color: #00adff;
+}
+.hfly{
+  background-color: #ccc;
+  margin: auto;
+  width: 800px;
+  border-bottom: 1px solid gainsboro;
+}
+.tj{
+  margin: 2px;
+  font-size: initial;
+}
+.tjk{
+  border: 1px solid gainsboro;
+  height: 130px;
+  width: 85%;
+  margin-bottom: 10px;
+  margin-left: 0px;
+}
+.tjkimg{
+  height: 100%;
+  width: 60%;
+  float: left;
+}
+.sptj{
+  margin: 20px;
+  float: left;
+}
+/*回复信息*/
+.hftx{
+  position: relative;
+  width: 45px;
+  height: 40px;
+  top: 5px;
+  border-radius: 50%;
+  left: 5px;
+
+}
+.hfm {
+  position: relative;
+  top: -40px;
+  left: 59px;
+  width: 500px;
+  margin-left: 0px;
+  font-weight: bolder;
+  width: 740px;
+}
+.hfnr{
+
+  word-break: normal;
+  width: 718px;
+  display: block;
+  /* white-space: pre-wrap; */
+  word-wrap: break-word;
+  overflow: hidden;
+  /* margin: 2px; */
+  min-height: 20px;
+  margin-left: 50px;
+  bottom: 35px;
+  position: relative;
+}
+.hfspeak{
+  margin: auto;
+  width: 65%;
+  margin-left: 15px;
+  margin-left: 82px;
+}
+.hfspeakc{
+  margin: auto;
+  width: 65%;
+  margin-left: 50px;
+}
+.htime{
+  position: relative;
+  left: 645px;
+  width: 150px;
+  margin-left: 0px;
+
+}
+.qz{
+  font-size: 10px;
+  font-weight: bolder;
+}
+.hfsah{
+  position: relative;
+  right: 75px;
+  bottom: 20px;
+  float: right;
+  margin-right: 10px;
+  cursor: pointer;
+  color: #00adff;
+}
+.pl{
+  margin-bottom: 10px;
+  display: none;
+}
+.hfpl{
+  position: relative;
+  top: 1px;
+  display: none;
+}
+/*莫态框*/
+.modal-body{
+  margin: 10px;
+  height: 150px;
+}
+.modal-body input{
+  margin: 5px;
+}
+#LCode{
+  width: 68%;
+  float: left;
+  margin: 5px;
+}
+#SCode{
+  float: left;
+  text-align: center;
+  height: 38px;
+  width: 30%;
+  border: 1px solid #80808047;
+}
+.buLogin{
+  width: 90%;
+  height: 55px;
+}
+#loginB{
+  background-color: #4fcbec;
+  width: 100%;
+  /* margin: auto; */
+  height: 90%;
+}
+/*验证码输入框*/
+.AutoCode-img{
+  padding-left: 0px;
+  width: 120px;
+  margin: 0;
+  float: left;
+}
+#btn{
+  width: 162px;
+  margin: 0px;
+  height: 36px;
+  color: #DDDDDD;
+  background: #4fcbec;
+  border: none;
+}
+#timeout{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+}
+#timeout img{
+  width: 100%;
+  height: 100%;
+}
+#tm{
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.58);
+  color: white;
+  text-align: center;
+  padding-top: 150px;
+}

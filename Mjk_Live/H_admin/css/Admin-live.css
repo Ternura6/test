@@ -1,0 +1,512 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 100%;
+  height: 100%;
+
+}
+body{
+  margin: 0;
+  padding: 0;
+
+}
+.concent{
+  width: 1712px;
+  height: 920px;
+  background: white;
+  margin-top: 35px;
+}
+.left{
+  float: left;
+  width: 308px;
+  height: 100%;
+  background-color: #4c4c4c;
+}
+.right{
+  float: left;
+  width: 1404px;
+  height: 100%;
+  background-color: #fbfbfb;
+}
+.top1{
+  width: 100%;
+  height: 101px;
+}
+.ab2{
+  height: 745px;
+}
+.top2{
+  width: 100%;
+  height: 65px;
+  background-color: #eee;
+}
+.top3{
+  width: 100%;
+  height: 70%;
+}
+.left h2{
+  margin-top: 0px;
+}
+.title1{
+  height: 20%;
+}
+.title2{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  cursor:pointer;
+}
+.title3{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  background-color: #42b3f5;
+  cursor:pointer;
+}
+.title4{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  cursor:pointer;
+}
+.title5{
+  text-align: center;
+  color: #e6e6e6;
+  height: 9%;
+  padding-top: 10px;
+  cursor:pointer;
+}
+.top1 span{
+  font-size: xx-large;
+  font-weight: inherit;
+  line-height: 3;
+  margin-left: 50px;
+}
+#uname{
+  width: 8%;
+  float: right;
+  line-height: 5;
+  font-size: large;
+  cursor:pointer;
+}
+#ucz{
+  width: 7%;
+  float: right;
+  font-size: large;
+  line-height: 5;
+  color: #0a9df3;
+}
+.chooseT{
+  float: left;
+  width: 10%;
+  font-size: large;
+  font-weight: normal;
+  line-height: 4;
+  text-align: center;
+  cursor:pointer;
+}
+#ct1{
+  color: #42b3f5;
+  cursor:pointer;
+}
+
+#nameText{
+  width: 30%;
+  float: right;
+}
+.abif{
+  height: 745px;
+}
+
+/*直播信息面板*/
+.Channelinfo{
+  width: 100%;
+  height: 680px;
+}
+/*直播状态*/
+.channeltype{
+  height: 65%;
+  width: 95%;
+}
+.channeltype h4{
+  font-weight: bolder;
+  margin-top: 20px;
+}
+.hr{
+  width: 95%;
+  border: 0.5px solid #80808029;
+}
+.channelauthor{
+  height: 24%;
+  width: 95%;
+}
+.mode1{
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+.mode2{
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+.tb{
+  width: 93%;
+  height: 100%;
+}
+.tb tr{
+  height: 44px;
+
+}
+.tb td{
+  text-align: left;
+  font-size: large;
+  color: #716969;
+}
+.tn{
+  width: 200px;
+  text-align: left;
+  font-size: large;
+  color: #716969;
+}
+.fm{
+  width: 70%;
+}
+.fm img{
+  width: 100%;
+  height: 100%;
+}
+.u-rl{
+  width: 70%;
+  margin-top: 30px;
+}
+.u-rl h5{
+  float: left;
+  margin-right: 10px;
+  font-size: larger;
+  color: #7d7979;
+}
+.u-rl input{
+  float: left;
+  width: 80%;
+  margin-bottom: 15px;
+}
+#copy{
+  margin-left: 73%;
+}
+.channelauthor h4{
+  font-weight: bolder;
+}
+.author{
+  float: left;
+  margin-left: 80px;
+}
+.ainfo{
+  width: 750px;
+  text-align: center;
+  height: 85px;
+  color: grey;
+  font-size: initial;
+}
+#about{
+  margin-left: 285px;
+  margin-top: 45px;
+  width: 65px;
+  height: 40px;
+  border-radius: 0px;
+}
+#lock{
+  margin-top: 45px;
+  width: 65px;
+  height: 40px;
+  border-radius: 0px;
+}
+.channeltaking{
+  width: 95%;
+  height: 660px;
+  overflow: auto;
+  display: block;
+  overflow: auto;
+}
+.channeltaking h4{
+  font-weight: bolder;
+  margin-top: 20px;
+}
+.kk{
+  height: 80px;
+  border-bottom: 0.5px solid #8080805e;
+}
+.kk img{
+  height: 75%;
+  width: 6%;
+  float: left;
+  /* margin-right: 10px; */
+  margin: 10px;
+}
+.out{
+  float: left;
+  width: 70%;
+  height: 95%;
+}
+.out p{
+  font-size: large;
+  color: gray;
+}
+.nr{
+  height: 40px;
+  white-space: normal;
+  word-break: break-all;
+  overflow: hidden;
+}
+.kk:hover{
+  background-color: #80808014;
+}
+.kk button{
+  display: block;
+  float: left;
+  margin: 5px;
+}
+.fm{
+  width: 20%;
+  height: 65%;
+}
+#fm img{
+  width: 100px;
+}
+.fmdiv{
+  float: left;
+  width: 150px;
+  height: 80px;
+  margin: 5px;
+
+}
+.fmdiv img{
+  width: 100%;
+  height: 100%;
+}
+#table tr{
+  height: 75px;
+}
+.down{
+  text-align: inherit;
+  font-size: smaller;
+  color: #f9ab36;
+}
+#cstatus{
+  width: 350px;
+  height: 100px;
+}
+.updiv{
+  display: none;
+  width: 1900px;
+  height: 1300px;
+  position: fixed;
+  top: 0px;
+  background-color: #4e4e4e54;
+
+}
+.uping{
+  width: 560px;
+  height: 630px;
+  margin-top: 160px;
+  background-color: white;
+}
+.insertlive{
+  float: left;
+  margin: 10px;
+}
+.uptop hr{
+  width: 98%;
+  /* background-color: #292626; */
+  border-top: 1px solid #9a9898d9;
+}
+.uptop img{
+  float: right;
+  margin: 10px;
+  width: 15px;
+}
+.tb{
+  margin-left: 12px;
+  width: 80%;
+}
+.Hd{
+  margin-bottom: 18px;
+}
+#cname{
+  width: 300px;
+}
+.channelname{
+  position: absolute;
+  top: 7px;
+  right: 0px;
+}
+.liveinfo{
+  margin-top: 30px;
+  width: 100%;
+  height: 80px;
+}
+/*图片上传*/
+
+#imgPreview {
+  width: 280px;
+  height: 140px;
+  margin-top: 15px;
+  border: 1px dashed gray;
+  text-align: center;
+  margin-left: 0px;
+}
+#prompt3 {
+  width: 100%;
+  height: 180px;
+  text-align: center;
+  position: relative;
+  left: 280px;
+}
+#imgSpan {
+  position: absolute;
+  top: 60px;
+  left: 40px;
+}
+.filepath {
+  position: fixed;
+  left: 769px;
+  width: 278px;
+  height: 140px;
+  opacity: 0;
+  z-index: 1;
+}
+#img3 {
+  display: block;
+  position: relative;
+  top: -180px;
+  height: 100%;
+  width: 100%;
+  display: none;
+
+}
+.wjbut{
+  margin-top: 20px;
+  width:300px;
+  height: 40px;
+  margin-left: 0px;
+  text-align: center;
+  line-height: 3;
+  color: black;
+
+  margin-bottom: 10px;
+}
+.qx{
+  width: 90px;
+  height: 40px;
+  margin-top: 30px;
+  margin-left: 140px;
+  text-align: center;
+  line-height: 3;
+  float: left;
+  border: 0.5px solid #a7a7a7;
+
+}
+.qr{
+  width: 90px;
+  height: 40px;
+  margin-top: 30px;
+  margin-left: 65px;
+  text-align: center;
+  line-height: 3;
+  float: left;
+  /* border: 0.5px solid #000000; */
+  background-color: #D02828;
+  color: white;
+}
+.pagination{    position: relative;
+  top: 160px;
+
+}
+.sping{
+  margin-top: 5px;
+  width: 97%;
+  height: auto;
+  /* border-bottom: 1px solid #b7b7b7; */
+  border: 0px;
+  background-color: rgba(255,255,255,.15);
+  border-bottom: 1px solid #ddd;
+}
+.sping:hover{
+  background-color: #ddd;
+}
+.spimg{
+  width: 55px;
+  border-radius: 55%;
+  float: left;
+  margin: 5px;
+}
+.rsp{
+  width: 77%;
+  left: 80px;
+  bottom: 75px;
+}
+.rsp p{
+  line-height: 0;
+  font-weight: bold;
+  margin-bottom: 30px;
+  position: relative;
+  bottom: -15px;
+}
+.hdnr{
+  word-break: normal;
+  width: 890px;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  margin: 2px;
+  min-height: 35px;
+}
+.gf{
+  float: left;
+  position: relative;
+  bottom: 25px;
+  left: 50px;
+  background-color: #9abeff;
+  color: white;
+  border-radius: 5px;
+}
+.ctime{
+  color: #909090;
+  float: right;
+}
+.buttwo{
+  float: right;
+  position: relative;
+  bottom: -30px;
+  right: -90px;
+  width: 90px;
+}
+.but1{
+  float: left;
+  width: 40px;
+  height: 23px;
+  background-color: #C23030;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+.but2{
+  float: left;
+  width: 40px;
+  height: 23px;
+  background-color: #1890FF;
+  color: white;
+  text-align: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+#cstatus{
+  width: 325px;
+  height: 100px;
+}

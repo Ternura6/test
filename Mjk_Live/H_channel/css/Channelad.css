@@ -1,0 +1,269 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 1900px;
+  height: 2000px;
+
+}
+body{
+  margin: 0;
+  padding: 0;
+
+}
+.top{
+  height: 80px;
+  background-color: white;
+}
+.top1{
+  float: left;
+  width: 30%;
+  height: 100%;
+}
+.top2{
+  float: left;
+  width: 40%;
+  height: 100%;
+}
+.title1{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: #16c1f5;
+  cursor: pointer;
+}
+.title2{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title3{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+.title4{
+  float: left;
+  width: 25%;
+  height: 100%;
+  font-size: x-large;
+  line-height: 4;
+  color: black;
+  cursor: pointer;
+}
+
+.top3{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  font-size: large;
+  line-height: 5;
+}
+.center{
+  width: 1514px;
+  height: 75%;
+  background-color: white;
+  margin-top: 3%;
+}
+.ctop{
+  width: 100%;
+  height: 5%;
+  background-color: #f1f1f1;
+}
+/*多选框*/
+.choseS{
+  width: 12%;
+  float: left;
+  margin: 20px;
+}
+.choseT{
+  width: 12%;
+  float: left;
+  margin: 20px;
+}
+/*直播数量*/
+.count{
+  width: 20%;
+  float: left;
+}
+.count h4{
+  width: 60%;
+  float: left;
+  margin-top: 23px;
+}
+.count button{
+  margin-top: 13px;
+}
+.input-group{
+  width: 15%;
+  line-height: 4;
+  margin-top: 2px;
+  top: 15%;
+  left: 150px;
+}
+/*退出登录*/
+#li{
+  border: 1px solid #8080803b;
+  height: 115px;
+  width: 125px;
+  background-color: #ffffff;
+  display: none;
+  position: relative;
+  right: 0px;
+  /* list-style-type: none; */
+  list-style-type: none;
+  top: -10px;
+  z-index: 3;
+  text-align: center;
+  padding: 7px;
+
+}
+.erji{
+  background-color: #f9f9f9;
+  position: relative;
+  left: 111px;
+  bottom: 115px;
+  border: 1px solid gainsboro;
+  display: none;
+  padding: 5px;
+  width: 115px;
+}
+.erji div{
+
+  line-height: 1;
+  height: 22px;
+  margin: 5px;
+  font-size: smaller;
+  border-bottom: 1px solid gainsboro;
+  cursor: pointer;
+}
+#li ul{
+  padding: 5px;
+}
+.fa-sign-out{
+
+  float: left;
+  margin: 3px;
+
+}
+.fa-university{
+  float: left;
+  margin: 3px;
+}
+.fa-cog{
+  float: left;
+  margin: 3px;
+}
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+  width: 100px;
+}
+#lito{
+  list-style-type: none;
+}
+#span_fa{
+  cursor: pointer;
+}
+
+/*直播面板列表模块*/
+.row-value{
+
+  background-color: white;
+  margin: 0px;
+}
+.video-add{
+  border: 1px dashed;
+  height: 298px;
+  width: 406px;
+  margin: 40px;
+  margin-top: 43px;
+  text-align: center;
+  padding: 50px;
+  background-color: #f5f5f5;
+  float: left;
+}
+.video-add span{
+  font-size: 30px;
+  color: #999;
+}
+.video-add i{
+  font-size: 100px;
+  color: #ddd;
+}
+.video{
+  height: 300px;
+  width: 400px;
+  float: left;
+  margin: 42px;
+  background-color: #80808017;
+  padding: 9px;
+  border: 1px solid gainsboro;
+
+}
+.video img{
+  width: 100%;
+  height: 75%;
+  margin-bottom: 10px;
+}
+.lab{
+  margin: 0px 1%;
+  width: 60px;
+  position: absolute;
+  background-color: #ddd;
+  color: white;
+  height: 30px;
+  text-align: center;
+
+  font-size: larger;
+  border-radius: 15%;
+}
+.type{
+  width: 80px;
+  height: 25px;
+  position: absolute;
+  /* margin: 0 12%; */
+  margin-left:300px;
+  /* margin-right: 10px; */
+  background-color: #bfe9ea85;
+  color: white;
+  text-align: center;
+  font-size: large;
+  border-radius: 10%;
+}
+.count{
+  width: 20%;
+  float: right;
+  position: relative;
+  top: 10px;
+}
+.span-name{
+  font-size: larger;
+  font-weight: bold;
+  margin: 10px;
+}
+.span-date{
+  color: grey;
+  margin: 10px;
+  position: absolute;
+}
+#seach{
+  background-color: #16c1f5;
+  color: white;
+}

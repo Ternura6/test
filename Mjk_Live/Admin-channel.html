@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+  <link rel="stylesheet" type="text/css" href="H_admin/css/Admin-channel.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-paginator-master/src/bootstrap-paginator.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  window.onload=function () {
+    yz();
+pagesize();
+pagelist();
+  }
+  function yz() {
+    var token = localStorage.getItem("adtoken");//获取本地存储的token值
+    if (token==null){
+      alert("无账号信息，返回登陆")
+      location.href="Admin_Login.html";
+      return;
+    }
+
+  }
+//  总页码
+function pagesize() {
+  $.ajax({
+    type: 'GET',
+    url: "http://127.0.0.1:8084/admin/ClistPage",
+    dataType: "json",
+    async:false,
+    success: function (data) {
+
+      document.getElementById("pagesize").value = data
+    },
+    error: function () {
+      alert("错误");
+    }
+  });
+
+}
+//分页标签
+function pagelist(bname) {
+  var pagesize=$("#pagesize").val();
+  $('#pageLimit').bootstrapPaginator({
+    currentPage: 1,//当前页。
+    totalPages: pagesize,//总页数。
+    size: "normal",//应该是页眉的大小。
+    bootstrapMajorVersion: 3,//bootstrap的版本要求。
+    pageNumber: 1, //初始化加载第一页，默认第一页
+    alignment: "right",
+    numberOfPages: 5,//显示的页数
+    alignment: "center",
+    itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+      switch (type) {
+        case "first":
+          return "首页";
+        case "prev":
+          return "上一页";
+        case "next":
+          return "下一页";
+        case "last":
+          return "末页";
+        case "page":
+          return page;
+      }
+    },
+    onPageClicked: function (event, originalEvent, type, page) {//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+      $.ajax({
+        type: 'GET',
+        url: "http://127.0.0.1:8084/admin/findList",
+        dataType: "json",
+        data: {
+          "page": page,
+          "bname":bname,
+        },
+        async: false,
+        success: function (data) {
+          ///清空节点
+          $("#table").children("tr").remove();
+          //取出后端传过来的list值
+          var chargeRuleLogs = data.rows;
+          //对list值进行便利
+          var ms="";
+          var kd="";
+          var ctype ="";
+          var down="";
+          var DoU="";
+          $.each(chargeRuleLogs, function (index, n) {
+            var unixTimestamp = new Date( n.channelBtime ) ;
+            Date.prototype.toLocaleString = function() {
+              return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+            };
+            commonTime = unixTimestamp.toLocaleString();
+
+            var rowTr = document.createElement('tr');
+            //找到html的tr节点
+            //观看模式
+            if (n.channelPassword!=null){
+              ms ="密码观看"
+            }else {
+              ms="公开观看"
+            }
+            //类型
+            if (n.channel_type==1){
+              kd="普通"
+            }else if (n.channel_type==2){
+              kd ="VR"
+            }
+            //状态
+            if (n.channel_status==1){
+              ctype="正在直播"
+            }else if (n.channel_status==2){
+              ctype="即将直播"
+            }else if (n.channel_status==3){
+              ctype="直播结束"
+            }
+            //是否下架
+            if (n.channel_down==4){
+              down="已下架"
+              DoU="上架"
+              var cid =  n.channel_id ;
+              var bid ="down";
+
+            }else {
+              down=""
+              DoU="下架"
+            }
+
+            rowTr.className = "tr_node";
+            var  child= ` <tr>
+               <td>${ctype}
+               <p id="dn"${n.channel_id} class="down">${down}</p></td>
+
+             <td id="fm">
+               <div class="fmdiv">
+               <img src="${n.channel_cover}" class="fmimg" >
+               </div>
+               </td>
+               <td>${n.channel_name}</td>
+               <td>${n.user_name}</td>
+               <td>1410</td>
+               <td>${ms}</td>
+               <td> ${kd}</td>
+               <td class="czbutt">
+                 <div class="${n.channel_id}" id="info${n.channel_id}"  style="color: white;background-color: #4bd6ff;border: #4bd6ff;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;"onclick="tochannelinfo(this.className)">详情</div>
+                 <div class="${n.channel_id}" id="down${n.channel_id}"   style="color: white;background-color: #f79948;border: #f79948;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="channeldown(this.className)">${DoU}</div>
+                 <div class="${n.channel_id}" id="dele${n.channel_id}"   style="color: white;background-color: #ff2d2d;border: #ff2d2d;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="delechannel(this.className)">删除</div>
+               </td>
+
+             </tr>`;
+
+            //将信息追加
+            $("#table").append(child);
+
+          });
+        },
+        error: function (data) {
+          console.log(data);
+        }
+      })
+    }
+  });
+
+  //刷新即展示
+  $.ajax({
+    type: 'GET',
+    url: "http://127.0.0.1:8084/admin/findList",
+    dataType: "json",
+    data: {
+      "bname":bname,
+    },
+    async: false,
+    success: function (data) {
+      ///清空节点
+      $("#table").children("tr").remove();
+      //取出后端传过来的list值
+      var chargeRuleLogs = data.rows;
+      //对list值进行便利
+      var ms="";
+      var kd="";
+      var ctype ="";
+      var down="";
+      var DoU="";
+      $.each(chargeRuleLogs, function (index, n) {
+        var unixTimestamp = new Date( n.channelBtime ) ;
+        Date.prototype.toLocaleString = function() {
+          return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+        };
+        commonTime = unixTimestamp.toLocaleString();
+
+        var rowTr = document.createElement('tr');
+        //找到html的tr节点
+        //观看模式
+        if (n.channelPassword!=null){
+          ms ="密码观看"
+        }else {
+          ms="公开观看"
+        }
+        //类型
+        if (n.channel_type==1){
+          kd="普通"
+        }else if (n.channel_type==2){
+          kd ="VR"
+        }
+        //状态
+        if (n.channel_status==1){
+          ctype="正在直播"
+        }else if (n.channel_status==2){
+          ctype="即将直播"
+        }else if (n.channel_status==3){
+          ctype="直播结束"
+        }
+        //是否下架
+        if (n.channel_down==4){
+          down="已下架"
+          DoU="上架"
+          var cid =  n.channel_id ;
+          var bid ="down";
+
+        }else {
+          down=""
+          DoU="下架"
+        }
+
+        rowTr.className = "tr_node";
+        var  child= ` <tr>
+               <td>${ctype}
+               <p id="dn"${n.channel_id} class="down">${down}</p></td>
+
+             <td id="fm">
+               <div class="fmdiv">
+               <img src="${n.channel_cover}" class="fmimg" >
+               </div>
+               </td>
+               <td>${n.channel_name}</td>
+               <td>${n.user_name}</td>
+               <td>1410</td>
+               <td>${ms}</td>
+               <td> ${kd}</td>
+               <td class="czbutt">
+                 <div class="${n.channel_id}" id="info${n.channel_id}"  style="color: white;background-color: #4bd6ff;border: #4bd6ff;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;"onclick="tochannelinfo(this.className)">详情</div>
+                 <div class="${n.channel_id}" id="down${n.channel_id}"   style="color: white;background-color: #f79948;border: #f79948;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="channeldown(this.className)">${DoU}</div>
+                 <div class="${n.channel_id}" id="dele${n.channel_id}"   style="color: white;background-color: #ff2d2d;border: #ff2d2d;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="delechannel(this.className)">删除</div>
+               </td>
+
+             </tr>`;
+
+        //将信息追加
+        $("#table").append(child);
+
+      });
+    },
+    error: function (data) {
+      console.log(data);
+    }
+  })
+}
+//模糊查询
+function mhse() {
+  //  mhClistPage
+  var bname =$("#nameText").val();
+  $.ajax({
+    type:"get",
+    url:"http://127.0.0.1:8084/admin/mhClistPage",
+    data:{"bname":bname,},
+    dataType:"json",
+    success:function(data){
+      document.getElementById("pagesize").value = data
+    },
+    error:function(){
+
+    }
+  })
+setTimeout(function () {
+  pagelist(bname);
+},500);
+
+}
+
+//分类查询
+function typese(id) {
+//状态id
+var typeid =id.substr(id.length-1,1);
+$.ajax({
+  type:"get",
+  url:"http://127.0.0.1:8084/admin/ClistPagestatus",
+  data:{
+    "channelStatus":typeid,
+  },
+  dataType:"json",
+  success:function(data){
+    document.getElementById("pagesize").value = data
+  },
+  error:function(){
+
+  }
+})
+setTimeout(function () {
+  sestatus(typeid);
+},500);
+
+}
+
+//按类型查询
+  function sestatus(typeid) {
+    var pagesize=$("#pagesize").val();
+    $('#pageLimit').bootstrapPaginator({
+      currentPage: 1,//当前页。
+      totalPages: pagesize,//总页数。
+      size: "normal",//应该是页眉的大小。
+      bootstrapMajorVersion: 3,//bootstrap的版本要求。
+      pageNumber: 1, //初始化加载第一页，默认第一页
+      alignment: "right",
+      numberOfPages: 5,//显示的页数
+      alignment: "center",
+      itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+        switch (type) {
+          case "first":
+            return "首页";
+          case "prev":
+            return "上一页";
+          case "next":
+            return "下一页";
+          case "last":
+            return "末页";
+          case "page":
+            return page;
+        }
+      },
+      onPageClicked: function (event, originalEvent, type, page) {//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/admin/selectByTypeAndKind",
+          dataType: "json",
+          data: {
+            "page": page,
+            "channelStatus":typeid,
+          },
+          async: false,
+          success: function (data) {
+            ///清空节点
+            $("#table").children("tr").remove();
+            //取出后端传过来的list值
+            var chargeRuleLogs = data.rows;
+            //对list值进行便利
+            var ms="";
+            var kd="";
+            var ctype ="";
+            var down="";
+            var DoU="";
+            $.each(chargeRuleLogs, function (index, n) {
+              var unixTimestamp = new Date( n.channelBtime ) ;
+              Date.prototype.toLocaleString = function() {
+                return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+              };
+              commonTime = unixTimestamp.toLocaleString();
+
+              var rowTr = document.createElement('tr');
+              //找到html的tr节点
+              //观看模式
+              if (n.channelPassword!=null){
+                ms ="密码观看"
+              }else {
+                ms="公开观看"
+              }
+              //类型
+              if (n.channel_type==1){
+                kd="普通"
+              }else if (n.channel_type==2){
+                kd ="VR"
+              }
+              //状态
+              if (n.channel_status==1){
+                ctype="正在直播"
+              }else if (n.channel_status==2){
+                ctype="即将直播"
+              }else if (n.channel_status==3){
+                ctype="直播结束"
+              }
+              //是否下架
+              if (n.channel_down==4){
+                down="已下架"
+                DoU="上架"
+                var cid =  n.channel_id ;
+                var bid ="down";
+
+              }else {
+                down=""
+                DoU="下架"
+              }
+
+              rowTr.className = "tr_node";
+              var  child= ` <tr>
+               <td>${ctype}
+               <p id="dn"${n.channel_id} class="down">${down}</p></td>
+
+             <td id="fm">
+               <div class="fmdiv">
+               <img src="${n.channel_cover}" class="fmimg" >
+               </div>
+               </td>
+               <td>${n.channel_name}</td>
+               <td>${n.user_name}</td>
+               <td>1410</td>
+               <td>${ms}</td>
+               <td> ${kd}</td>
+               <td class="czbutt">
+                 <div class="${n.channel_id}" id="info${n.channel_id}"  style="color: white;background-color: #4bd6ff;border: #4bd6ff;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;"onclick="tochannelinfo(this.className)">详情</div>
+                 <div class="${n.channel_id}" id="down${n.channel_id}"   style="color: white;background-color: #f79948;border: #f79948;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="channeldown(this.className)">${DoU}</div>
+                 <div class="${n.channel_id}" id="dele${n.channel_id}"   style="color: white;background-color: #ff2d2d;border: #ff2d2d;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="delechannel(this.className)">删除</div>
+               </td>
+
+             </tr>`;
+
+              //将信息追加
+              $("#table").append(child);
+
+            });
+          },
+          error: function (data) {
+            console.log(data);
+          }
+        })
+      }
+    });
+
+    //刷新即展示
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/admin/selectByTypeAndKind",
+      dataType: "json",
+      data: {
+        "channelStatus":typeid,
+      },
+      async: false,
+      success: function (data) {
+        ///清空节点
+        $("#table").children("tr").remove();
+        //取出后端传过来的list值
+        var chargeRuleLogs = data.rows;
+        //对list值进行便利
+        var ms="";
+        var kd="";
+        var ctype ="";
+        var down="";
+        var DoU="";
+        $.each(chargeRuleLogs, function (index, n) {
+          var unixTimestamp = new Date( n.channelBtime ) ;
+          Date.prototype.toLocaleString = function() {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+          };
+          commonTime = unixTimestamp.toLocaleString();
+
+          var rowTr = document.createElement('tr');
+          //找到html的tr节点
+          //观看模式
+          if (n.channelPassword!=null){
+            ms ="密码观看"
+          }else {
+            ms="公开观看"
+          }
+          //类型
+          if (n.channel_type==1){
+            kd="普通"
+          }else if (n.channel_type==2){
+            kd ="VR"
+          }
+          //状态
+          if (n.channel_status==1){
+            ctype="正在直播"
+          }else if (n.channel_status==2){
+            ctype="即将直播"
+          }else if (n.channel_status==3){
+            ctype="直播结束"
+          }
+          //是否下架
+          if (n.channel_down==4){
+            down="已下架"
+            DoU="上架"
+            var cid =  n.channel_id ;
+            var bid ="down";
+
+          }else {
+            down=""
+            DoU="下架"
+          }
+
+          rowTr.className = "tr_node";
+          var  child= ` <tr>
+               <td>${ctype}
+               <p id="dn"${n.channel_id} class="down">${down}</p></td>
+
+             <td id="fm">
+               <div class="fmdiv">
+               <img src="${n.channel_cover}" class="fmimg" >
+               </div>
+               </td>
+               <td>${n.channel_name}</td>
+               <td>${n.user_name}</td>
+               <td>1410</td>
+               <td>${ms}</td>
+               <td> ${kd}</td>
+               <td class="czbutt">
+                 <div class="${n.channel_id}" id="info${n.channel_id}"  style="color: white;background-color: #4bd6ff;border: #4bd6ff;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;"onclick="tochannelinfo(this.className)">详情</div>
+                 <div class="${n.channel_id}" id="down${n.channel_id}"   style="color: white;background-color: #f79948;border: #f79948;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="channeldown(this.className)">${DoU}</div>
+                 <div class="${n.channel_id}" id="dele${n.channel_id}"   style="color: white;background-color: #ff2d2d;border: #ff2d2d;width: 45px;height: 25px;margin: 0px;text-align: center;float: left;margin-right: 3px;" onclick="delechannel(this.className)">删除</div>
+               </td>
+
+             </tr>`;
+
+          //将信息追加
+          $("#table").append(child);
+
+        });
+      },
+      error: function (data) {
+        console.log(data);
+      }
+    })
+
+  }
+</script>
+<script>
+<!--功能跳转-->
+  $(function () {
+    $("#title2").click(function () {
+      $("#title2").css('background-color', '#42b3f5');
+      $("#title2").siblings().css('background-color', '#4c4c4c');
+    })
+    $("#title3").click(function () {
+      $("#title3").css('background-color', '#42b3f5');
+      $("#title3").siblings().css('background-color', '#4c4c4c');
+    })
+    $("#title4").click(function () {
+      $("#title4").css('background-color', '#42b3f5');
+      $("#title4").siblings().css('background-color', '#4c4c4c');
+    })
+    $("#title5").click(function () {
+      $("#title5").css('background-color', '#42b3f5');
+      $("#title5").siblings().css('background-color', '#4c4c4c');
+    })
+//选择跳转first
+    $("#ct0").click(function () {
+      $("#ct0").css('color', '#42b3f5');
+      $("#ct0").siblings().css('color', 'black');
+    })
+    $("#ct1").click(function () {
+      $("#ct1").css('color', '#42b3f5');
+      $("#ct1").siblings().css('color', 'black');
+    })
+    $("#ct2").click(function () {
+      $("#ct2").css('color', '#42b3f5');
+      $("#ct2").siblings().css('color', 'black');
+    })
+    $("#ct4").click(function () {
+      $("#ct4").css('color', '#42b3f5');
+      $("#ct4").siblings().css('color', 'black');
+    })
+  //  二级页面跳转
+    $("#t1").click(function () {
+      $("#t1").css('color', '#42b3f5');
+      $("#t1").siblings().css('color', 'black');
+    })
+    $("#t2").click(function () {
+      $("#t2").css('color', '#42b3f5');
+      $("#t2").siblings().css('color', 'black');
+    })
+    $("#t3").click(function () {
+      $("#t3").css('color', '#42b3f5');
+      $("#t3").siblings().css('color', 'black');
+    })
+
+  })
+
+
+</script>
+<script>
+<!--  详情页-->
+function tochannelinfo(id) {
+  $("#open").val(id);
+  //  to直播信息页
+  $("#ab").attr("style","display:none;");
+  $("#abif").attr("style","display:block;");
+  $("#speaking").attr("style","display:none;");
+  $("#Channelinfo").attr("style","display:block;");
+  $("#top2").attr("style","display:block;");
+  $("#t2").css('color', '#42b3f5');
+  $("#t2").siblings().css('color', 'black');
+  //拿到直播id,加载直播信息
+  var channelId =id;
+  $.ajax({
+    type: "get",
+    async: false,//同步
+    cache: false,//不缓存
+    url: "http://127.0.0.1:8084/admin/selectInfoAdmin",
+    data: {
+      "channelId":channelId,
+    },
+    success: function (datas) {
+      $("#cname").text(datas[0].channelName);
+      //vr/普通
+      if (datas[0].channelType==2){
+        $("#ctype").text("VR");
+      }else if (datas[0].channelType==1){
+        $("#ctype").text("普通");
+      }
+      //密码/公开
+      if (datas[0].channelPassword!=null){
+        $("#cms").text("密码观看");
+      }else  {
+        $("#cms").text("公开观看");
+      }
+      //拉流/推流
+      if (datas[0].channelWay==0){
+        $("#cfun").text("拉流");
+      }else  if (datas[0].channelWay==1){
+        $("#cfun").text("推流");
+      }
+      //直播开始时间
+      if (datas[0].channelStatus==1){
+        $("#cstatus").text("正在直播  "+datas[0].channelBtime);
+      }else if (datas[0].channelStatus==2){
+        $("#cstatus").text("即将直播  "+datas[0].channelBtime);
+      }else if (datas[0].channelStatus==3){
+        $("#cstatus").text("直播结束  "+datas[0].channelBtime);
+      }
+    //封面
+      $("#cimg").attr('src',datas[0].channelCover);
+    //机位
+     $("#jw").empty();
+    for (var i=0;i <=datas.length-1;i++){
+      var  child= `  <span id="cjw">
+           ${datas[i].setupAddress}
+              </span> </br>`;
+
+        $("#jw").append(child);
+
+    }
+
+
+    },
+    error: function (datas) {
+    }
+
+  });
+ // 通过直播id,加载用户信息
+  $.ajax({
+    type: "get",
+    async: false,//同步
+    cache: false,//不缓存
+    url: "http://127.0.0.1:8084/admin/selectUserInfoAdmin",
+    data: {
+      "channelId":channelId,
+    },
+    success: function (datas) {
+      ///清空节点
+      $("#ainfo").children("tr").remove();
+
+     $("#authorname").text(datas[0].user_name);
+     $("#authorphone").text(datas[0].user_phone);
+     $("#authoremail").text(datas[0].user_email);
+     $("#authorcompany").text(datas[0].user_company);
+
+
+    },
+    error: function (datas) {
+    }
+
+  });
+
+
+//  通过直播id，遍历互动信息
+
+  $.ajax({
+    type: "get",
+    async: false,//同步
+    cache: false,//不缓存
+    url: "http://127.0.0.1:8084/live/selectBarrageById",
+    data: {
+      "id":channelId,
+    },
+    success: function (datas) {
+      ///清空节点
+      $("#speaking").children("div").remove();
+      var index=0 ;
+      for (var i=0;i <=datas.length-1;i++) {
+
+        index ++;
+        var child = `  <div class="kk"  onmousemove="btncz(${index})" onmouseout="adbtncz(${index})">
+        <img src="images/timg2.jpg">
+        <div class="out">
+          <p id="Cauthor">${datas[i].userName}</p>
+          <div class="nr" id="nr">
+           ${datas[i].content}
+          </div>
+        </div>
+        <button type="button" id="del${index}" class="btn btn-danger"  value=""  style="display: none">删除</button>
+        <button type="button" id="close${index}" class="btn btn-info"  value=""   style="display: none">禁言</button>
+        <button type="button" id="toup${index}" class="btn btn-success" value=""  style="display: none">置顶</button>
+      </div>`;
+
+        $("#speaking").append(child);
+      }
+
+      },
+    error: function (datas) {
+    }
+
+  });
+}
+
+//下架
+function channeldown(id) {
+
+  var cid =parseInt(id);
+  var now =$("#down"+id);
+  if (now.text()=="下架"){
+  $.ajax({
+    type: "post",
+    async: false,//同步
+    cache: false,//不缓存
+    url: "http://127.0.0.1:8084/admin/updateRemoveShelves",
+    data: {
+      "channelId":cid,
+    },
+    success: function () {
+          window.location.reload();
+          alert("success");
+          $("#down"+id).text("下架");
+    },
+    error: function () {
+     alert("下架操作失败"+cid);
+    }
+
+  });
+  }else {
+    $.ajax({
+      type: "post",
+      async: false,//同步
+      cache: false,//不缓存
+      url: "http://127.0.0.1:8084/admin/restoreLive",
+      data: {
+        "channelId":cid,
+      },
+      success: function () {
+        window.location.reload();
+        alert("success")
+      },
+      error: function () {
+        alert("上架操作失败"+cid);
+      }
+
+    });
+  }
+}
+function delechannel(id) {
+
+  var cid =parseInt(id);
+  $.ajax({
+    type: "get",
+    async: false,//同步
+    cache: false,//不缓存
+    url: "http://127.0.0.1:8084/live/deleteChannel",
+    data: {
+      "channelId":cid,
+    },
+    success: function () {
+      window.location.reload();
+      alert("success")
+    },
+    error: function () {
+      alert("删除操作失败"+cid);
+    }
+
+  });
+
+}
+
+//返回
+function toindex() {
+  $("#ab").attr("style","display:block;");
+  $("#abif").attr("style","display:none;");
+  $("#Channelinfo").attr("style","display:none;");
+  $("#top2").attr("style","display:none;");
+  $("#speaking").attr("style","display:none;");
+}
+//互动
+function speaking() {
+  $("#ab").attr("style","display:none;");
+  $("#Channelinfo").attr("style","display:none;");
+  $("#top2").attr("style","display:block;");
+  $("#speaking").attr("style","display:block;");
+}
+//直播信息
+function channeling() {
+  $("#ab").attr("style","display:none;");
+  $("#speaking").attr("style","display:none;");
+  $("#top2").attr("style","display:block;");
+  $("#Channelinfo").attr("style","display:block;");
+}
+function btncz(index) {
+ $("#del"+index).attr("style","display:block;");
+  $("#close"+index).attr("style","display:block;");
+  $("#toup"+index).attr("style","display:block;");
+}
+function adbtncz(index) {
+  $("#del"+index).attr("style","display:none;");
+  $("#close"+index).attr("style","display:none;");
+  $("#toup"+index).attr("style","display:none;");
+}
+
+//退登
+function out(){
+  localStorage.removeItem('adtoken');
+  alert("确认退出")
+  location.href = "Admin_Login.html";
+}
+
+</script>
+<body style="  background-color: #f1f1f1;">
+<div class="concent">
+  <div class="left">
+    <div class="title1" id="title1">
+
+    </div>
+    <div class="title2" id="title2">
+      <h3>直播管理</h3>
+    </div>
+    <div class="title3" id="title3">
+      <h3>媒体库</h3>
+    </div>
+    <div class="title4" id="title4">
+      <h3>用户管理</h3>
+    </div>
+    <div class="title5" id="title5">
+      <h3>系统通知</h3>
+    </div>
+
+
+  </div>
+  <div class="right">
+    <div class="top1">
+       <span>后台管理系统</span>
+      <div id="uname" onclick="out()">
+        退出登录
+      </div>
+      <div id="ucz">
+         admin
+      </div>
+    </div>
+    <div class="ab2"    id="ab">
+    <div class="top2">
+      <div>
+      <div class="chooseT" id="ct0" onclick="typese(this.id)">
+        <span>全部</span>
+      </div>
+      <div class="chooseT" id="ct1" onclick="typese(this.id)">
+        <span>正在直播</span>
+      </div>
+      <div class="chooseT" id="ct2" onclick="typese(this.id)">
+        <span>即将直播</span>
+      </div>
+      <div class="chooseT" id="ct4" onclick="typese(this.id)">
+        <span>已下架</span>
+      </div>
+      </div>
+      <div class="input-group">
+        <input type="text" placeholder="请输入频道关键字" id="nameText" class="form-control input-lg">
+        <input id="mhpagesize" style="display: none" value="">
+        <span STYLE="background: #68dbfd;top: 0px;" class="input-group-addon btn btn-primary glyphicon glyphicon-search" onclick="mhse()"></span>
+      </div>
+    </div>
+    <div class="top3">
+      <input id="pagesize" style="display: none" value="">
+         <form style="width: 97%;">
+           <table class="table table-striped"  id="table">
+             <thead>
+              <tr>
+               <th>直播状态</th>
+               <th>频道封面</th>
+               <th>频道名称</th>
+               <th>直播发起人</th>
+               <th>直播观看人数</th>
+               <th>直播观看模式</th>
+               <th>直播类型</th>
+               <th>操作</th>
+              </tr>
+             </thead>
+
+           </table>
+
+
+         </form>
+    </div>
+      <center><ul id="pageLimit"  class="pagination"></ul></center>
+    </div>
+    <div class="abif" id="abif" style="display: none" >
+      <div class="top2" id="top2" style="display: none">
+        <div>
+          <div class="chooseT" id="t1" onclick="toindex()">
+            <span>返回</span>
+          </div>
+          <div class="chooseT" id="t2" style="color: #42b3f5" onclick="channeling()">
+            <span>直播信息</span>
+          </div>
+          <div class="chooseT" id="t3" onclick="speaking()">
+            <span>直播互动</span>
+          </div>
+
+        </div>
+
+      </div>
+<!--      直播信息面板-->
+ <div id="Channelinfo" aria-invalid="Channelinfo" class="Channelinfo"  >
+<!--   直播状态-->
+   <div class="channeltype">
+     <h4>直播状态</h4>
+     <div class="mode1">
+        <table class="tb">
+          <tr>
+            <td class="tn">直播频道名称</td>
+            <td>
+              <span id="cname">99bbj</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tn">直播类型</td>
+            <td>
+              <span id="ctype">VR</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tn">直播观看模式</td>
+            <td>
+              <span id="cms">密码观看</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tn">直播观看人数</td>
+            <td>
+              <span id="cper">100</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tn">直播观看次数</td>
+            <td >
+              <span id="ccount">100</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tn">视频接入方式</td>
+            <td>
+              <span  id="cfun">
+                推流
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tn">直播开始时间</td>
+            <td>
+              <span id="cstatus"> 正在直播 2019-10-19</span>
+             </td>
+          </tr>
+          <tr>
+            <td rowspan="3" class="tn">机位地址</td>
+            <td rowspan="3" >
+              <div id="jw">
+              <span id="cjw">
+
+              </span>
+              </div>
+              </td>
+          </tr>
+          <tr>
+
+
+          </tr>
+          <tr>
+
+
+          </tr>
+        </table>
+
+     </div>
+     <div class="mode2">
+      <div class="fm">
+        <img src="images/timg5.jpg" id="cimg">
+
+      </div>
+       <div class="u-rl">
+            <h5>观看地址</h5>  <input type="text" id="channelWay" class="form-control url-in" value="">
+         <button type="button" id="copy" class="btn "  >复制</button>
+         <button type="button" id="open" class="btn btn-info" value=""  >打开</button>
+       </div>
+     </div>
+
+
+   </div>
+   <hr class="hr">
+<!--   直播发起者-->
+   <div class="channelauthor">
+     <h4>直播发起者</h4>
+   <div class="author">
+     <table class="ainfo" id="ainfo">
+       <thead>
+     <tr>
+       <td>用户名</td>
+       <td>手机号</td>
+       <td>邮箱</td>
+       <td>公司名称</td>
+       <td>直播数量</td>
+       <td>视频数量</td>
+     </tr>
+       </thead>
+       <tr>
+         <td>
+           <span id="authorname">
+
+           </span>
+         </td>
+         <td>
+         <span id="authorphone">
+
+           </span>
+         </td>
+         <td>
+             <span id="authoremail">
+
+           </span>
+         </td>
+         <td>
+          <span id="authorcompany">
+
+           </span>
+         </td>
+         <td>122</td>
+         <td>142</td>
+       </tr>
+     </table>
+   </div>
+     <button type="button" id="about" class="btn btn-info"  >详情</button>
+     <button type="button" id="lock" class="btn btn-danger"   >锁定</button>
+ </div>
+ </div>
+<!--      直播互动面板-->
+    <div class="channeltaking" id="speaking" style="display: none">
+      <h4>直播互动</h4>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+</body>
+</html>

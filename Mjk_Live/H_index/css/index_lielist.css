@@ -1,0 +1,426 @@
+﻿*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 100%;
+  height: 2000px;
+  background-color: #ececec9e;
+}
+body{
+  margin: 0;
+  padding: 0;
+
+
+}
+.bnbj{
+  background-image: url('../img/BANNER-bj.png');
+  background-size:100% 100%;
+  width: 2537px;
+  height: 345px;
+}
+.ttop{
+  width: 1900px;
+  height: 140px;
+  background-color: white;
+}
+.fgx{
+  height: 60px;
+  width: 1900px;
+  /* margin-top: 80px; */
+  background: #80808026;
+  position: absolute;
+  top: 80px;
+
+}
+.t1{
+  float: left;
+  height: 80px;
+  width: 440px;
+
+}
+.t2{
+  float: left;
+  height: 80px;
+  width: 1070px;
+
+}
+.t3{
+  float: left;
+  height: 80px;
+  width: 382px;
+
+}
+/*title*/
+#sy{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  line-height: 3;
+  font-size: xx-large;
+ 
+
+}
+#sy a{
+  text-decoration: none;
+}
+#syto{
+   color: black;
+}
+#zb{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  line-height: 3;
+  font-size: xx-large;
+  color: #337ab7;
+
+}
+#zb a
+{
+  text-decoration: none;
+   color: #337ab7;
+}
+#zbto{
+   color: #337ab7;
+}
+#sp{
+  float: left;
+  width: 30%;
+  height: 100%;
+  text-align: center;
+  line-height: 3;
+  font-size: xx-large;
+  color: black;
+
+}
+#sp a{
+  text-decoration: none;
+  color: black;
+}.dl{
+  height: 80px;
+  text-align: center;
+  font-size: large;
+  line-height: 5;
+  color: #efac53;
+}
+/*^^top*/
+/*莫态框*/
+.modal-body{
+  margin: 10px;
+  height: 150px;
+}
+.modal-body input{
+  margin: 5px;
+}
+
+#SCode{
+  float: left;
+  text-align: center;
+  height: 38px;
+  padding-top: 5px;
+  width: 30%;
+  border: 1px solid #80808047;
+}
+.buLogin{
+  width: 90%;
+  height: 55px;
+}
+/*验证码输入框*/
+.AutoCode-img{
+  padding-left: 0px;
+  width: 120px;
+  margin: 0;
+  float: left;
+}
+#btn{
+  width: 162px;
+  margin: 0px;
+  height: 28px;
+  color: black;
+  background: white;
+  border: none;
+}
+#timeout{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+}
+#timeout img{
+  width: 100%;
+  height: 100%;
+}
+#tm{
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.58);
+  color: white;
+  text-align: center;
+  padding-top: 150px;
+}
+/*退出登录*/
+#li{
+  border: 1px solid #8080803b;
+  height: 115px;
+  width: 125px;
+  background-color: #ffffff;
+  display: none;
+  position: relative;
+  right: 0px;
+  /* list-style-type: none; */
+  list-style-type: none;
+  top: -10px;
+  z-index: 3;
+  text-align: center;
+  padding: 7px;
+
+}
+.erji{
+  background-color: #f9f9f9;
+  position: relative;
+  left: 111px;
+  bottom: 115px;
+  border: 1px solid gainsboro;
+  display: none;
+  padding: 5px;
+  width: 115px;
+}
+.erji div{
+
+  line-height: 1;
+  height: 22px;
+  margin: 5px;
+  font-size: smaller;
+  border-bottom: 1px solid gainsboro;
+  cursor: pointer;
+}
+#li ul{
+  padding: 5px;
+}
+.fa-sign-out{
+
+  float: left;
+  margin: 3px;
+
+}
+.fa-university{
+  float: left;
+  margin: 3px;
+}
+.fa-cog{
+  float: left;
+  margin: 3px;
+}
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+  width: 100px;
+}
+#span_fa{
+  cursor: pointer;
+}
+/*莫态框*/
+.modal-body{
+  margin: 10px;
+  height: 150px;
+}
+.modal-body input{
+  margin: 5px;
+}
+
+#SCode{
+  float: left;
+  text-align: center;
+  height: 38px;
+  width: 30%;
+  border: 1px solid #80808047;
+}
+.buLogin{
+  width: 90%;
+  height: 55px;
+}
+#loginB{
+  background-color: #01a5fe;
+  width: 100%;
+  /* margin: auto; */
+  height: 90%;
+}
+/*退登*/
+.LiDl{
+  width: 300px;
+  height: 100px;
+  border: 1px solid gray;
+  background-color: white;
+  display: none;
+  position: absolute;
+}
+#loginB{
+  background-color: #4fcbec;
+  width: 100%;
+  /* margin: auto; */
+  height: 90%;
+}
+/*关联查询下拉框*/
+.vlist{
+  width: 1850px;
+  height: 1500px;
+
+}
+.se1{
+  width: 200px;
+  margin: 0;
+  float: left;
+}
+.se2{
+  width: 200px;
+  margin: 0;
+  float: left;
+}
+.vt{
+  width: 120px;
+  float: left;
+  /* line-height: 2; */
+  font-size: x-large;
+  margin-left: 10px;
+  font-family: initial;
+}
+.sele{
+  height: 110px;
+  padding-top: 10px;
+}
+.sevlist{
+  margin-right: 0px;
+  width: 1709px;
+  height: 1300px;
+}
+/*video*/
+.video{
+  width: 453px;
+  height: 300px;
+  margin: 0px;
+  float: left;
+  margin-right: 115px;
+  margin-top: 50px;
+  background-color: white;
+}
+.live_img{
+  width: 433px;
+  margin-left: 10px;
+  height: 220px;
+  margin-top: 10px;
+}
+.live_title{
+  position: absolute;
+  height: 20px;
+  width: 432px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.lab{
+  width: 200px;
+  float: left;
+}
+.type{
+  width: 215px;
+  float: left;
+  text-align: end;
+}
+.stutas{
+  background-color: #3d8adafa;
+  color: #f8f8f8;
+  font-size: large;
+  padding: 4px;
+  border-radius: 10%;
+  margin-left: 10px;
+}
+.kind{
+  background-color: #64a5ea;
+  color: white;
+  padding: 4px;
+  border-radius: 10%;
+}
+.span-name{
+  line-height: 2;
+  font-size: large;
+  margin-left: 10px;
+}
+.count{
+  margin-left: 10px;
+}
+.live_timespan{
+  width: 380px;
+  margin: 0px;
+  float: left;
+}
+
+.li1{
+  border-bottom: 1px solid gainsboro;
+  list-style-type: none;
+  cursor: pointer;
+  /* text-align: inherit; */
+  height: 30px;
+  margin-left: 0px;
+  width: 100px;
+}
+#span_fa{
+  cursor: pointer;
+}
+
+/*莫态框*/
+.modal-body{
+  margin: 10px;
+  height: 150px;
+}
+.modal-body input{
+  margin: 5px;
+}
+#LCode{
+  width: 68%;
+  float: left;
+  margin: 5px;
+}
+#SCode{
+  float: left;
+  text-align: center;
+  height: 35px;
+  width: 30%;
+  border: 1px solid #80808047;
+  margin-top: 3px;
+}
+#btn{
+  width: 162px;
+  margin: 0px;
+  height: 36px;
+  color: black;
+  background: white;
+  border: none;
+}
+.buLogin{
+  width: 90%;
+  height: 55px;
+}
+#loginB{
+  background-color: #4fcbec;
+  width: 100%;
+  /* margin: auto; */
+  height: 90%;
+}
+/*登陆后用户*/
+#afterL{
+  display: block;
+  height: 100%;
+  line-height: 3;
+  font-size: xx-large;
+  font-weight: bold;
+  color: #efac53; ;
+}
+

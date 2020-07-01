@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="jquerydanmu/dist/js/lib/jquery-1.11.1.min.js"></script>
+<script src="jquerydanmu/dist/js/danmuplayer.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="build/three.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="build/mxreality.js"></script>
+<script src="build/ptools.js"></script>
+<script type="text/javascript">
+  var roomName ="3";
+  var ws;
+  function ToggleConnectionClicked() {
+    try {
+      ws = new WebSocket("ws://192.168.3.100:8084/chatroom/"+roomName);//连接服务器
+      ws.onopen = function(event){
+        alert("已经与服务器建立了连接rn当前连接状态："+this.readyState);
+      };
+      ws.onmessage = function(event){
+        //返回值
+        // alert("接收到服务器发送的数据：rn"+event.data);
+
+        var ul_li = $(" <div  id=\"kk\"> <div id=\"k1\">  <img src=\"tile.png\"> </div> <div id=\"k2\">   <p>uid</p> <h4>" + event.data + "</h4>      </div>    </div>");
+        $("#speak").append(ul_li);
+        $("#speak").scrollTop($("#speak")[0].scrollHeight);
+
+      };
+      ws.onclose = function(event){
+        alert("已经与服务器断开连接rn当前连接状态："+this.readyState);
+      };
+      ws.onerror = function(event){
+        alert("WebSocket异常！");
+      };
+    } catch (ex) {
+      alert(ex.message);
+    }
+  };
+
+  function SendData() {
+    var font =$("#SpeakInput").val();
+
+    try{
+      ws.send(font);
+    }catch(ex){
+      alert(ex.message);
+    }
+  };
+
+  function seestate(){
+    alert(ws.readyState);
+  }
+
+  var lockReconnect = false;  //避免ws重复连接
+  var ws = null;          // 判断当前浏览器是否支持WebSocket
+  var wsUrl = "ws://192.168.3.100:8084/chatroom/"+roomName;
+  createWebSocket(wsUrl);   //连接ws
+
+  function createWebSocket(url) {
+    try{
+      if('WebSocket' in window){
+        ws = new WebSocket(url);
+      }
+      ToggleConnectionClicked();
+    }catch(e){
+      reconnect(url);
+      console.log(e);
+    }
+  }
+
+
+  // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+  window.onbeforeunload = function() {
+    ws.close();
+  }
+
+  function reconnect(url) {
+    if(lockReconnect) return;
+    lockReconnect = true;
+    setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+      createWebSocket(url);
+      lockReconnect = false;
+    }, 2000);
+  }
+
+  //心跳检测
+  var heartCheck = {
+    timeout: 1000,        //1分钟发一次心跳
+    timeoutObj: null,
+    serverTimeoutObj: null,
+    reset: function(){
+      clearTimeout(this.timeoutObj);
+      clearTimeout(this.serverTimeoutObj);
+      return this;
+    },
+    start: function(){
+      var self = this;
+      this.timeoutObj = setTimeout(function(){
+        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+        //onmessage拿到返回的心跳就说明连接正常
+        ws.send("ping");
+        console.log("ping!")
+        self.serverTimeoutObj = setTimeout(function(){//如果超过一定时间还没重置，说明后端主动断开了
+          ws.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+        }, self.timeout)
+      }, this.timeout)
+    }
+  }
+
+
+
+</script>
+
+<style>
+  #speak{
+    margin: auto;
+    width: 500px;
+    height: 500px;
+    background-color: aliceblue;
+    overflow: auto;
+  }
+  #btn{
+    margin: auto;
+    width: 500px;
+    height: 130px;
+    text-align: center;
+    background-color: cornsilk;
+
+  }
+  #kk{
+    width: 95%;
+    height: 60px;
+    margin: 5px;
+    border-bottom: 1px solid gainsboro;
+  }
+  #k1{
+    float: left;
+    margin-right: 10px;
+  }
+  #k1 img{
+    width: 60px;
+  }
+  #k2{
+    float: left;
+  }
+</style>
+<body>
+<div id="speak">
+<div id="kk">
+  <div id="k1">
+    <img src="tile.png">
+  </div>
+  <div id="k2">
+    <p>aa</p>
+    <h4>aaaaaa</h4>
+  </div>
+</div>
+</div>
+<div id="btn">
+<button id='ToggleConnection1' type="button"  onclick="ToggleConnectionClicked()"> 连接服务器</button><br /><br />
+<input id="SpeakInput" type="text" placeholder="可以发言啦" value="">
+<button id='ToggleConnection2' type="button" onclick="SendData()">发送我的名字：beston</button><br /><br />
+<button id='ToggleConnection' type="button" onclick="seestate()">查看状态</button><br /><br />
+</div>
+</body>
+</html>
+

@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>直播管理</title>
+  <link rel="stylesheet" type="text/css" href="H_channel/css/Channelad.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-paginator-master/src/bootstrap-paginator.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+
+<script>
+  var uid="";
+  function parse(search){
+    // var search=location.search;//获取链接？后的字符串
+    // var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+        }else {
+          $('#span_id').html(datas.userName);
+          uid=datas.userId;
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+
+
+  function seletwe() {
+    var option =$("#kind  option:selected");
+    var lkind=option.val();
+
+    var options=$("#live_type option:selected");
+    var ltype= options.val();
+
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/live/selectByTypeAndKindPage",
+      data : {
+        "channelType" : lkind,
+        "channelStatus":ltype,
+      },
+      dataType: "json",
+      async:false,
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));
+      },
+      success: function (data) {
+
+        $("#typeAkindpagesize").attr("value",data);
+      },
+      error: function () {
+        alert("错误");
+      }
+    })
+
+    var typeAkindpagesize= $("#typeAkindpagesize").val();
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/live/selectByTypeAndKind",
+      dataType: "json",
+      data : {
+        "channelType" : lkind,
+        "channelStatus":ltype,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));
+      },
+      success: function (data) {
+        ///清空节点
+        $("#VList").empty();
+        ids="";
+        //取出后端传过来的list值
+        var chargeRuleLogs = data.rows;
+        //对list值进行便利
+        var kd="";
+        var type ="";
+        var insert =' <div class="video-add">\n' +
+          '    <a href="channel_add.html">\n' +
+          '      <i class="fa fa-plus fa-5x"></i></br>\n' +
+          '      <span>新建直播频道</span>\n' +
+          '    </a>\n' +
+          '  </div>';
+        var i=0;
+        // $("#VList").append(insert);
+        $.each(chargeRuleLogs, function (index, n) {
+          var unixTimestamp = new Date( n.channelBtime ) ;
+          Date.prototype.toLocaleString = function() {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+          };
+          commonTime = unixTimestamp.toLocaleString();
+
+          var rowTr = document.createElement('tr');
+          //找到html的tr节点
+
+          if (n.channelType==1){
+            kd="普通"
+          }else if (n.channelType==2){
+            kd ="VR"
+          }
+          if (n.channelStatus==1){
+            type="直播"
+          }else if (n.channelStatus==2){
+            type="预告"
+          }else if (n.channelStatus==3){
+            type="结束"
+          }
+          rowTr.className = "tr_node";
+          i++;
+          var child = ` <div class="video" id="video">
+                           <input type="checkbox" name="checkName" id="${n.channelId}" style="display: none">
+                            <div class="lab" id="lab">
+                            ${kd}
+                            </div>
+                            <div class="type" id="type">
+                               ${type}
+
+                            </div>
+                            <a href="Channelinfo.html?id=${n.channelId}" id=${n.channelId}">
+                                <img src="${n.channelCover}">
+                            </a>
+                                <i class="span-name" id="cname">${n.channelName}</i></br>
+                                <i class="span-date" id="cdata">${commonTime}</i>
+                                <div class="count">
+                                  <i class="fa fa-user-circle-o fa-1x" id="i${i}" >1100</i>
+                                </div>
+                          </div>`;
+
+          //将信息追加
+          $("#VList").append(child);
+          if (ids==""){
+            ids=n.channelId;
+          }else {
+            ids=ids+","+n.channelId;
+          }
+        });
+      },
+      error:function (data) {
+        console.log(data);
+      }
+    });
+
+    $('#pageLimit').bootstrapPaginator({
+
+      currentPage: 1,//当前页。
+      totalPages: typeAkindpagesize,//总页数。
+      size: "normal",//应该是页眉的大小。
+      bootstrapMajorVersion: 3,//bootstrap的版本要求。
+      pageNumber: 1, //初始化加载第一页，默认第一页
+      alignment: "right",
+      numberOfPages: 5,//显示的页数
+      alignment: "center",
+      itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+        switch (type) {
+          case "first":
+            return "首页";
+          case "prev":
+            return "上一页";
+          case "next":
+            return "下一页";
+          case "last":
+            return "末页";
+          case "page":
+            return page;
+        }
+      },
+
+      onPageClicked: function (event, originalEvent, type, page) {
+
+
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/live/selectByTypeAndKind",
+          dataType: "json",
+          data : {
+            "channelType" :ltype,
+            "channelStatus":lkind ,
+            "page":page,
+            "pageSize":8
+          },
+          beforeSend: function(request) {
+            request.setRequestHeader("token",localStorage.getItem("token"));
+          },
+          success: function (data) {
+            ///清空节点
+            $("#VList").empty();
+            ids="";
+            //取出后端传过来的list值
+            var chargeRuleLogs = data.rows;
+            //对list值进行便利
+            var kd="";
+            var type ="";
+            var insert =' <div class="video-add">\n' +
+              '    <a href="channel_add.html">\n' +
+              '      <i class="fa fa-plus fa-5x"></i></br>\n' +
+              '      <span>新建直播频道</span>\n' +
+              '    </a>\n' +
+              '  </div>';
+            ids="";
+            var i=0;
+            // $("#VList").append(insert);
+            $.each(chargeRuleLogs, function (index, n) {
+              var unixTimestamp = new Date( n.channelBtime ) ;
+              Date.prototype.toLocaleString = function() {
+                return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+              };
+              commonTime = unixTimestamp.toLocaleString();
+
+              var rowTr = document.createElement('tr');
+              //找到html的tr节点
+
+              if (n.channelType==1){
+                kd="普通"
+              }else if (n.channelType==2){
+                kd ="VR"
+              }
+              if (n.channelStatus==1){
+                type="直播"
+              }else if (n.channelStatus==2){
+                type="预告"
+              }else if (n.channelStatus==3){
+                type="结束"
+              }
+              rowTr.className = "tr_node";
+              i++;
+              var child = ` <div class="video" id="video">
+                           <input type="checkbox" name="checkName" id="${n.channelId}" style="display: none">
+                            <div class="lab" id="lab">
+                            ${kd}
+                            </div>
+                            <div class="type" id="type">
+                               ${type}
+                            </div>
+                            <a href="Channelinfo.html?id=${n.channelId}" id=${n.channelId}">
+                                <img src="${n.channelCover}">
+                            </a>
+                                <i class="span-name" id="cname">${n.channelName}</i></br>
+                                <i class="span-date" id="cdata">${commonTime}</i>
+                                <div class="count">
+                                  <i class="fa fa-user-circle-o fa-1x" id="i${i}" >1100</i>
+                                </div>
+                          </div>`;
+
+              //将信息追加
+              $("#VList").append(child);
+              if (ids==""){
+                ids=n.channelId;
+              }else {
+                ids=ids+","+n.channelId;
+              }
+            });
+          },
+          error:function (data) {
+            console.log(data);
+          }
+        })
+      }
+    })
+
+
+    setTimeout(function(){ ncount();},1000);
+  }
+
+
+
+  function pageSize(){
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/live/selectPagesize",
+      dataType: "json",
+      async:false,
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));
+      },
+      success: function (data) {
+
+        document.getElementById("pagesize").value = data
+      },
+      error: function () {
+        alert("错误");
+      }
+    });
+  }
+  var ip = "";
+  var ids ="";
+  window.onload=function () {
+    getIp();
+  var t =localStorage.getItem("token");
+  if (t==null){
+    alert("身份过期，请重新验证");
+    location.href = "Login.html";
+  }else if(t!=null){
+
+    setTimeout(function(){ session();},1000);
+
+  }
+    parse();
+    pageSize();
+    page();
+
+}
+  //获取客户端ip
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+
+        }else
+        if (datas=="0"){
+          alert("该账号已断开连接");
+          location.href = "Login.html";
+        }else if (datas="3"){
+          alert("没有登陆信息，返回登陆");
+          location.href = "Login.html";
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function tovlive(){
+    location.href="Channelliribary.html";
+  }
+
+
+function toH() {
+
+  window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+}
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+  function out(){
+
+    var flag = confirm("确定退出该账号！");
+    if(flag==true) {
+      $.ajax({
+        type: "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/logintext/outlogin",
+        data: {},
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (datas) {
+          localStorage.removeItem('token');
+
+          location.href = "Login.html";
+        },
+        error: function (datas) {
+        }
+      });
+    }
+  }
+
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+
+
+</script>
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color", "rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href = "Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color", "rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href = "Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color", "rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color", "rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+
+    $(function () {
+      $(document).click(function(){
+        $('#erji').hide();
+
+      });
+      $('#span_fa').click(function(event){
+        $('#erji').hide();
+      });
+      $('#percen').click(function(event){
+        event.stopPropagation();
+      });
+      $('#erji').click(function(event){
+        event.stopPropagation();
+      });
+    })
+  })
+</script>
+<body style="background-color: #f5f5f5;" >
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2" onclick="tovlive()">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+
+  <div id="li">
+    <div>
+
+      <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+     <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+     <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+    </div>
+
+  </div>
+<!--    <div class="erji" id="erji">-->
+<!--      <div onclick="perinfo()">1) 个人信息</div>-->
+<!--      <div onclick="liveing()">2) 直播统计</div>-->
+<!--      <div onclick="setting()">3) 系统通知</div>-->
+<!--    </div>-->
+  </div>
+</div>
+
+<div class="center">
+  <div class="ctop">
+    <div class="choseS">
+      <select class="selectpicker show-tick form-control" data-live-search="true" id="live_type" onchange="seletwe()">
+        <option value="0">全部</option>
+        <option value="1">正在直播</option>
+        <option value="2">预告</option>
+        <option value="3">直播结束</option>
+      </select>
+    </div>
+    <div class="choseT">
+      <select class="selectpicker show-tick form-control" data-live-search="true" id="kind" onchange="seletwe()">
+        <option value="0">全部</option>
+        <option value="1">普通</option>
+        <option value="2">VR</option>
+      </select>
+    </div>
+    <div class="count" style="float: left;">
+      <h4>已创建直播 <span><i id="count">0</i></span> 个 </h4>
+      <button type="button" class="btn btn-default" onclick="deleteAll()">删除</button>
+    </div>
+    <div class="input-group">
+      <input type="text" placeholder="请输入频道关键字" id="nameText" class="form-control input-lg"><span onclick="toSearchByName()" class="input-group-addon btn btn-primary glyphicon glyphicon-search" id="seach"></span>
+    </div>
+  </div>
+
+
+    <!--    新增空白页       -->
+    <div class="video-add">
+      <a href="channel_add.html" style="  text-decoration: none;">
+        <i class="fa fa-plus fa-5x"></i></br>
+        <span>新建直播频道</span>
+      </a>
+    </div>
+
+  <div class="row row-value" id="VList" style="margin: auto;">
+
+  </div>
+  </div>
+<center><ul id="pageLimit"  class="pagination"></ul></center>
+<input id="pagesize" style="display: none" value="">
+<input id="bynamepagesize" style="display: none" value="">
+<input id="typeAkindpagesize" style="display: none" value="">
+
+
+<script>
+
+    function toSearchByName(){
+
+      var searchName = $("#nameText").val();
+
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/live/findListChannelpage",
+          data : {
+            "bname" : searchName
+          },
+          dataType: "json",
+          async:false,
+          beforeSend: function(request) {
+            request.setRequestHeader("token",localStorage.getItem("token"));
+          },
+          success: function (data) {
+            document.getElementById("bynamepagesize").value = data
+          },
+          error: function () {
+            alert("错误");
+          }
+        })
+
+        $.ajax({
+            type: 'GET',
+            url: "http://127.0.0.1:8084/live/findListChannel",
+              dataType: "json",
+                data : {
+                "bname" : searchName
+              },
+              async:false,
+                beforeSend: function(request) {
+                request.setRequestHeader("token",localStorage.getItem("token"));
+              },
+              success: function (data) {
+                ///清空节点
+                $("#VList").empty();
+                ids="";
+                //取出后端传过来的list值
+                var chargeRuleLogs = data;
+                //对list值进行便利
+                var kd="";
+                var type ="";
+                var i=0;
+                $.each(chargeRuleLogs, function (index, n) {
+
+                    //找到html的tr节点
+                    var unixTimestamp = new Date( n.channelBtime ) ;
+                    Date.prototype.toLocaleString = function() {
+                        return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+                    };
+                    commonTime = unixTimestamp.toLocaleString();
+
+                    var rowTr = document.createElement('tr');
+                  if (n.channelType==1){
+                    kd="普通"
+                  }else if (n.channelType==2){
+                    kd ="VR"
+                  }
+                    if (n.channelStatus==1){
+                        type="直播"
+                    }else if (n.channelStatus==2){
+                        type="预告"
+                    }else if (n.channelStatus==3){
+                        type="结束"
+                    }
+                    rowTr.className = "tr_node";
+                  i++;
+                    var child = ` <div class="video" id="video">
+                               <input type="checkbox" name="checkName" id="${n.channelId}" style="display: none">
+                                <div class="lab" id="lab">
+                                ${kd}
+                                </div>
+                                <div class="type" id="type">
+                                   ${type}
+
+                                </div>
+                                <a href="channelinfo.html?id=${n.channelId}" id=${n.channelId}">
+                                    <img src="${n.channelCover}">
+                                </a>
+                                    <i class="span-name" id="cname">${n.channelName}</i></br>
+                                    <i class="span-date" id="cdata">${commonTime}</i>
+                                    <div class="count">
+                                      <i class="fa fa-user-circle-o fa-1x" id="i${i}" >1100</i>
+                                    </div>
+                              </div>`;
+
+
+                    //将信息追加
+                    $("#VList").append(child);
+                  if (ids==""){
+                    ids=n.channelId;
+                  }else {
+                    ids=ids+","+n.channelId;
+                  }
+                });
+            },
+            error:function (data) {
+                console.log(data);
+            }
+        })
+      var Npagesize= $("#bynamepagesize").val();
+        $("#pageLimit").empty();
+      $('#pageLimit').bootstrapPaginator({
+        currentPage: 1,//当前页。
+        totalPages: Npagesize,//总页数。
+        size: "normal",//应该是页眉的大小。
+        bootstrapMajorVersion: 3,//bootstrap的版本要求。
+        pageNumber: 1, //初始化加载第一页，默认第一页
+        alignment: "right",
+        numberOfPages: 5,//显示的页数
+        alignment: "center",
+        itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+          switch (type) {
+            case "first":
+              return "首页";
+            case "prev":
+              return "上一页";
+            case "next":
+              return "下一页";
+            case "last":
+              return "末页";
+            case "page":
+              return page;
+          }
+        },
+        onPageClicked: function (event, originalEvent, type, page) {
+          $.ajax({
+            type: 'GET',
+            url: "http://127.0.0.1:8084/live/findChannelByName",
+            dataType: "json",
+            data : {
+              "bname" : searchName,
+              "page":page,
+              "pageSize":8
+            },
+            async:false,
+            beforeSend: function(request) {
+              request.setRequestHeader("token",localStorage.getItem("token"));
+            },
+            success: function (data) {
+              ///清空节点
+              $("#VList").empty();
+              ids="";
+              //取出后端传过来的list值
+              var chargeRuleLogs = data.rows;
+              //对list值进行便利
+              var kd="";
+              var type ="";
+              var i=0;
+              $.each(chargeRuleLogs, function (index, n) {
+
+                //找到html的tr节点
+                var unixTimestamp = new Date( n.channelBtime ) ;
+                Date.prototype.toLocaleString = function() {
+                  return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+                };
+                commonTime = unixTimestamp.toLocaleString();
+
+                var rowTr = document.createElement('tr');
+                if (n.channelType==1){
+                  kd="普通"
+                }else if (n.channelType==2){
+                  kd ="VR"
+                }
+                if (n.channelStatus==1){
+                  type="直播"
+                }else if (n.channelStatus==2){
+                  type="预告"
+                }else if (n.channelStatus==3){
+                  type="结束"
+                }
+                rowTr.className = "tr_node";
+                i++;
+                var child = ` <div class="video" id="video">
+                               <input type="checkbox" name="checkName" id="${n.channelId}" style="display: none">
+                                <div class="lab" id="lab">
+                                ${kd}
+                                </div>
+                                <div class="type" id="type">
+                                   ${type}
+                                </div>
+                                <a href="channelinfo.html?id=${n.channelId}" id=${n.channelId}">
+                                    <img src="${n.channelCover}">
+                                </a>
+                                    <i class="span-name" id="cname">${n.channelName}</i></br>
+                                    <i class="span-date" id="cdata">${commonTime}</i>
+                                    <div class="count">
+                                      <i class="fa fa-user-circle-o fa-1x" id="i${i}" >1100</i>
+                                    </div>
+                              </div>`;
+                //将信息追加
+                $("#VList").append(child);
+                if (ids==""){
+                  ids=n.channelId;
+                }else {
+                  ids=ids+","+n.channelId;
+                }
+              });
+            },
+            error:function (data) {
+              console.log(data);
+            }
+          })
+        }
+      })
+      setTimeout(function(){ ncount();},1000);
+    }
+    function deleteAll(){
+        if($("input[name=checkName]").css("display")=="none"){
+            $("input[name=checkName]").css("display", "block");
+        }else {
+            var str = "";
+            var inputs = document.getElementsByName("checkName");
+
+            for(var i=0;i<inputs.length;i++) {
+                if (inputs[i].checked) {
+                    str += inputs[i].id+","
+                }
+            }
+            str = str.substring(0,str.length-1);
+            console.log(str)
+            var flag = confirm("确认要删除多个直播吗？删除后不可恢复！");
+            if(flag==true){
+                $.ajax({
+                    type:"get",
+                    url:'http://127.0.0.1:8084/live/deleteAllChannel',
+                    data:{ids:str},
+                    contentType:'application/json',
+                    success:function(data){
+                        location.href = "./Channelad.html"
+                    },
+                    error:function(data){
+                        alert("出错了！");
+                    }
+                })
+            }
+        }
+    }
+   function page() {
+        var pagesize=$("#pagesize").val();
+        $('#pageLimit').bootstrapPaginator({
+            currentPage: 1,//当前页。
+            totalPages: pagesize,//总页数。
+            size: "normal",//应该是页眉的大小。
+            bootstrapMajorVersion: 3,//bootstrap的版本要求。
+            pageNumber: 1, //初始化加载第一页，默认第一页
+            alignment: "right",
+            numberOfPages: 5,//显示的页数
+            alignment: "center",
+            itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+                switch (type) {
+                    case "first":
+                        return "首页";
+                    case "prev":
+                        return "上一页";
+                    case "next":
+                        return "下一页";
+                    case "last":
+                        return "末页";
+                    case "page":
+                        return page;
+                }
+            },
+            onPageClicked: function (event, originalEvent, type, page) {//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+                $.ajax({
+                    type: 'GET',
+                    url: "http://127.0.0.1:8084/live/queryAllByUserId",
+                    dataType: "json",
+                    data: {
+                        "pageNum": page,
+                        "pageSize": 8
+                    },
+                    async: false,
+                    beforeSend: function (request) {
+                        request.setRequestHeader("token", localStorage.getItem("token"));
+                    },
+                    success: function (data) {
+                        ///清空节点
+                        $("#VList").empty()
+                         ids="";
+                        //取出后端传过来的list值
+                        var chargeRuleLogs = data.list;
+                        //对list值进行便利
+                        var kd="";
+                        var type ="";
+                      var i=0;
+                        $.each(chargeRuleLogs, function (index, n) {
+                            var unixTimestamp = new Date( n.channelBtime ) ;
+                            Date.prototype.toLocaleString = function() {
+                                return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+                            };
+                            commonTime = unixTimestamp.toLocaleString();
+                            var rowTr = document.createElement('tr');
+                            //找到html的tr节点
+                          if (n.channelType==1){
+                            kd="普通"
+                          }else if (n.channelType==2){
+                            kd ="VR"
+                          }
+                            if (n.channelStatus==1){
+                                type="直播"
+                            }else if (n.channelStatus==2){
+                                type="预告"
+                            }else if (n.channelStatus==3){
+                                type="结束"
+                            }
+                            rowTr.className = "tr_node";
+                          i++;
+                            var child = ` <div class="video" id="video">
+                              <input type="checkbox" name="checkName" id="${n.channelId}" style="display: none">
+                              <div class="lab" id="lab">
+                              ${kd}
+                              </div>
+                              <div class="type" id="type">
+                                 ${type}
+                              </div>
+                              <a href="channelinfo.html?id=${n.channelId}" id=${n.channelId}">
+                                  <img src="${n.channelCover}">
+                              </a>
+                                  <i class="span-name" id="cname">${n.channelName}</i></br>
+                                  <i class="span-date" id="cdata">${commonTime}</i>
+                                  <div class="count">
+                                    <i class="fa fa-user-circle-o fa-1x" id="i${i}" >1100</i>
+                                  </div>
+                            </div>`;
+
+                            //将信息追加
+                            $("#VList").append(child);
+                          if (ids==""){
+                            ids=n.channelId;
+                          }else {
+                            ids=ids+","+n.channelId;
+                          }
+                        });
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                })
+            }
+        });
+
+        $.ajax({
+            type: 'GET',
+            url: "http://127.0.0.1:8084/live/selectCount",
+            dataType: "json",
+            async:false,
+            beforeSend: function(request) {
+                request.setRequestHeader("token",localStorage.getItem("token"));
+            },
+            success: function (data) {
+                document.getElementById("count").innerHTML = data
+            },
+            error: function () {
+                alert("错误");
+            }
+        })
+
+      $.ajax({
+        type: 'GET',
+        url: "http://127.0.0.1:8084/live/queryAllByUserId",
+        dataType: "json",
+        data: {
+          "pageNum": 1,
+          "pageSize": 8
+        },
+        async: false,
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (data) {
+          ///清空节点
+          $("#VList").empty();
+          ids="";
+          //取出后端传过来的list值
+          var chargeRuleLogs = data.list;
+          //对list值进行便利
+          var kd="";
+          var type ="";
+          var i=0;
+          $.each(chargeRuleLogs, function (index, n) {
+            var unixTimestamp = new Date( n.channelBtime ) ;
+            Date.prototype.toLocaleString = function() {
+              return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+            };
+            commonTime = unixTimestamp.toLocaleString();
+
+            var rowTr = document.createElement('tr');
+            //找到html的tr节点
+            if (n.channelType==1){
+              kd="普通"
+            }else if (n.channelType==2){
+              kd ="VR"
+            }
+            if (n.channelStatus==1){
+              type="直播"
+            }else if (n.channelStatus==2){
+              type="预告"
+            }else if (n.channelStatus==3){
+              type="结束"
+            }
+            rowTr.className = "tr_node";
+            i++;
+            var child = ` <div class="video" id="video">
+                              <input type="checkbox" name="checkName" id="${n.channelId}" style="display: none">
+                              <div class="lab" id="lab">
+                              ${kd}
+                              </div>
+                              <div class="type" id="type">
+                                 ${type}
+
+                              </div>
+                              <a href="channelinfo.html?id=${n.channelId}" id=${n.channelId}">
+                                  <img src="${n.channelCover}">
+                              </a>
+                                  <i class="span-name" id="cname">${n.channelName}</i></br>
+                                  <i class="span-date" id="cdata">${commonTime}</i>
+                                  <div class="count">
+                                    <i class="fa fa-user-circle-o fa-1x" id="i${i}" >1100</i>
+                                  </div>
+                            </div>`;
+
+            //将信息追加
+            $("#VList").append(child);
+            if (ids==""){
+              ids=n.channelId;
+            }else {
+              ids=ids+","+n.channelId;
+            }
+          });
+        },
+        error: function (data) {
+          console.log(data);
+        }
+      })
+
+
+
+     setTimeout(function(){ ncount();},1000);
+    }
+    function ncount() {
+      setTimeout(function(){ ncount();},1000);
+
+      var idds="";
+      idds=ids;
+
+      $.ajax({
+        type:"get",
+        url:"http://127.0.0.1:8084/admin/selectVisitTimesall",
+        data:{
+          "ids":idds,
+        },
+        success: function (datas) {
+          $("#i1").text(datas[0]);
+          $("#i2").text(datas[1]);
+          $("#i3").text(datas[2]);
+          $("#i4").text(datas[3]);
+          $("#i5").text(datas[4]);
+          $("#i6").text(datas[5]);
+          $("#i7").text(datas[6]);
+          $("#i8").text(datas[7]);
+        },
+        error: function (datas) {
+        }
+
+      })
+    }
+</script>
+
+</body>
+</html>

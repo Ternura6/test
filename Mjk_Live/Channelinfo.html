@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>直播信息页</title>
+  <link rel="stylesheet" type="text/css" href="H_channel/css/Channelinfo.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="build/three.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="build/mxreality.js"></script>
+<script src="build/ptools.js"></script>
+<script src="http://pv.sohu.com/cityjson"></script>
+
+<script>
+  var ips = "127.0.0.1";
+  var channel = 0;
+  var uid="";
+  function parse(search){
+    // var search=location.search;//获取链接？后的字符串
+    // var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://"+ips+":8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+
+        }else {
+          $('#span_id').html(datas.userName);
+          uid=datas.userId;
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+
+    });
+
+    var channelId="";
+    //获取初始化数据
+    $.ajax({
+      type:"GET",
+      url:'http://'+ips+':8084/live/test',
+      data:{id:a['id']},
+      dataType : "json",
+      async:true,
+      success:function(data){
+        channel = data.channelId;
+        $("#liveName").text(data.channelName);
+        var Time = new Date(data.channelBtime).toLocaleString();
+        $("#livetim").text(Time);
+
+        document.getElementById("channelId").innerHTML = data.channelId;
+        document.getElementById("channelName").innerHTML = data.channelName;
+        $("#ad").val(data.userId);
+        var dd =data.channelBtime;
+        var Time = new Date(dd).toLocaleString();
+
+        document.getElementById("channelBtime").innerHTML=Time;
+        document.getElementById("channelstatus").innerHTML = data.channelStatus;
+        if (data.channelStatus==2){
+          document.getElementById("channelstatus").innerHTML ="预定直播";
+          document.getElementById("toClose").style.display = "none";
+        }else if (data.channelStatus==1){
+          document.getElementById("channelstatus").innerHTML ="正在直播";
+          document.getElementById("toStart").style.display = "none";
+        }else if (data.channelStatus==3){
+          document.getElementById("channelstatus").innerHTML ="结束";
+          document.getElementById("toClose").style.display = "none";
+        }
+        $("#tochanneling").attr("href","http://127.0.0.1:8088/Sweb/index_channeling"+data.channelId+".html");
+        $("#indexurl").attr("value","http://"+ips+":8088/Sweb/index_channeling"+data.channelId+".html");
+        //$("#indexurl").attr("value","http://"+ip+":8089/index_channeling"+data.channelId+".html");
+
+        if (data.channelType==2){
+          document.getElementById("channelType").innerHTML ="VR";
+        }else if (data.channelType==1){
+          document.getElementById("channelType").innerHTML ="普通";
+        }
+        if (data.channelWay==0){
+          document.getElementById("channelPattern").innerHTML ="拉流";
+          $("#channelWay").attr("value",data.httpPush);
+        }else if (data.channelWay==1){
+          document.getElementById("channelPattern").innerHTML ="推流";
+        }
+
+        if (data.channelWay==1){
+          $("#channelWay").attr("value",data.mainPush);
+        }else if (data.channelWay==0){
+          $("#channelWay").attr("value",data.passivePush);
+        }
+        console.log(data);
+        channelId=data.channelId;
+      },
+      error:function(data){
+
+      }
+    });
+
+    $.ajax({
+      type : "get",
+      url : "http://"+ips+":8084/admin/selectNumberCount",
+      data:{channelId:a['id']},
+      dataType: "json",
+      success : function(data) {
+        document.getElementById("sumNumber").innerHTML = data;
+        // $("#sumNumber").text(data);
+      }
+    });
+
+    $.ajax({
+      type : "get",
+      url : "http://"+ips+":8084/admin/selectVisitCount",
+      data:{channelId:a['id']},
+      dataType: "json",
+      success : function(data) {
+        document.getElementById("sumCount").innerHTML = data;
+      }
+    });
+
+  }
+  var ip = "";
+  window.onload=function () {
+    getIp();
+    var t =localStorage.getItem("token");
+    if (t==null){
+      alert("身份过期，请重新验证");
+      location.href = "Login.html";
+    }else {
+      setTimeout(function(){ session();},1000);
+    }
+    parse();
+    setTimeout(function(){ init();},100);
+
+
+  };
+  //获取客户端ip  //获取客户端ip
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+
+        }else
+        if (datas=="0"){
+          alert("该账号已断开连接");
+          location.href = "Login.html";
+        }else if (datas="3"){
+          alert("没有登陆信息，返回登陆");
+          location.href = "Login.html";
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  //var vr=new VR(scene,renderer,container);
+  function init() {
+
+    var HtPurl="";
+//播放器
+      HtPurl =$("#channelWay").val();
+
+    var scene, renderer;
+    var container;
+    //renderer = new THREE.WebGLRenderer();
+    AVR.debug = true;
+    if (!AVR.Broswer.isIE() && AVR.Broswer.webglAvailable()) {
+      renderer = new THREE.WebGLRenderer();
+    } else {
+      renderer = new THREE.CanvasRenderer();
+    }
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container = document.getElementById('example');
+    container.appendChild(renderer.domElement);
+
+
+    scene = new THREE.Scene();
+
+    // fov 选项可调整初始视频远近
+    var vr = new VR(scene, renderer, container, {"fov": 50});
+
+    //vr.playText="<img src='img/play90.png' width='40' height='40'/>";
+    vr.vrbox.radius = 600;
+    if (AVR.isCrossScreen()) {
+      // 调整vr视窗偏移量
+      vr.effect.separation = 1.2;
+    }
+    vr.loadProgressManager.onLoad = function () {
+      // 视频静音
+      vr.video.muted = true;
+      vr.VRObject.getObjectByName("__mxrealityDefault").visible = true;
+    }
+    //AVR.useGyroscope=false;
+    vr.init(function () {
+
+    });
+
+    vr.playPanorama(HtPurl, vr.resType.sliceVideo);
+    vr.video.setAttribute("loop", "loop");
+    vr.video.crossOrigin = "Anonymous";
+
+
+    vr.video.onended = function () {
+    }
+
+  }
+
+
+  function showE() {
+    var b =document.getElementById("erwm")
+    b.style.display="block";
+  }
+  function cigoback() {
+    window.history.go(-1)
+
+  }
+  function zl() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的useridbaocu
+    $("#zl").css('background-color', '#5cbbff');
+    $("#zl").siblings().css('background-color', '#5cbbff00');
+    $("#ls-bj").css('display','none');
+    $("#ls-hd").css('display','none');
+    location.href="Channelinfo.html?id="+str;
+  }
+  function  Liveset() {
+    $("#liveSetting").css('background-color', '#5cbbff');
+    $("#liveSetting").children("span").css('color','white');
+    $("#liveSetting").siblings().css('background-color', '#5cbbff00');
+    $("#liveSetting").siblings().children("span").css('color','black');
+    $("#ls-bj").css('display','block');
+    $("#ls-hd").css('display','block');
+    location.href="Channelupdate.html?channelId="+str;
+  }
+  function bj() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#ls-bj").css('background-color', '#5cbbff');
+    $("#ls-bj").siblings().css('background-color', '#5cbbff00');
+    location.href="Channelupdate.html?channelId="+str;
+  }
+  function hd() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#ls-hd").css('background-color', '#5cbbff');
+    $("#ls-hd").siblings().css('background-color', '#5cbbff00');
+    location.href="Channelspeak.html?id="+str;
+  }
+  function toH() {
+
+    window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+  }
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+  function out(){
+
+    var flag = confirm("确定退出该账号！");
+    if(flag==true) {
+      $.ajax({
+        type: "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/logintext/outlogin",
+        data: {},
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (datas) {
+          localStorage.removeItem('token');
+
+          location.href = "Login.html";
+        },
+        error: function (datas) {
+        }
+      });
+    }
+  }
+
+function adto() {
+  var search = location.search;//获取链接？后的字符串
+  var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    var usid=$("#ad").val();
+
+  var date = new Date().getTime();
+  localStorage.setItem("admin",usid, date + 7*24*3600*1000);
+
+}
+
+
+</script>
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color", "rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href = "Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color", "rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href = "Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color", "rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color", "rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+</script>
+<body  style="background-color: #f5f5f5;">
+<input id="ad" value="" style="display: none">
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+    <div id="li">
+      <div>
+
+        <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+        <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+        <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+      </div>
+
+    </div>
+<!--    <div class="erji" id="erji">-->
+<!--      <div onclick="perinfo()">1) 个人信息</div>-->
+<!--      <div onclick="liveing()">2) 直播统计</div>-->
+<!--      <div onclick="setting()">3) 系统通知</div>-->
+<!--    </div>-->
+  </div>
+
+</div>
+<!--标题-->
+<div class="InfoTitle">
+  <div class="lin1">
+    <div class="liveName" id="liveName">
+     直播名称
+    </div>
+    <div class="status">
+      <p class="stau" id="stau">状态</p>
+    </div>
+  </div>
+  <p id="livetim">
+    2020-01-31 12：30
+  </p>
+
+</div>
+<div class="IfAbout">
+  <div class="left">
+   <div class="zl" onclick="zl()" id="zl">
+    <span>总览</span>
+   </div>
+    <div class="liveSetting" id="liveSetting" onclick="Liveset()">
+    <span>直播设置</span>
+    </div>
+    <div class="ls-bj" id="ls-bj" onclick="bj()">
+      <span id="Edit">编辑</span>
+    </div>
+    <div class="ls-hd" id="ls-hd" onclick="hd()">
+      <span>互动</span>
+    </div>
+  </div>
+  <div class="right">
+      <div class="r-top">
+        <div class="col-right">
+          <div class="row-one">
+            <h3>直播信息</h3>
+            <div class="col-xs-6 col-infotext">
+              <form>
+                <i id="channelId" style="display:none"></i>
+                <table class="r-tb" style="  width: 88%;">
+                  <tr>
+                    <td>
+                      频道名称
+                    </td>
+                    <td>
+                      <i id="channelName"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      直播时间
+                    </td>
+                    <td>
+                      <i id="channelBtime"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      直播状态
+                    </td>
+                    <td>
+                      <i id="channelstatus"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      直播类型
+                    </td>
+                    <td>
+                      <i id="channelType"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      观看模式
+                    </td>
+                    <td>
+                      <i id="channelPattern"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="    width: 100px;">
+                      视频接入地址
+                    </td>
+                    <td>
+                    <input type="text" id="channelWay" style="float:left;width: 260px;" class="form-control url-in" value="" readonly>
+                    <button type="button" id="update" style="margin-bottom: 10px;" class="btn btn-info" onclick="copyUrl()"> 复制</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      观看页面地址
+                    </td>
+                    <td>
+                    <input type="text" id="indexurl" style="float:left;width: 260px;" class="form-control whatch"  value="" readonly>
+                    <button type="button" id="info" style="margin-bottom: 10px;" class="btn btn-info" onclick="copyUrls()"> 复制</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="code" type="button" onclick="showCode()" value="生成二维码">
+                    </td>
+                    <td>
+                      <img src="" id="erwm">
+                    </td>
+                  </tr>
+                </table>
+              </form>
+            </div>
+          <div class="col-xs-5 col-cinfo">
+            <a href=""  id="tochanneling" target="blank">
+                <div id="example" style="width: 100%;
+	          height: 100%;
+	          position: absolute;
+	          left: 0px;
+	          /* top: 0px; */
+	          overflow: hidden;" class="video-ving" onclick="adto()">
+                </div>
+            </a>
+            </a>
+            <p>
+              <button id="toClose" class="btn bg-info">关闭频道</button>
+              <button id="toStart" class="btn bg-info">开始直播</button>
+              <button id="toDelete" class="btn btn-danger">删除直播</button></p>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="r-bottom">
+        <div class="row-twe">
+          <h3>直播数据</h3>
+          <table>
+            <tr>
+              <td>
+                <div>
+                  <i class="fa  fa-eye  fa-1x wcount"></i>
+                </div>
+                <p> <span class="span-titlee">累计观看次数</span></br>
+                <span class="span-count" id="sumCount">0</span></p>
+            </td>
+            <td>
+              <div></div>
+              <i class="fa fa-user-plus fa-1x icount"></i>
+              <p> <span class="span-titlee" >累计观看人数</span></br>
+                <span class="span-count" id="sumNumber">0</span></p>
+              </td>
+              <td>
+                <div></div>
+                <i class="fa fa-area-chart fa-1x tcount"></i>
+                <p> <span class="span-titlee">累计观看时长</span></br>
+                  <span class="span-count">0</span></p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+  </div>
+
+</div>
+
+<script>
+
+
+  var a=GetRequest();
+
+  console.log("id:"+a['id']); //打印出传过来的id
+
+  function GetRequest() {
+    //alert(location.href)
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for (var i = 0; i < strs.length; i++) {
+        theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest;
+  }
+
+  //location.href.split('?')[0].split('=')
+
+  function showCode() {
+    var id = document.getElementById("channelId").innerHTML;
+
+    var img = "http://"+ip+":8084/createCommonQRCode?id="+id;
+    var b =document.getElementById("erwm");
+    $("#erwm").attr('src',img);
+    b.style.display="block";
+     //var b = $("#erwm").attr('src',path);
+    //b.show;
+
+    //b.style.display="block";
+  }
+
+    $("#toDelete").click(function(){
+      var flag = confirm("确认要删除当前直播吗？删除后不可恢复！");
+      if(flag==true){
+        $.ajax({
+          type:"get",
+        url:'http://'+ip+':8084/live/deleteChannel',
+          data:{channelId:a['id']},
+          contentType:'application/json',
+          success:function(data){
+            location.href = "./Channelad.html"
+          },
+          error:function(data){
+            alert("出错了！");
+          }
+        })
+      }
+    });
+
+    $("#toClose").click(function () {
+      var flag = confirm("确认关闭直播频道！关闭后观众无法看到直播");
+      if(flag==true) {
+        $.ajax({
+          type: "post",
+          url: 'http://' + ip + ':8084/live/closeLive',
+          data: {channelId: a['id']},
+          success: function (data) {
+            $("#toClose").hide();
+            $("#toStart").show();
+          }
+        });
+
+      }
+  });
+
+  $("#toStart").click(function () {
+    var flag = confirm("确认开启直播频道！开启后观众可以看到直播");
+    if(flag==true) {
+      $.ajax({
+        type: "post",
+        url: 'http://' + ip + ':8084/live/startLive',
+        data: {channelId: a['id']},
+        success: function (data) {
+          $("#toClose").show();
+          $("#toStart").hide();
+        }
+      });
+
+    }
+  });
+
+
+
+    $("#Edit").click(function () {
+      location.href="Channelupdate.html?channelId="+channelId;
+    })
+
+  function copyUrl() {
+    var wayAddress = document.getElementById("channelWay");
+    wayAddress.select(); // 选择对象
+    document.execCommand("Copy"); // 执行浏览器复制命令
+  }
+
+  function copyUrls() {
+    var pageUrl = document.getElementById("indexurl");
+    pageUrl.select();
+    document.execCommand("Copy"); // 执行浏览器复制命令
+  }
+
+
+</script>
+</body>
+</html>

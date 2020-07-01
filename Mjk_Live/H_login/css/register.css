@@ -1,0 +1,176 @@
+*{
+  margin: 0px auto;
+  padding: 0px;
+}
+html,body{
+  width: 100%;
+  height: 100%;
+}
+body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  background-image: url('../img/allBJ.jpg');
+  overflow: hidden;
+  background-size:100% 100%;
+
+}
+.RCenter{
+  width: 880px;
+  height: 800px;
+  margin-top: 70px;
+  background-image: url('../img/Re-bj.png');
+  overflow: hidden;
+  background-size:100% 100%;
+  height: 850px;
+}
+.top{
+  width:871px;
+  height: 80px;
+
+}
+#title-p{
+  text-align: center;
+  /* margin-top: 59px; */
+  border-bottom: 5px solid;
+  width: 115px;
+  margin: auto;
+  margin-top: 54px;
+  font-family: MicrosoftYaHei;
+  font-size: 28px;
+  font-weight: bold;
+  font-stretch: normal;
+  line-height: 60px;
+  letter-spacing: 0px;
+  color: #01a5fe;
+}
+.ReAbout{
+  width: 404px;
+  height: 554px;
+}
+.ReAbout input{
+  height: 55px;
+  background-color: #e8f2fa;
+
+}
+/*手机号下拉框*/
+.phoneup{
+  width: 110px;
+  margin: auto;
+  float: left;
+padding-left: 1px;
+}
+#dropdownMenu1{
+  background-color: #e8f2fa;
+}
+.phoneup img{
+  position: absolute;
+  top: 13px;
+  left: 67px;
+}
+.phone{
+  width: 278px;
+  float: left;
+  margin-left: 15px;
+
+}
+.phone img{
+  position: absolute;
+  top: 7px;
+  /* left: 0px; */
+  right: 233px;
+}
+.phone input{
+  padding-left: 50px;
+}
+/*注册按钮*/
+.btn-login{
+  background-color: #01a5fe;
+  border-radius: 4px;
+  width: 400px;
+  height: 60px;
+  font-family: MicrosoftYaHei;
+  font-size: 18px;
+  font-weight: normal;
+  font-stretch: normal;
+  line-height: 60px;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+.imgi {
+  position: absolute;
+  top: 11px;
+  left: 5px;
+}
+.img3i{
+  position: absolute;
+  top: 15px;
+  left: 10px;
+}
+.password input{
+  padding-left: 50px;
+  padding-right: 5px;
+}
+#tel{
+  position: absolute;
+  right: 1px;
+  top: 20px;
+  color: #00a6fe;
+}
+.xy{
+  margin-left: 40px;
+  width: 65px;
+  height: 10px;
+  font-family: MicrosoftYaHeiLight;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  line-height: 60px;
+  letter-spacing: 0px;
+  color: #089518;
+}
+.back{
+  vertical-align: inherit;
+  position: absolute;
+  /* right: 1px; */
+  width: 840px;
+  text-align: right;
+  line-height: 3;
+}
+.userP{
+  width: 470px;
+  height: 460px;
+  background-color: white;
+  position: fixed;
+  top: 173px;
+  left: 730px;
+  border: 1px solid gainsboro;
+  display: none;
+}
+.u_top{
+  width: 100%;
+  height: 15%;
+  background-color: #eee;
+}
+.u_cen{
+  height: 85%;
+  background-color: #f5f5f5;
+  padding: 5px;
+}
+.mjk{
+  line-height: 4;
+  margin: 30px;
+  font-size: x-large;
+}
+.u_top img{
+  float: right;
+}
+.wb{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
+}
+

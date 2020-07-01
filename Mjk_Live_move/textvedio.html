@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/video.js/6.0.0-RC.5/alt/video-js-cdn.min.css" rel="stylesheet">
+
+
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="build/three.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="build/mxreality.js"></script>
+<script src="build/ptools.js"></script>
+<script src="video-js-4.12.11/video-js/video.js"></script>
+<script src="video-js-4.12.11/video-js/videojs-contrib-hls.min.js"></script>
+<body>
+<video id="hls-video" width="300" height="200" class="video-js vjs-default-skin"
+       playsinline webkit-playsinline
+       autoplay controls preload="auto"
+       x-webkit-airplay="true" x5-video-player-fullscreen="true" x5-video-player-typ="h5">
+
+  <source src="http://192.168.3.100:18080/live/1584930152915/index.m3u8" type="application/x-mpegURL">
+</video>
+
+
+<script>
+  var player = videojs('hls-video');
+  player.play();
+</script>
+</body>
+</html>

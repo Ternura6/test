@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+  <link rel="stylesheet" type="text/css" href="H_channel/css/Channel_personal.css"/>
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-paginator-master/src/bootstrap-paginator.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color","rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href="Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color","rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href="Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color","rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color","rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+    $('#lep1').click(function () {
+      $('#lep1').css("background-color","#00000054");
+      $('#lep1').siblings().css("background-color", "#606163");
+    });
+    $('#lep2').click(function () {
+      $('#lep2').css("background-color","#00000054");
+      $('#lep2').siblings().css("background-color", "#606163");
+    });
+    $('#lep3').click(function () {
+      $('#lep3').css("background-color","#00000054");
+      $('#lep3').siblings().css("background-color", "#606163");
+    });
+  })
+
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+</script>
+<script>
+  var uid="";
+  var ip = "";
+  window.onload=function (){
+    getIp();
+    var t =localStorage.getItem("token");
+    if (t==null){
+      alert("身份过期，请重新验证");
+      location.href = "Login.html";
+    }else if(t!=null){
+      setTimeout(function(){ session();},1000);
+    }
+    parse();
+  }
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+
+        }else
+        if (datas=="0"){
+          alert("该账号已断开连接");
+          location.href = "Login.html";
+        }else if (datas="3"){
+          alert("没有登陆信息，返回登陆");
+          location.href = "Login.html";
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function parse(search){
+    // var search=location.search;//获取链接？后的字符串
+    // var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+        }else {
+          $('#span_id').html(datas.userName);
+          $("#Uname").attr("value",datas.userName);
+          $("#Company").attr("value",datas.userCompany);
+
+          $("#Uname").attr("disabled", "true");//禁用input
+          $("#Company").attr("disabled", "true")//禁用input
+          uid=datas.userId;
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  function IsOk() {
+    var old =$("#OldPassWord").val();
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/sms/getPasswordByUid",
+      data :{
+        "oldPassword":old,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="ok"){
+          return true
+          var o =document.getElementById("oldSpan");
+          o.style.display="none";
+        }else if (datas=="no"){
+          var l =document.getElementById("oldSpan");
+          l.style.display="block";
+          $("#OldPassWord").val("");
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  function NewP() {
+    var Pw= $("#NewPassWord").val();
+    number=/^[a-zA-Z0-9]{6,12}$/;
+    if (number.test(Pw)){
+      var b =document.getElementById("NewSpan");
+      b.style.display="none";
+    }else {
+      var b =document.getElementById("NewSpan");
+      b.style.display="block";
+      $("#NewPassWord").val("");
+    }
+  }
+  function Ispass() {
+    var onep =$("#NewPassWord").val();
+    var ckp =$("#IsPassWord").val();
+    if (ckp==onep){
+      var c =document.getElementById("IsSpan");
+      c.style.display="none";
+    }else {
+      var d =document.getElementById("IsSpan");
+      d.style.display="block";
+      $("#IsPassWord").val("");
+      location.href = "Login.html";
+    }
+  }
+  //修改密码
+  function UpPassWord() {
+
+    var old =$("#OldPassWord").val();
+    var New =$("#NewPassWord").val();
+    var Is  =$("#IsPassWord").val();
+    if (old==null || New==null || Is==null){
+      alert("请将信息补充完整")
+      return false;
+    }else {
+      $.ajax({
+        type : "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url : "http://desktop-4t3m74s:8083/sms/UpdatePassWordByUid",
+        data :{
+          "newPassWord":New,
+        },
+        beforeSend: function(request) {
+          request.setRequestHeader("token",localStorage.getItem("token"));},
+        success : function(datas) {
+          alert(datas)
+          if (datas=="ok"){
+            $("#OldPassWord").val("");
+            $("#NewPassWord").val("");
+            $("#IsPassWord").val("");
+            alert("信息已修改，请重新登陆")
+            return true;
+
+          }else if (datas=="no"){
+            return false;
+          }
+        },
+        error: function (datas) {
+        }
+      });
+    }
+
+  }
+  //更换邮箱
+  function NewEmail() {
+    email=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    var ne =$("#NewEmail").val();
+    if(email.test(ne)){
+      var neyz =document.getElementById("NewEmailSpan");
+      neyz.style.display="none";
+
+      $.ajax({
+        type : "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url : "http://desktop-4t3m74s:8083/sms/emailisok",
+        data :{
+          "email":ne,
+        },
+        success : function(datas) {
+          if (datas==false){
+            var ist =document.getElementById("NewEmailSpan");
+            ist.style.display="block";
+            $("#NewEmailSpan").html("该邮箱不存在");
+            $("#NewEmail").val("");
+          }else {
+            var succ =document.getElementById("NewEmailSpan");
+            succ.style.display="block";
+            succ.style.color="green";
+            $("#NewEmailSpan").html("该邮箱可使用");
+          }
+        },
+        error: function (datas) {
+        }
+      })
+
+    }else {
+      var eer =document.getElementById("NewEmailSpan");
+      eer.style.display="block";
+      $("#NewEmailSpan").val(" ");
+    }
+  }
+  //发送邮箱验证
+  function sec() {
+    var ne =$("#NewEmail").val();
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/sms/emailsent",
+      data :{
+        "mail":ne,
+      },
+      success : function(datas) {
+        if (datas==false){
+          var have =document.getElementById("NewEmailSpan");
+          have.style.display="block";
+          $("#NewEmailSpan").html("该账户已存在，不可重复创建");
+
+        }else {
+          var ok =document.getElementById("NewEmailSpan");
+          ok.style.display="block";
+          ok.style.color="green";
+          $("#NewEmailSpan").html("该账户可使用");
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  //更改邮箱成功
+  function UpEmail() {
+    var isemail =$("#NewEmail").val();
+    var isecode  =$("#NewEPCode").val();
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/sms/upEmailbycode",
+      data :{
+        "email":isemail,
+        "code":isecode,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==false){
+          alert("验证码错误，失败")
+        }else {
+          alert("修改成功")
+        }
+      },
+      error: function (datas) {
+      }
+    })
+  }
+  //更换手机号
+  function NewPhone() {
+    phone = /^1[3456789]\d{9}$/;
+    var np =$("#NewPhone").val();
+    if(phone.test(np)){
+      var npyz =document.getElementById("NewPhoneSpan");
+      npyz.style.display="none";
+    }else {
+      var er =document.getElementById("NewPhoneSpan");
+      er.style.display="block";
+      $("#NewPhoneSpan").val(" ");
+    }
+  }
+  function sc() {
+    var np =$("#NewPhone").val();
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/sms/uptophone",
+      data :{
+        "phone":NewEmailSpan,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==false){
+          var have =document.getElementById("NewPhoneSpan");
+          have.style.display="block";
+          $("#NewPhoneSpan").html("该账户已存在，不可重复创建");
+
+        }else {
+          var ok =document.getElementById("NewPhoneSpan");
+          ok.style.display="block";
+          ok.style.color="green";
+          $("#NewPhoneSpan").html("该账户可使用");
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  function UpPhone() {
+    var isphone =$("#NewPhone").val();
+    var iscode  =$("#NewPCode").val();
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/sms/upPhonebycode",
+      data :{
+        "phone":isphone,
+        "code":iscode,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==false){
+          alert("验证码错误，失败")
+        }else {
+          alert("修改成功")
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function toH() {
+
+    window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+  }
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+  function out(){
+
+    var flag = confirm("确定退出该账号！");
+    if(flag==true) {
+      $.ajax({
+        type: "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/logintext/outlogin",
+        data: {},
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (datas) {
+          localStorage.removeItem('token');
+
+          location.href = "Login.html";
+        },
+        error: function (datas) {
+        }
+      });
+    }
+  }
+
+
+  function unameok() {
+
+
+    var uname =$("#Uname").val();
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url: "http://desktop-4t3m74s:8083/usercon/upNByuname",
+
+      data: {
+        "uname":uname,
+      },
+      success: function (data) {
+        if (data==1){
+     $("#unamespan").hide();
+     return true;
+        }else if (data==0){
+          $("#unamespan").show();
+          $("#unamespan").text(" ");
+        }else if (data==3){
+          $("#unamespan").show();
+          $("#unamespan").text("不可为空");
+
+        }
+      },
+      error: function (data) {
+
+      }
+
+    });
+
+  }
+  function unameup() {
+    $("#Uname").prop('disabled', false);//启用input
+    var bj =document.getElementById("UpUname")
+    bj.style.display="none";
+    var bc =document.getElementById("unameSave")
+    bc.style.display="block";
+  }
+
+  function unamese() {
+    $("#Uname").prop('disabled', true);//禁用input
+    var bj =document.getElementById("unameSave")
+    bj.style.display="none";
+    var bc =document.getElementById("UpUname")
+    bc.style.display="block";
+    var uname =$("#Uname").val();
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/usercon/Updateuserinfo",
+      data :{
+        "uname":uname,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==1){
+         $("#unamespan").hide();
+          alert("修改成功")
+	          location.reload();
+          return true;
+        }
+      },
+      error: function(datas) {
+      }
+    });
+  }
+  //公司名称
+  function ucompanok() {
+
+    var ucompany =$("#Company").val();
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url: "http://desktop-4t3m74s:8083/usercon/upNBycompny",
+
+      data: {
+        "usercompany":ucompany,
+      },
+      success: function (data) {
+        if (data==1){
+
+          $("#ucompanyspan").hide()
+
+          return true;
+        }else if (data==0){
+          $("#ucompanyspan").show();
+          $("#ucompanyspan").text(" ");
+        }else if (data==3){
+          $("#ucompanyspan").show();
+          $("#ucompanyspan").text("不可为空");
+
+        }
+      },
+      error: function (data) {
+
+      }
+
+    });
+  }
+  function ucomse() {
+    $("#Company").prop('disabled', false);//启用input
+    var bj =document.getElementById("UpComPany")
+    bj.style.display="none";
+    var bc =document.getElementById("ucompanySave")
+    bc.style.display="block";
+  }
+  function ucomce() {
+    $("#Company").prop('disabled', true);//禁用input
+    var bj =document.getElementById("ucompanySave")
+    bj.style.display="none";
+    var bc =document.getElementById("UpComPany")
+    bc.style.display="block";
+    var ucompany =$("#Company").val();
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://desktop-4t3m74s:8083/usercon/Updateusercompany",
+      data :{
+        "ucompany":ucompany,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==1){
+        $("#ucompanyspan").hide();
+          alert("修改成功")
+          return true;
+        }
+      },
+      error: function(datas) {
+      }
+    });
+  }
+
+  function setting() {
+    location.href="http://127.0.0.1:8088/Channel_setting.html"
+  }
+  function toper() {
+    location.href="http://127.0.0.1:8088/channel_personal.html"
+  }
+  function liveinfo() {
+    location.href="http://127.0.0.1:8088/channel_liveinfo.html"
+  }
+</script>
+<body style="background-color: #f5f5f5;">
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2" onclick="tovlive()">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+
+    <div id="li">
+      <div>
+
+        <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+        <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+        <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+      </div>
+
+    </div>
+<!--    <div class="erji" id="erji">-->
+<!--      <div onclick="perinfo()">1) 个人信息</div>-->
+<!--      <div onclick="liveing()">2) 直播统计</div>-->
+<!--      <div onclick="setting()">3) 系统通知</div>-->
+<!--    </div>-->
+  </div>
+</div>
+
+<div class="cen">
+  <div class="left">
+    <div class="le-top">
+      个人中心
+    </div>
+    <div class="le-nr">
+      <p class="le-p" id="lep1" style="  background-color: #00000054;" onclick="toper()">个人信息 </p>
+      <p class="le-p" id="lep2" onclick="liveinfo()">直播统计 </p>
+      <p class="le-p" id="lep3" onclick="setting()">系统通知 </p>
+
+    </div>
+
+
+  </div>
+
+  <div  class="right">
+    <div class="cr-top">
+      <p>
+        <span>
+          个人信息
+        </span>
+      </p>
+      <table>
+        <tr>
+          <td> 用户名:</td>
+          <td >
+            <input placeholder="用户名"   value="" type="text" id="Uname" onblur="unameok()">
+            <span id="unamespan" style="display: none; color: red" >用户名存在</span>
+          </td>
+          <td>
+            <button id="UpUname" onclick="unameup()">编辑</button>
+            <button id="unameSave" style="display:  none"  onclick="unamese()"> 保存</button>
+          </td>
+        </tr>
+
+        <tr>
+          <td> 公司名称:</td>
+          <td>
+            <input  id="Company" type="text" value="" placeholder="公司名称" onblur="ucompanok()">
+            <span id="ucompanyspan" style="display: none; color: red" >公司名存在</span>
+          </td>
+          <td>
+            <button id="UpComPany" onclick="ucomse()">编辑</button>
+            <button id="ucompanySave" style="display: none" onclick="ucomce()">保存</button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <hr width="85%" color="#6f5499" size="3" style="border-top: 1px solid #ddd;" />
+    <div class="cr-bottom">
+      <p>
+        <span>
+         账户安全
+        </span>
+      </p>
+      <div class="row row-safe">
+        <div class=" cpw">
+          <div class="col-xs-5 cpw-logo">
+            <i class="fa  fa-lock   fa-4x passw"></i>
+          </div>
+          <div class="col-xs-7 cpw-text">
+            <br>
+            <p>
+              <span class="t">登陆密码</span></br>
+              <span>
+            <button class="b"  data-toggle="modal" data-target="#UpPasswordModal">修改密码</button>
+            </span>
+            </p>
+          </div>
+        </div>
+        <div class=" cph">
+          <div class="col-xs-5 cpw-logo">
+            <i class="fa  fa-mobile   fa-5x phone"></i>
+          </div>
+          <div class="col-xs-7 cpw-text">
+            <br>
+            <p>
+              <span class="t">手机号</span></br>
+              <span>
+            <button class="b" data-toggle="modal" data-target="#UpPhoneModal">更换</button>
+            </span>
+            </p>
+          </div>
+
+        </div>
+        <div class=" cem">
+          <div class="col-xs-5 cpw-logo">
+            <i class="fa  fa-envelope   fa-4x email"></i>
+          </div>
+          <div class="col-xs-7 cpw-text">
+            <br>
+            <p>
+              <span class="t">邮箱</span></br>
+              <span>
+            <button class="b" data-toggle="modal" data-target="#UpEmailModal">更换</button>
+            </span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!--  系统通知-->
+  <div class="right3">
+    <div class="r3_top">
+      <p>消息通知</p>
+    </div>
+
+  </div>
+  <div class="xxdiv" id="xxdiv">
+
+
+  </div>
+
+  </div>
+
+
+<!--模态框-->
+<!--         //修改密码-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="UpPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+      </div>
+      <div class="modal-body">
+        <!--        //原始密码-->
+        <input type="password" class="form-control" id="OldPassWord" name="OldPassWord" placeholder=" 原始密码"  onblur="IsOk()">
+        <span style="display: none; color: red" id="oldSpan">原始密码错误</span>
+        <!--        //修改密码-->
+        <input type="password" class="form-control" id="NewPassWord" name="NewPassWord" placeholder=" 新密码(数字字母6-12)" onblur="NewP()">
+        <span style="display: none; color: red" id="NewSpan">密码格式错误</span>
+        <!--        //确认密码-->
+        <input type="password" class="form-control" id="IsPassWord" name="IsPassWord" placeholder=" 确认密码" onblur="Ispass()">
+        <span style="display: none; color: red" id="IsSpan">两次密码不一致</span>
+      </div>
+      <div class="modal-footer">
+
+        <button onclick="UpPassWord()"  type="button" class="btn btn-default" data-dismiss="modal">提交更改</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal -->
+</div>
+
+<!--模态框-->
+<!--         //修改手机号-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="UpPhoneModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel2">绑定新手机号</h4>
+      </div>
+      <div class="modal-body">
+        <input type=text class="form-control" id="NewPhone" name="NewPassWord" placeholder="绑定新手机号" onblur="NewPhone()">
+        <span style="display: none; color: red" id="NewPhoneSpan">号码格式错误</span>
+        <!--        //确认密码-->
+        <input type="text" class="form-control" id="NewPCode" name="IsPassWord" placeholder=" 请输入验证码" ><div id="SendCode" onclick="sc()">发送验证码</div>
+
+      </div>
+      <div class="modal-footer">
+
+        <button onclick="UpPhone()"  type="button" class="btn btn-default" data-dismiss="modal">提交更改</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal -->
+</div>
+
+<!--模态框-->
+<!--         //修改邮箱-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="UpEmailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel3">绑定新邮箱</h4>
+      </div>
+      <div class="modal-body">
+        <input type=text class="form-control" id="NewEmail" name="NewPassWord" placeholder="绑定新邮箱" onblur="NewEmail()">
+        <span style="display: none; color: red" id="NewEmailSpan">邮箱格式错误</span>
+        <!--        //确认密码-->
+        <input type="text" class="form-control" id="NewEPCode" name="IsPassWord" placeholder=" 请输入验证码" ><div id="SendECode" onclick="sec()">发送验证码</div>
+
+      </div>
+      <div class="modal-footer">
+
+        <button onclick="UpEmail()"  type="button" class="btn btn-default" data-dismiss="modal">提交更改</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal -->
+</div>
+
+
+
+
+</body>
+</html>

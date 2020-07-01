@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>弹幕测试</title>
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="jquerydanmu/dist/css/danmuplayer.css">
+  <!--  DanmuPlayer (//github.com/chiruom/danmuplayer/) - Licensed under the MIT license-->
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="jquerydanmu/dist/js/lib/jquery-1.11.1.min.js"></script>
+<script src="jquerydanmu/dist/js/danmuplayer.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="build/three.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="build/mxreality.js"></script>
+<script src="build/ptools.js"></script>
+<style>
+  #dm{
+    width: 500px;
+    height: 500px;
+    background-color: #c6ffff;
+    margin: auto;
+    position: relative;
+  }
+  #but{
+    text-align: center;
+  }
+  .spring{
+    position: absolute;
+    right: 0px;
+
+  }
+</style>
+<script >
+  $(function () {
+    $("#btn").click(function () {
+      var dam =$("#text").val();
+
+      var maxH =$("#dm").height();
+
+      var randomTop=Math.floor(Math.random()*maxH);
+      var danmu =$("<span class=\"spring\"></span>").text(dam).css({
+        "top":randomTop,
+        "color":getRandomColor(),
+      });
+      $("#dm").append(danmu);
+
+      $(".spring").animate({left:'0px'},10000,function(){
+        //移除元素
+        $(this).remove();
+
+      });
+
+      $("#text").val("");
+    })
+
+  });
+
+  function getRandomColor(){
+    var colorArr = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+    var color = "";
+    for(var i = 0; i < 6; i++){
+      color += colorArr[Math.floor(Math.random()*16)];
+    }
+    return "#"+color;
+  }
+</script>
+<body>
+<div id="dm">
+  <span class="spring">aaaas</span>
+</div>
+<div id="but">
+  <input type="text" class="text" id="text"/>
+  <button type="button" class="btn" id="btn">发射</button>
+</div>
+
+</body>
+</html>

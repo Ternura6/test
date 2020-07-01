@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>弹幕</title>
+  <style type="text/css">
+    html, body {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+      font-family: "微软雅黑";
+      font-size: 62.5%;
+    }
+
+    .boxDom {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .idDom {
+      width: 100%;
+      height: 10%;
+      background: #666;
+      position: fixed;
+      bottom: 0px;
+    }
+
+    .content {
+      display: inline-block;
+      width: 460px;
+      height: 40px;
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      margin: auto;
+    }
+
+    .title {
+      display: inline;
+      font-size: 4em;
+      vertical-align: bottom;
+      color: #fff;
+    }
+
+    .text {
+      border: none;
+      width: 300px;
+      height: 30px;
+      border-radius: 5px;
+      font-size: 2.4em;
+    }
+
+    .btn {
+      width: 60px;
+      height: 30px;
+      background: #f90000;
+      border: none;
+      color: #fff;
+      font-size: 2.4em;
+    }
+
+    span {
+      height: 40px;
+      position: absolute;
+      overflow: hidden;
+      color: #000;
+      font-size: 4em;
+      line-height: 1.5em;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #boxDom video{
+      width: 80%;
+      height: 90%;
+      float: left;
+    }
+    #boxDom .list-info{
+      width: 20%;
+      height: 90%;
+      float: left;
+      background-color: #666;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+      z-index: 999;
+    }
+    .list-info p{
+      font-size: 15px;
+      line-height: 20px;
+      border-bottom: 1px dashed #ccc;
+      text-indent: 2em;
+      color: #fff;
+    }
+
+  </style>
+</head>
+<body>
+<div class="boxDom" id="boxDom">
+  <video controls="controls" src="movie/10_2fdd2bbcd15c68497744f07d4527cef2_3.mp4"></video>
+  <div class="list-info"> </div>
+  <div class="idDom" id="idDom">
+    <div class="content">
+      <p class="title">吐槽:</p>
+      <input type="text" class="text" id="text"/>
+      <button type="button" class="btn" id="btn">发射</button>
+    </div>
+  </div>
+</div>
+<script src="js/vendor/jquery-3.4.1.min.js"></script>
+<script>
+  //生成随机颜色
+  var randomColor=function(){
+    var r= Math.floor(Math.random()*257);
+    var g= Math.floor(Math.random()*257);
+    var b= Math.floor(Math.random()*257);
+    return "rgb("+r+","+g+","+b+")";
+  }
+  //定义数组保存弹幕
+  var saveDan=[],index=0,tm;
+  //弹幕自动移动方法
+  var autoAnimate=function(){
+    index++;
+    index>saveDan.length-1 && (index=0);
+    saveDan[index].appendTo($("#boxDom")).animate({
+      "right":$(document).width(),
+    },10000,function () {
+      $(this).css("right",$(".list-info").width()-$(this).width()).remove();
+    });
+  }
+  //点击创建弹幕
+  $("#btn").click(function () {
+    var txt=$("#text");
+    var randomTop=Math.floor(Math.random()*($("#boxDom video").height()-40));
+    if(txt.val().trim().length==0)return;
+    var span= $("<span></span>").text(txt.val()).css({
+      "color":randomColor(),
+      "top":randomTop,
+      "right":$(".list-info").width(),
+      "z-index":888
+    });
+    saveDan.unshift(span);//将新的弹幕添加到数组内容的前面
+    //添加弹幕列表
+    $("<p></p>").text(txt.val()).css("color",randomColor()).prependTo($(".list-info"));
+    txt.val("");//清空文本框
+    //自动跑起来
+    clearInterval(tm);
+    index=saveDan.length-1
+    tm=setInterval(autoAnimate,1000);
+  });
+  //enter键确认发送
+  $(document).keydown(function (e) {
+    var e=e||window.event;
+    e.keyCode==13 && ($("#btn").click());
+  });
+</script>
+</body>
+</html>

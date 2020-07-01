@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>互动</title>
+  <link rel="stylesheet" type="text/css" href="H_channel/css/Channelspeak.css" />
+
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap-datetimepicker.css" rel="stylesheet">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap-datetimepicker.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap-datetimepicker.min.js"></script>
+<script src="http://pv.sohu.com/cityjson"></script>
+
+<script type="text/javascript">
+  var search = location.search;//获取链接？后的字符串
+  var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+  var ws;
+  function ToggleConnectionClicked() {
+    try {
+      // ws = new WebSocket("ws://192.168.3.100:8084/chatroom/"+str);//连接服务器
+      // ws.onopen = function(event){
+      //   // alert("已经与服务器建立了连接rn当前连接状态："+this.readyState);
+      // };
+      ws.onmessage = function(event){
+        //返回值
+        // alert("接收到服务器发送的数据：rn"+event.data);
+
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        //当前时间
+        var Ntime = year + '-' + getzf(month) + '-' + getzf(day) + ' ' + getzf(hour) + ':' + getzf(minute) + ':' + getzf(second);
+
+        var name ="管理员";
+        var ul_li = $("<div  class=\"sping\"  >" +
+          " <img class=\"spimg\" src=\"H_index/img/per.png\">" +
+          " <span class=\"rsp\"  > " +
+          "<div class=\"bbbbbdiv\">"+
+          "<button type=\"button\" id=\"del${index}\" class=\"btn btn-danger\"  value=\"\"  style=\"display: none;float: left;margin: 5px;\" >删除</button>"+
+          "<button type=\"button\" id=\"close${index}\" class=\"btn btn-info\"  value=\"\"  style=\"display: none;float: left;margin: 5px;  \"  >禁言</button>"+
+          "<button type=\"button\" id=\"toup${index}\" class=\"btn btn-success\" value=\"\"  style=\"display: none;float: left;margin: 5px; \" >置顶</button>"+
+          "</div>"+
+          " <p class=\"Cauthor\"  >" + name + "</p>" +
+          "<div class=\"gf\">官方</div>" +
+          "<div class=\"hdnr\"  >" + event.data + "</div>" +
+          " </span>" +
+          "<div class=\"ctime\">"+ Ntime +"</div>"+
+          "</div>");
+
+        //将信息追加
+        var b = $("#tit_rb");
+        b.append(ul_li);
+        $("#tit_rb").scrollTop($("#tit_rb")[0].scrollHeight);
+
+      };
+      ws.onclose = function(event){
+        // alert("已经与服务器断开连接rn当前连接状态："+this.readyState);
+      };
+      ws.onerror = function(event){
+        // alert("WebSocket异常！");
+      };
+    } catch (ex) {
+      alert(ex.message);
+    }
+  };
+
+  function SendData() {
+    var font =$("#kk_about").val();
+
+
+    try{
+      ws.send(font);
+    }catch(ex){
+      alert(ex.message);
+    }
+  };
+
+  function seestate(){
+    alert(ws.readyState);
+  }
+
+  var lockReconnect = false;  //避免ws重复连接
+  var ws = null;          // 判断当前浏览器是否支持WebSocket
+  var wsUrl = "ws://127.0.0.1:8084/chatroom/" + str;
+  createWebSocket(wsUrl);   //连接ws
+
+  function createWebSocket(url) {
+    try{
+      if('WebSocket' in window){
+        ws = new WebSocket(url);
+      }
+      ToggleConnectionClicked();
+    }catch(e){
+      reconnect(url);
+      console.log(e);
+    }
+  }
+
+
+  // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+  window.onbeforeunload = function() {
+    ws.close();
+  }
+
+  function reconnect(url) {
+    if(lockReconnect) return;
+    lockReconnect = true;
+    setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+      createWebSocket(url);
+      lockReconnect = false;
+    }, 2000);
+  }
+
+  //心跳检测
+  var heartCheck = {
+    timeout: 1000,        //1分钟发一次心跳
+    timeoutObj: null,
+    serverTimeoutObj: null,
+    reset: function(){
+      clearTimeout(this.timeoutObj);
+      clearTimeout(this.serverTimeoutObj);
+      return this;
+    },
+    start: function(){
+      var self = this;
+      this.timeoutObj = setTimeout(function(){
+        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+        //onmessage拿到返回的心跳就说明连接正常
+        ws.send("ping");
+        console.log("ping!")
+        self.serverTimeoutObj = setTimeout(function(){//如果超过一定时间还没重置，说明后端主动断开了
+          ws.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+        }, self.timeout)
+      }, this.timeout)
+    }
+  }
+  //补0操作
+  function getzf(num){
+    if(parseInt(num) < 10){
+      num = '0'+num;
+    }
+    return num;
+  }
+</script>
+<script type="text/javascript">
+  var ip = "";
+  var uid="";
+  window.onload=function () {
+    getIp();
+    var t =localStorage.getItem("token");
+    if (t==null){
+      alert("身份过期，请重新验证");
+      location.href = "Login.html";
+    }else {
+      setTimeout(function(){ session();},1000);
+    }
+    var search=location.search;//获取链接？后的字符串
+    var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+    //账户名
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+
+        }else {
+          $('#span_id').html(datas.userName);
+          $("#uid").val(datas.userId);
+          uid=datas.userId;
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+
+    });
+
+    var banned=[];
+    var i=0;
+    $.ajax({
+      type: 'post',
+      url: "http://127.0.0.1:8084/live/selectchanneltype",
+      async:false,
+      data :{
+        "channelId":str,
+
+      },
+      success: function (data) {
+        if (data.length!=0){
+          for (i=0;i<data.length;i++){
+            banned.push(data[i].userId);
+
+          }
+        }else {
+          banned.push(0);
+        }
+
+      },
+      error: function () {
+        alert("错误");
+      }
+    });
+
+    //互动记录
+    $.ajax({
+      type: "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url: "http://127.0.0.1:8084/live/selectBarrageById",
+      data: {
+        "id":str,
+      },
+      success: function (datas) {
+         //清空节点
+       $("#tit_rb").empty();
+        var index=0 ;
+        var yan="";
+        var j=0;
+        for (var i=0;i <=datas.length-1;i++) {
+
+          for(j = 0; j < banned.length; j++) {
+            if (datas[i].userId==banned[j]){
+              yan="发言";
+              j=banned.length;
+            }else {
+              yan ="禁言";
+            }
+            }
+          var child;
+          index ++;
+          if (datas[i].userName=="管理员"){
+           child = `  <div class="sping"  id="kk${index}" onmousemove="btncz(${index})" onmouseout="adbtncz(${index}) ">
+                         <img class="spimg" src="H_index/img/per.png">
+                         <span class="rsp"  >
+                         <div class="bbbbbdiv">
+                            <button type="button" id="del${index}" class="btn btn-danger"  value=""  style="display: none;float: left;margin: 5px;" >删除</button>
+                            <button type="button" id="close${index}" class="btn btn-info${datas[i].userId}"  value=""  style="display: none;float: left;margin: 5px;  "  onclick="jinyan(${datas[i].userId})" >${yan}</button>
+                            <button type="button" id="toup${index}" class="btn btn-success" value=""  style="display: none;float: left;margin: 5px; " >置顶</button>
+                       </div>
+                         <p class="Cauthor">${datas[i].userName}</p>  <div class="gf">官方</div>
+                         <span class="hdnr"  > ${datas[i].content}</span>
+                         </span>
+                         <div class="ctime">${datas[i].createTime}</div>
+                         </div>`;
+          }else {
+            child = `<div class="sping" id="kk${index}" onmousemove="btncz(${index})" onmouseout="adbtncz(${index}) ">
+                         <img class="spimg" src="H_index/img/per.png">
+                         <span class="rsp" >
+                         <div class="bbbbbdiv">
+                            <button type="button" id="del${index}" class="btn btn-danger"  value=""  style="display: none;float: left;margin: 5px;" >删除</button>
+                            <button type="button" id="close${index}" class="btn btn-info${datas[i].userId}"  value=""  style="display: none;float: left;margin: 5px;  "   onclick="jinyan(${datas[i].userId})" >${yan}</button>
+                            <button type="button" id="toup${index}" class="btn btn-success" value=""  style="display: none;float: left;margin: 5px; " >置顶</button>
+                       </div>
+                         <p class="Cauthor">${datas[i].userName}</p>
+                         <span class="hdnr"  > ${datas[i].content}</span>
+                         </span>
+                         <div class="ctime">${datas[i].createTime}</div>
+                         </div>`;
+          }
+          $("#tit_rb").append(child);
+        }
+
+      },
+      error: function (datas) {
+      }
+
+    });
+
+    //是否可以展示页面
+    $.ajax({
+      type:"GET",
+      url:'http://127.0.0.1:8084/live/test',
+      data:{
+        "id":str,
+      },
+      dataType : "json",
+      async:true,
+      success:function(data){
+        if (data.viewDisplay==0){
+          $("#os").css('background-color', 'white');
+          $("#ic").css({
+            "background-color":"#77e1f9",
+            "float":"left",
+          });
+        }else {
+          $("#os").css('background-color', '#77e1f9');
+          $("#ic").css({
+            "background-color":"white",
+            "float":"right",
+          });
+        }
+      },
+      error:function(data){
+
+      }
+    })
+
+    //是否可以发言
+    $.ajax({
+      type:"GET",
+      url:'http://127.0.0.1:8084/live/test',
+      data:{
+        "id":str,
+      },
+      dataType : "json",
+      async:true,
+      success:function(data){
+        $("#liveName").text(data.channelName);
+        var Time = new Date(data.channelBtime).toLocaleString();
+
+        $("#livetim").text(Time);
+        if (data.channelStatus==2){
+
+          $("#stau").text("预告")
+        }else if (data.channelStatus==1){
+
+          $("#stau").text("直播")
+        }else if (data.channelStatus==3){
+
+          $("#stau").text("结束")
+        }
+        if (data.allowTochat==0){
+          $("#fk").css('background-color', 'white');
+          $("#bingo").text("");
+        }else {
+          $("#fk").css('background-color', '#77e1f9');
+
+          $("#bingo").text("√");
+        }
+      },
+      error:function(data){
+
+      }
+    })
+
+  }
+  //禁言
+  function  jinyan(uid) {
+    var search=location.search;//获取链接？后的字符串
+    var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    var but =$(".btn-info"+uid).text();
+    var la= but.substring(0,2);
+
+    if (la== "禁言"){
+
+      $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/live/notToChatchannel",
+      async:false,
+      data :{
+        "channelId":str,
+        "userId":uid,
+
+      },
+      success: function (data) {
+        location.reload();
+      },
+      error: function () {
+        alert("错误");
+      }
+    });
+  }else if (la=="发言"){
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/live/allowToChatchannel",
+      async:false,
+      data :{
+        "channelId":str,
+        "userId":uid,
+
+      },
+      success: function (data) {
+        location.reload();
+      },
+      error: function () {
+        alert("错误");
+      }
+    });
+
+  }
+}
+  //获取客户端ip
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+
+        }else
+        if (datas=="0"){
+          alert("该账号已断开连接");
+          location.href = "Login.html";
+        }else if (datas="3"){
+          alert("没有登陆信息，返回登陆");
+          location.href = "Login.html";
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  //互动信息鼠标移入移出事件
+  function btncz(index) {
+    $("#kk"+index).css("background-color","#f5f5f5")
+
+    $("#del"+index).show();
+    $("#close"+index).show();
+    $("#toup"+index).show();
+  }
+  function adbtncz(index) {
+    $("#kk"+index).css("background-color","white")
+    $("#del"+index).hide();
+    $("#close"+index).hide();
+    $("#toup"+index).hide();
+  }
+
+  function zl() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#zl").css('background-color', '#5cbbff');
+    $("#zl").siblings().css('background-color', '#5cbbff00');
+    $("#ls-bj").css('display','none');
+    $("#ls-hd").css('display','none');
+    location.href="Channelinfo.html?id="+str;
+  }
+  function  Liveset() {
+    $("#liveSetting").css('background-color', '#5cbbff');
+    $("#liveSetting").children("span").css('color','white');
+    $("#liveSetting").siblings().css('background-color', '#5cbbff00');
+    $("#liveSetting").siblings().children("span").css('color','black');
+    $("#ls-bj").css('display','block');
+    $("#ls-hd").css('display','block');
+
+  }
+  function bj() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#ls-bj").css('background-color', '#5cbbff');
+    $("#ls-bj").siblings().css('background-color', '#5cbbff00');
+    location.href="Channelupdate.html?channelId="+str;
+  }
+  function hd() {
+    var search = location.search;//获取链接？后的字符串
+    var str = search.substring(search.lastIndexOf("=") + 1);//获取=后的userid
+    $("#ls-hd").css('background-color', '#5cbbff');
+    $("#ls-hd").siblings().css('background-color', '#5cbbff00');
+    location.href="Channelspeak.html?id="+str;
+  }
+
+  function showpage() {
+    var search=location.search;//获取链接？后的字符串
+    var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+   var icbc=$("#ic").css("background-color");
+   if (icbc=="rgb(255, 255, 255)"){
+     $("#os").css('background-color', 'white');
+     $("#ic").css({
+       "background-color":"#77e1f9",
+       "float":"left",
+     });
+     //页面不展示
+     $.ajax({
+       type: "post",
+       async: false,//同步
+       cache: false,//不缓存
+       url: "http://127.0.0.1:8084/live/notDisplay",
+       data: {
+         "id":str,
+       },
+       success: function (datas) {
+
+
+       },
+       error: function (datas) {
+       }
+
+     });
+   }else {
+     $("#os").css('background-color', '#77e1f9');
+     $("#ic").css({
+       "background-color":"white",
+       "float":"right",
+     });
+     //页面展示
+     $.ajax({
+       type: "post",
+       async: false,//同步
+       cache: false,//不缓存
+       url: "http://127.0.0.1:8084/live/viewDisplay",
+       data: {
+         "id":str,
+       },
+       success: function (datas) {
+
+
+       },
+       error: function (datas) {
+       }
+
+     });
+   }
+  }
+
+  function toH() {
+
+    window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+  }
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+
+  function out(){
+
+    var flag = confirm("确定退出该账号！");
+    if(flag==true) {
+      $.ajax({
+        type: "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/logintext/outlogin",
+        data: {},
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (datas) {
+          localStorage.removeItem('token');
+
+          location.href = "Login.html";
+        },
+        error: function (datas) {
+        }
+      });
+    }
+  }
+
+
+
+
+
+  function cleanall() {
+ var yy =$("#bingo").text();
+ if (yy==""||yy==null){
+
+   $("#fk").css('background-color', '#77e1f9');
+
+   $("#bingo").text("√");
+   //允许发言
+   $.ajax({
+     type: "post",
+     async: false,//同步
+     cache: false,//不缓存
+     url: "http://127.0.0.1:8084/live/allowToChat",
+     data: {
+       "id":str,
+     },
+     success: function (datas) {
+
+
+     },
+     error: function (datas) {
+     }
+
+   });
+ }else {
+   $("#fk").css('background-color', 'white');
+   $("#bingo").text("");
+   //开启禁言
+   $.ajax({
+     type: "post",
+     async: false,//同步
+     cache: false,//不缓存
+     url: "http://127.0.0.1:8084/live/notToChat",
+     data: {
+       "id":str,
+     },
+     success: function (datas) {
+
+
+     },
+     error: function (datas) {
+     }
+
+   });
+ }
+}
+
+ function clogbycid(){
+   var search=location.search;//获取链接？后的字符串
+   var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+   //页面不展示
+   $.ajax({
+     type: "post",
+     async: false,//同步
+     cache: false,//不缓存
+     url: "http://127.0.0.1:8084/live/cleanBychannelid",
+     data: {
+       "id":str,
+     },
+     success: function (datas) {
+       location.reload();
+       alert("互动记录已清空");
+     },
+     error: function (datas) {
+     }
+
+   });
+
+ }
+
+
+
+ function createeExc() {
+   var search=location.search;//获取链接？后的字符串
+   var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+   $.ajax({
+     type: "GET",
+     async: false,//同步
+     cache: false,//不缓存
+     url: "http://127.0.0.1:8084/live/inputtaking",
+     data: {
+       "id":str,
+     },
+     success: function (datas) {
+
+       alert("互动记录保存至e盘");
+     },
+     error: function (datas) {
+     }
+
+   });
+  window.location.href=encodeURI('http://127.0.0.1:8084/live/inputtaking?id='+str);
+
+   location.reload();
+
+ }
+
+</script>
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+
+    $('#anan').click(function () {
+      var font =$('#kk_about').val();
+      var uid= $('#uid').val();
+      $.ajax({
+        type: "post",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8084/live/addBarrage",
+        data: {
+          "channelId": str,
+          "userId": uid,
+          "userName": "管理员",
+          "content": font
+        },
+        success: function (datas) {
+
+          if (datas == 1) {
+
+          } else if (datas == 2) {
+          }
+        },
+        error: function (datas) {
+          alert("error")
+        }
+      });
+      $("#kk_about").val("");
+    })
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color", "rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href = "Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color", "rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href = "Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color", "rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color", "rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+  })
+
+
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+</script>
+<body style="background-color: #f5f5f5;">
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <input id="uid" style="display: none" value="">
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+    <div id="li">
+      <div>
+
+        <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+        <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+        <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+      </div>
+
+    </div>
+<!--    <div class="erji" id="erji">-->
+<!--      <div onclick="perinfo()">1) 个人信息</div>-->
+<!--      <div onclick="liveing()">2) 直播统计</div>-->
+<!--      <div onclick="setting()">3) 系统通知</div>-->
+<!--    </div>-->
+  </div>
+</div>
+<!--标题-->
+<div class="InfoTitle">
+  <div class="lin1">
+    <div class="liveName" id="liveName">
+      直播名称
+    </div>
+    <div class="status">
+      <p class="stau" id="stau">状态</p>
+    </div>
+  </div>
+  <p id="livetim">
+    2020-01-31 12：30
+  </p>
+
+</div>
+<div class="IfAbout">
+  <div class="left">
+    <div class="zl" onclick="zl()" id="zl">
+      <span>总览</span>
+    </div>
+    <div class="liveSetting" id="liveSetting" onclick="Liveset()">
+      <span>直播设置</span>
+    </div>
+    <div class="ls-bj" id="ls-bj" onclick="bj()">
+      <span>编辑</span>
+    </div>
+    <div class="ls-hd" id="ls-hd" onclick="hd()">
+      <span>互动</span>
+    </div>
+  </div>
+  <div class="right">
+  <div class="r_top">
+     <div class="tit_rt">
+        <div class="showwatchpage">
+          <span>观看页显示</span>
+          <div class="os" id="os" onclick="showpage()">
+            <div class="ic" id="ic"  ></div>
+          </div>
+        </div>
+         <div class="onoff">
+            <div class="fk" id="fk" onclick="cleanall()">
+              <span id="bingo">&radic;</span>
+            </div>
+           <span>允许观众聊天</span>
+         </div>
+         <div class="clean" onclick="clogbycid()">
+         <span>清空</span>
+         </div>
+         <div class="outlog" onclick="createeExc()">
+           <span>导出</span>
+
+         </div>
+
+     </div>
+    <div class="tit_rb" id="tit_rb">
+<!--   互动记录-->
+
+    </div>
+  </div>
+  <div class="r_bottom">
+    <input type=text class="form-control" id="kk_about" name="kk_about" placeholder="请输入..." value="" >
+    <div class="an" id="anan" onclick="SendData()">
+      <span>发送</span>
+    </div>
+  </div>
+
+
+  </div>
+</div>
+
+</body>
+</html>

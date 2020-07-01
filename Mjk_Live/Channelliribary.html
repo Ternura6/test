@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>媒体库</title>
+  <link rel="stylesheet" type="text/css" href="H_channel/css/Channelliribary.css" />
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script src="js/vendor/modernizr-3.7.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="bootstrap-paginator-master/src/bootstrap-paginator.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+<script>
+  $(function(){
+    $('#span_fa').click(function(){//点击a标签
+      if($('#li').is(':hidden')){//如果当前隐藏
+        $('#li').show();//那么就显示div
+      }else{//否则
+        $('#li').hide();//就隐藏div
+      }
+    })
+
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#li').hide();
+    });
+    $('#span_fa').click(function(event){
+      event.stopPropagation();
+    });
+    $('#li').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+  $(function () {
+    $('#title1').click(function () {
+      $('#title1').css("color","rgb(22, 193, 245)");
+      $('#title1').siblings().css("color", "#000000");
+      location.href="Channelad.html";
+    });
+    $('#title2').click(function () {
+      $('#title2').css("color","rgb(22, 193, 245)");
+      $('#title2').siblings().css("color", "#000000");
+      location.href="Channelliribary.html";
+
+    });
+    $('#title3').click(function () {
+      $('#title3').css("color","rgb(22, 193, 245)");
+      $('#title3').siblings().css("color", "#000000");
+    });
+    $('#title4').click(function () {
+      $('#title4').css("color","rgb(22, 193, 245)");
+      $('#title4').siblings().css("color", "#000000");
+    });
+
+    $('#uplive').click(function () {
+      $('#uplive').css({
+        "background-color":"#5CD5FF",
+        "color":"white",
+      })
+      $('#downlive').css({
+        "background-color": "#e2e2e2",
+         "color": "black",
+      })
+
+    })
+    $('#downlive').click(function () {
+      $('#downlive').css({
+        "background-color":"#5CD5FF",
+        "color":"white",
+      })
+      $('#uplive').css({
+        "background-color": "#e2e2e2",
+        "color": "black",
+      })
+
+    })
+
+  })
+  $(function () {
+    $(document).click(function(){
+      $('#erji').hide();
+
+    });
+    $('#span_fa').click(function(event){
+      $('#erji').hide();
+    });
+    $('#percen').click(function(event){
+      event.stopPropagation();
+    });
+    $('#erji').click(function(event){
+      event.stopPropagation();
+    });
+  })
+
+</script>
+<script>
+  var uid="";
+  var ip = "";
+  window.onload=function () {
+    getIp();
+    var t =localStorage.getItem("token");
+    if (t==null){
+      alert("身份过期，请重新验证");
+      location.href = "Login.html";
+    }else if(t!=null){
+      setTimeout(function(){ session();},1000);
+    }
+    parse();
+    filecount()
+    pagesize();
+    pagelist();
+    textcounts();
+    filesize();
+
+  }
+
+  //字数
+  function textcounts() {
+    var text=$('#cname').val();
+    var len =text.length;
+    var flag = true;
+    $('#cname').on('compositionstart',function(){
+      flag = false;
+    })
+    $('#cname').on('compositionend',function(){
+      flag = true;
+    })
+    $('#cname').on('input',function(){
+      var cthis = this;
+      setTimeout(function(){
+        if(flag){
+          console.log($(cthis).val());
+          $('#cname').next().find('span').html(len)
+          $("#cname").keyup(function () {
+            var text =$(cthis).val();
+            len = text.length;
+            if (len > 15) {
+              alert("直播名称过长")
+              $('#cname').val(text.substring(0,15));
+
+              text=$('#cname').val();
+              len =text.length;
+            }
+            $(this).next().find('span').html(len);
+          })
+        }
+      },0)
+
+    })
+  }
+  //页面容量统计
+  function filesize() {
+
+
+    $.ajax({
+      type: "get",
+      url: "http://127.0.0.1:8084/video/selectvideofsize",
+      async: false,
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success: function (res) {
+      $("#gbsize").text(res);
+
+      },
+      error: function () {
+        //alert("上传出错");
+      }
+
+    });
+  }
+  //获取客户端ip
+  function getIp() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8084/getIp/getIpforkh",
+      data :{},
+
+      success : function(datas) {
+
+        ip=datas;
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+  function session() {
+
+    $.ajax({
+      type : "get",
+      url : "http://127.0.0.1:8083/logintext/session",
+      data :{
+        "ip":ip,
+      },
+
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas=="1"){
+
+        }else
+        if (datas=="0"){
+          alert("该账号已断开连接");
+          location.href = "Login.html";
+        }else if (datas="3"){
+          alert("没有登陆信息，返回登陆");
+          location.href = "Login.html";
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+  function parse(search){
+    // var search=location.search;//获取链接？后的字符串
+    // var str=search.substring(search.lastIndexOf("=")+1);//获取=后的userid
+
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8083/login/selectByUid",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        if (datas==null){
+          alert("用户信息加载失败")
+        }else {
+          $('#span_id').html(datas.userName);
+          uid=datas.userId;
+          // var ifr = document.all("iframe_id");
+          // window.result.location.href=ifr.src +"?username=" +datas.userName+ "&usercompany=" +datas.userCompany +"&userphone=" +datas.userPhone;
+        }
+      },
+      error: function (datas) {
+      }
+    });
+  }
+  function toH() {
+
+    window.open("http://127.0.0.1:8088/Sweb/index"+uid +".html");
+  }
+  function userad() {
+
+    location.href="http://127.0.0.1:8088/channel_personal.html";
+  }
+  function out(){
+
+    var flag = confirm("确定退出该账号！");
+    if(flag==true) {
+      $.ajax({
+        type: "get",
+        async: false,//同步
+        cache: false,//不缓存
+        url: "http://127.0.0.1:8083/logintext/outlogin",
+        data: {},
+        beforeSend: function (request) {
+          request.setRequestHeader("token", localStorage.getItem("token"));
+        },
+        success: function (datas) {
+          localStorage.removeItem('token');
+
+          location.href = "Login.html";
+        },
+        error: function (datas) {
+        }
+      });
+    }
+  }
+
+
+
+
+  //  总页码
+  function pagesize() {
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/video/allvideoselect",
+      dataType: "json",
+      async:false,
+      success: function (data) {
+
+        document.getElementById("pagesize").value = data
+      },
+      error: function () {
+        alert("错误");
+      }
+    });
+
+  }
+  //分页标签
+  function pagelist(bname) {
+    var pagesize=$("#pagesize").val();
+    $('#pageLimit').bootstrapPaginator({
+      currentPage: 1,//当前页。
+      totalPages: pagesize,//总页数。
+      size: "normal",//应该是页眉的大小。
+      bootstrapMajorVersion: 3,//bootstrap的版本要求。
+      pageNumber: 1, //初始化加载第一页，默认第一页
+      alignment: "right",
+      numberOfPages: 5,//显示的页数
+      alignment: "center",
+      itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+        switch (type) {
+          case "first":
+            return "首页";
+          case "prev":
+            return "上一页";
+          case "next":
+            return "下一页";
+          case "last":
+            return "末页";
+          case "page":
+            return page;
+        }
+      },
+      onPageClicked: function (event, originalEvent, type, page) {//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/video/findList",
+          dataType: "json",
+          data: {
+            "page": page,
+            "bname":bname,
+          },
+          beforeSend: function(request) {
+            request.setRequestHeader("token",localStorage.getItem("token"));},
+          async: false,
+          success: function (data) {
+            if (data.rows.length==0){
+              $("#list").hide();
+              $("#no").show();
+            }else {
+              $("#no").hide();
+              $("#list").show();
+            ///清空节点
+            $("#table").children("tr").remove();
+            //取出后端传过来的list值
+            var chargeRuleLogs = data.rows;
+            //对list值进行便利
+
+            var down="";
+            var DoU="";
+            $.each(chargeRuleLogs, function (index, n) {
+
+              Date.prototype.toLocaleString = function() {
+                return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+              };
+
+              var rowTr = document.createElement('tr');
+              //找到html的tr节点
+
+              //判断视频类型
+              if (n.video_type==1){
+                type="VR";
+              }else if (n.video_type==2){
+                type="普通";
+              }
+              //是否下架
+              if (n.video_down==4){
+                down="已下架"
+                DoU="上架"
+
+              }else {
+                down=""
+                DoU="下架"
+              }
+
+              rowTr.className = "tr_node";
+              var  child= `
+        <tr class="nrcl">
+                <td class="fm">
+                <input type="checkbox"  name="checkName" id="${n.video_id}" onclick="countNum()" class="checkname"  style="float: left;">
+                <div class="fmdiv">
+                <img src="${n.video_cover}" class="fmimg" >
+                </div>
+                </td>
+                <td id="name${n.video_id}">${n.video_name}</td>
+                <td>${type}</td>
+                <td>${n.video_file_size}</td>
+              <td class="czbutt">
+ <div class="${n.video_id}" id="xq${n.video_id}"style=" border-radius: 5px;width: 50px;height: 20px;background-color:#0BC9F9;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="tochannelinfo(this.className)" >详情</div>
+ <div class="${n.video_id}" id="xg${n.video_id}"style="border-radius: 5px; width: 50px;height: 20px;background-color:#18AA41;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="updatevideo(this.className)">修改</div>
+ <div class="${n.video_id}" id="dn${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#FF9066;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="UDbut(this.className)" >${DoU}</div>
+ <div class="${n.video_id}" id="de${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#CB2828;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="delbyid(this.className)"  >删除</div>
+ <div class="${n.video_id}" id="fx${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#22DCED;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;"  >分享</div>
+                </td>
+                </tr>`;
+
+              //将信息追加
+              $("#table").append(child);
+
+            });
+            }
+          },
+          error: function (data) {
+            console.log(data);
+          }
+        })
+      }
+    });
+
+    //刷新即展示
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/video/findList",
+      dataType: "json",
+      data: {
+        "bname":bname,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      async: false,
+      success: function (data) {
+        if (data.rows.length==0){
+          $("#list").hide();
+          $("#no").show();
+        }else {
+          $("#no").hide();
+          $("#list").show();
+
+        $("input[type='checkbox']").attr("checked", false);
+        ///清空节点
+        $("#table").children("tr").remove();
+        //取出后端传过来的list值
+        var chargeRuleLogs = data.rows;
+        //对list值进行便利
+
+        var down="";
+        var DoU="";
+        var type="";
+        $.each(chargeRuleLogs, function (index, n) {
+
+          Date.prototype.toLocaleString = function() {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+          };
+
+          var rowTr = document.createElement('tr');
+          //找到html的tr节点
+
+          //判断视频类型
+          if (n.video_type==1){
+            type="VR";
+          }else if (n.video_type==2){
+            type="普通";
+          }
+          //是否下架
+          if (n.video_down==4){
+            down="已下架"
+            DoU="上架"
+
+          }else {
+            down=""
+            DoU="下架"
+          }
+
+          rowTr.className = "tr_node";
+          var  child= `
+        <tr class="nrcl">
+                <td class="fm">
+                <input type="checkbox" name="checkName" id="${n.video_id}" onclick="countNum()" class="checkname" style="float: left;">
+                <div class="fmdiv">
+                <img src="${n.video_cover}" class="fmimg" >
+                </div>
+                </td>
+                <td id="name${n.video_id}">${n.video_name}</td>
+                <td>${type}</td>
+                <td>${n.video_file_size}</td>
+              <td class="czbutt">
+ <div class="${n.video_id}" id="xq${n.video_id}"style=" border-radius: 5px;width: 50px;height: 20px;background-color:#0BC9F9;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="tochannelinfo(this.className)" >详情</div>
+ <div class="${n.video_id}" id="xg${n.video_id}"style="border-radius: 5px; width: 50px;height: 20px;background-color:#18AA41;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="updatevideo(this.className)">修改</div>
+ <div class="${n.video_id}" id="dn${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#FF9066;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="UDbut(this.className)" >${DoU}</div>
+ <div class="${n.video_id}" id="de${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#CB2828;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="delbyid(this.className)"  >删除</div>
+ <div class="${n.video_id}" id="fx${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#22DCED;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;"  >分享</div>
+                </td>
+                </tr>`;
+
+          //将信息追加
+          $("#table").append(child);
+
+        });
+        }
+      },
+      error: function (data) {
+        console.log(data);
+      }
+    })
+  }
+  function tochannelinfo(id) {
+  location.href="liveinfo.html?vid="+id;
+
+  }
+
+  function UDbut(id) {
+   var status =$("#dn"+id).text();
+
+   if (status=="上架"){
+     $.ajax({
+       type : "POST",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8084/video/restoreLive",
+       data :{
+         "videoId":id,
+       },
+
+       success : function(datas) {
+         $("#dn"+id).text("下架");
+         upstatus(4);
+       },
+       error: function (datas) {
+       }
+
+     });
+   }else if(status=="下架"){
+     $.ajax({
+       type : "POST",
+       async: false,//同步
+       cache: false,//不缓存
+       url : "http://127.0.0.1:8084/video/updateRemoveShelves",
+       data :{
+         "videoId":id,
+       },
+
+       success : function(datas) {
+         $("#dn"+id).text("上架");
+         upstatus(0);
+       },
+       error: function (datas) {
+       }
+
+     });
+
+   }
+
+  }
+  //模糊查询
+  function mhse() {
+    //  mhClistPage
+    var bname =$("#nameText").val();
+    $.ajax({
+      type:"get",
+      url:"http://127.0.0.1:8084/video/videomhselect",
+      data:{"bname":bname,},
+      dataType:"json",
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));
+      },
+      success:function(data){
+        document.getElementById("pagesize").value = data
+      },
+      error:function(){
+
+      }
+    })
+    setTimeout(function () {
+      pagelist(bname);
+    },500);
+
+  }
+  //获取上传图片路径1
+  function changepic() {
+    $("#img3").empty();
+
+    var reads = new FileReader();
+    f = document.getElementById('file').files[0];
+
+    reads.readAsDataURL(f);
+    reads.onload = function (e) {
+      document.getElementById('img3').src = this.result;
+      $("#img3").css("display", "block");
+    };
+  }
+  function ocupdiv() {
+     $("#updiv").hide();
+    location.reload();
+  }
+  function openupdiv() {
+      $("#updiv").show();
+  }
+  function opRcl() {
+    var dm = $('#Hd')[0].src
+
+    var index = dm.lastIndexOf("\/")
+    var addrLast = decodeURI(dm.substring(index + 1, dm.length));
+    if (addrLast=="HDclose.png"){
+      $("#Hd").attr("src","H_channel/img/HDopen.png")
+      $("#Vrpt").val(1);
+    }else {
+      $("#Hd").attr("src","H_channel/img/HDclose.png")
+      $("#Vrpt").val(2);
+    }
+  }
+  function getfilesize(size) {
+    if (!size){
+      return "";
+    }
+    var num = 1024.00; //byte
+
+    if (size < num){
+    }else
+    if (size < Math.pow(num, 2)){
+      $("#videosize").val((size / num).toFixed(2) + "Kb");
+    }else
+    if (size < Math.pow(num, 3)){
+      $("#videosize").val((size / Math.pow(num, 2)).toFixed(2) + "Mb");
+    }else
+    if (size < Math.pow(num, 4)){
+      $("#videosize").val((size / Math.pow(num, 3)).toFixed(2) + "Gb");
+      $("#videosize").val((size / Math.pow(num, 4)).toFixed(2) + "Tb");
+    }
+  }
+  function quxiao() {
+    $("#updiv").hide();
+    location.reload();
+  }
+//  上传视频
+
+  function ycupvideo() {
+
+
+    if ($("#wjbut")[0].files[0] != null && $("#wjbut")[0].files[0] != "") {
+      var fsize = $("#wjbut")[0].files[0].size;
+      getfilesize(fsize);
+
+      //  视频上传
+      var formData = new FormData();
+      formData.append("file", $("#wjbut")[0].files[0]);
+      var fsize = $("#wjbut")[0].files[0].size;
+
+
+      $.ajax({
+        type: "post",
+        url: "http://127.0.0.1:8084/video/isUploadVideo",
+        data: formData,
+        async: false,
+        cache: false,   // 不缓存
+        processData: false,// jQuery不要去处理发送的数据
+        contentType: false,// jQuery不要去设置Content-Type请求头
+        success: function (res) {
+          $("#videolive").val(res);
+
+        },
+        error: function () {
+          //alert("上传出错");
+        }
+
+      });
+    }
+    var formData2 = new FormData();
+    formData2.append("file", $("#file")[0].files[0]);
+
+    $.ajax({
+      type: "post",
+      url: "http://127.0.0.1:8084/live/uploadFile",
+      data: formData2,
+      async: false,
+      cache: false,   // 不缓存
+      processData: false,   // jQuery不要去处理发送的数据
+      contentType: false,   // jQuery不要去设置Content-Type请求头
+      success: function (res) {
+        $("#coverimg").val(res);
+
+      },
+      error: function () {
+        //alert("上传出错");
+      }
+
+    });
+
+    $.ajax({
+      url: "http://127.0.0.1:8084/video/insertVideo",
+      type: 'post',
+      data: $("#addForm").serialize(),
+      beforeSend: function (request) {
+        request.setRequestHeader("token", localStorage.getItem("token"));
+      },
+      success: function (data) {
+        alert("上传成功");
+        location.reload();
+        filecount();
+      },
+      error: function () {
+        //alert("添加失败！");
+      }
+    });
+  }
+  function upvideo() {
+    $("#xzqr").text("提交中");
+    setTimeout(function (){ ycupvideo()},1000);
+
+  }
+  function updatevideo(id) {
+    //回显
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8084/video/selectVideoDetail",
+      data :{
+        "videoId":id,
+      },
+
+      success : function(datas) {
+        if (datas.videoType==1){
+          $("#Hd").attr("src","H_channel/img/HDopen.png")
+        }else if (datas.videoType==2){
+          $("#Hd").attr("src","H_channel/img/HDclose.png")
+        }
+        $("#vid").val(datas.videoId);
+      //  视频简介
+        $("#liveinfo").text(datas.videoBrief);
+        $("#cname").val(datas.videoName);
+        $("#coverimg").val(datas.videoCover);
+        $("#videosize").val(datas.videoFileSize);
+        //视频封面
+        $("#img3").attr("src",datas.videoCover);
+        $("#img3").css("display", "block");
+
+      //  视频文件
+        $("#videolive").val(datas.videoUrl);
+        // $("#videolive").css("display","block");
+        $("#updiv").css("display","block");
+        $("#xzqr").hide();
+        $("#xgqr").show();
+        var text=$('#cname').val();
+        var len =text.length;
+        $(".text-count").html(len);
+      },
+      error: function (datas) {
+      }
+
+    });
+
+  }
+//  修改
+  function  updatevideoxg() {
+    $("#xgqr").text("提交中");
+
+         setTimeout(function() { ycupdatevideoxg() },1000);
+  }
+  function ycupdatevideoxg() {
+    if ($("#wjbut")[0].files[0]!=null&&$("#wjbut")[0].files[0]!=""){
+      var  fsize =$("#wjbut")[0].files[0].size;
+      getfilesize(fsize);
+
+      //  视频上传
+      var formData = new FormData();
+      formData.append("file", $("#wjbut")[0].files[0]);
+      var  fsize =$("#wjbut")[0].files[0].size;
+
+
+      $.ajax({
+        type: "post",
+        url: "http://127.0.0.1:8084/video/isUploadVideo",
+        data: formData,
+        async: false,
+        cache: false,   // 不缓存
+        processData: false,   // jQuery不要去处理发送的数据
+        contentType: false,   // jQuery不要去设置Content-Type请求头
+        success: function (res) {
+          $("#videolive").val(res);
+
+        },
+        error: function () {
+          //alert("上传出错");
+        }
+
+      });
+    }
+    var formData2 = new FormData();
+    formData2.append("file", $("#file")[0].files[0]);
+
+    $.ajax({
+      type: "post",
+      url: "http://127.0.0.1:8084/live/uploadFile",
+      data: formData2,
+      async: false,
+      cache: false,   // 不缓存
+      processData: false,   // jQuery不要去处理发送的数据
+      contentType: false,   // jQuery不要去设置Content-Type请求头
+      success: function (res) {
+        $("#coverimg").val(res);
+
+      },
+      error: function () {
+        //alert("上传出错");
+      }
+
+    });
+
+    $.ajax({
+      url: "http://127.0.0.1:8084/video/updateVideo",
+      type: 'post',
+      data:$("#addForm").serialize(),
+      success: function (data) {
+        alert("修改成功");
+        location.reload();
+      },
+      error: function () {
+        //alert("添加失败！");
+      }
+    });
+
+  }
+//  状态
+  function upstatus(id) {
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8084/video/videostatuspage",
+      data :{
+        "videoDown":id,
+
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+
+        document.getElementById("pagesize").value = datas
+        setTimeout(function () {
+          statusajx(id);
+        },500);
+      },
+      error: function (datas) {
+      }
+    });
+
+  }
+
+  function statusajx(id) {
+
+    var pagesize=$("#pagesize").val();
+    $('#pageLimit').bootstrapPaginator({
+      currentPage: 1,//当前页。
+      totalPages: pagesize,//总页数。
+      size: "normal",//应该是页眉的大小。
+      bootstrapMajorVersion: 3,//bootstrap的版本要求。
+      pageNumber: 1, //初始化加载第一页，默认第一页
+      alignment: "right",
+      numberOfPages: 5,//显示的页数
+      alignment: "center",
+      itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+        switch (type) {
+          case "first":
+            return "首页";
+          case "prev":
+            return "上一页";
+          case "next":
+            return "下一页";
+          case "last":
+            return "末页";
+          case "page":
+            return page;
+        }
+      },
+      onPageClicked: function (event, originalEvent, type, page) {//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+        $.ajax({
+          type: 'GET',
+          url: "http://127.0.0.1:8084/video/selectByTypeAndKind",
+          dataType: "json",
+          data: {
+            "page": page,
+            "videoStatus":id,
+          },
+          beforeSend: function(request) {
+            request.setRequestHeader("token",localStorage.getItem("token"));},
+          async: false,
+          success: function (data) {
+            if (data.rows.length==0){
+              $("#list").hide();
+              $("#no").show();
+            }else {
+              $("#no").hide();
+              $("#list").show();
+
+              $("input[type='checkbox']").attr("checked", false);//or
+              ///清空节点
+              $("#table").children("tr").remove();
+              //取出后端传过来的list值
+              var chargeRuleLogs = data.rows;
+              //对list值进行便利
+
+              var down = "";
+              var DoU = "";
+              $.each(chargeRuleLogs, function (index, n) {
+
+                Date.prototype.toLocaleString = function () {
+                  return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+                };
+
+
+                var rowTr = document.createElement('tr');
+                //找到html的tr节点
+
+
+                //判断视频类型
+                if (n.video_type == 1) {
+                  type = "VR";
+                } else if (n.video_type == 2) {
+                  type = "普通";
+                }
+                //是否下架
+                if (n.video_down == 4) {
+                  down = "已下架"
+                  DoU = "上架"
+
+
+                } else {
+                  down = ""
+                  DoU = "下架"
+                }
+
+                rowTr.className = "tr_node";
+                var child = `
+        <tr class="nrcl">
+                <td class="fm">
+                <input type="checkbox"  name="checkName" id="${n.video_id}" onclick="countNum()" class="checkname" style="float: left;">
+                <div class="fmdiv">
+                <img src="${n.video_cover}" class="fmimg" >
+                </div>
+                </td>
+                <td id="name${n.video_id}">${n.video_name}</td>
+                <td>${type}</td>
+                <td>${n.video_file_size}</td>
+              <td class="czbutt">
+ <div class="${n.video_id}" id="xq${n.video_id}"style=" border-radius: 5px;width: 50px;height: 20px;background-color:#0BC9F9;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="tochannelinfo(this.className)" >详情</div>
+ <div class="${n.video_id}" id="xg${n.video_id}"style="border-radius: 5px; width: 50px;height: 20px;background-color:#18AA41;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="updatevideo(this.className)">修改</div>
+ <div class="${n.video_id}" id="dn${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#FF9066;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="UDbut(this.className)" >${DoU}</div>
+ <div class="${n.video_id}" id="de${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#CB2828;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="delbyid(this.className)"  >删除</div>
+ <div class="${n.video_id}" id="fx${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#22DCED;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;"  >分享</div>
+                </td>
+                </tr>`;
+
+                //将信息追加
+                $("#table").append(child);
+
+              });
+            }
+          },
+          error: function (data) {
+            console.log(data);
+          }
+        })
+      }
+
+    });
+
+    //刷新即展示
+    $.ajax({
+      type: 'GET',
+      url: "http://127.0.0.1:8084/video/selectByTypeAndKind",
+      dataType: "json",
+      data: {
+        "videoStatus":id,
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      async: false,
+      success: function (data) {
+        if (data.rows.length==0){
+          $("#list").hide();
+          $("#no").show();
+        }else {
+          $("#no").hide();
+          $("#list").show();
+
+          $("input[type='checkbox']").attr("checked", false);//or
+          ///清空节点
+          $("#table").children("tr").remove();
+          //取出后端传过来的list值
+          var chargeRuleLogs = data.rows;
+          //对list值进行便利
+
+          var down = "";
+          var DoU = "";
+          var type = "";
+          $.each(chargeRuleLogs, function (index, n) {
+
+            Date.prototype.toLocaleString = function () {
+              return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+            };
+
+
+            var rowTr = document.createElement('tr');
+            //找到html的tr节点
+
+            //判断视频类型
+            if (n.video_type == 1) {
+              type = "VR";
+            } else if (n.video_type == 2) {
+              type = "普通";
+            }
+            //是否下架
+            if (n.video_down == 4) {
+              down = "已下架"
+              DoU = "上架"
+            } else {
+              down = ""
+              DoU = "下架"
+            }
+            rowTr.className = "tr_node";
+            var child = `
+        <tr class="nrcl">
+                <td class="fm">
+                <input type="checkbox"  name="checkName" id="${n.video_id}" onclick="countNum()" class="checkname" style="float: left;">
+                <div class="fmdiv">
+                <img src="${n.video_cover}" class="fmimg" >
+                </div>
+                </td>
+                <td id="name${n.video_id}">${n.video_name}</td>
+                <td>${type}</td>
+                <td>${n.video_file_size}</td>
+              <td class="czbutt">
+ <div class="${n.video_id}" id="xq${n.video_id}"style=" border-radius: 5px;width: 50px;height: 20px;background-color:#0BC9F9;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="tochannelinfo(this.className)" >详情</div>
+ <div class="${n.video_id}" id="xg${n.video_id}"style="border-radius: 5px; width: 50px;height: 20px;background-color:#18AA41;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="updatevideo(this.className)">修改</div>
+ <div class="${n.video_id}" id="dn${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#FF9066;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="UDbut(this.className)" >${DoU}</div>
+ <div class="${n.video_id}" id="de${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#CB2828;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;" onclick="delbyid(this.className)"  >删除</div>
+ <div class="${n.video_id}" id="fx${n.video_id}"style="border-radius: 5px;width: 50px;height: 20px;background-color:#22DCED;color: white;text-align: center;float: left;margin: 1px;cursor: pointer;"  >分享</div>
+                </td>
+                </tr>`;
+            //将信息追加
+            $("#table").append(child);
+          });
+        }
+      },
+      error: function (data) {
+        console.log(data);
+      }
+    })
+  }
+
+//  总文件数
+  function filecount() {
+    $.ajax({
+      type : "get",
+      async: false,//同步
+      cache: false,//不缓存
+      url : "http://127.0.0.1:8084/video/selectcountvide",
+      data :{},
+      beforeSend: function(request) {
+        request.setRequestHeader("token",localStorage.getItem("token"));},
+      success : function(datas) {
+        $("#filecount").text(datas);
+      },
+      error: function (datas) {
+      }
+    });
+  }
+
+//  选择个数
+  function countNum(){
+    //alert($('input[name=check]:checked').length);
+    var arrays = new Array();
+    var items = document.getElementsByName("checkName");
+    for(var i=0;i<items.length;i++){
+      if(items[i].checked){
+        arrays.push(items[i].value);
+      }
+    }
+    $("#ccount").text(arrays.length);
+  }
+//   全选
+  function checkboxf() {
+    var i=0;
+//全选
+    if(i==0){
+      //把所有复选框选中
+      $(".checkname").attr("checked", true);
+      i=1;
+    }else{
+      $(".checkname").attr("checked", false);
+      i=0;
+    }
+    countNum();
+  }
+//  删除
+  function deleteAll(){
+      var str = "";
+      var inputs = document.getElementsByName("checkName");
+      for(var i=0;i<inputs.length;i++) {
+        if (inputs[i].checked) {
+          str += inputs[i].id+","
+        }
+      }
+      str = str.substring(0,str.length-1);
+      console.log(str)
+      var flag = confirm("确认要删除多个视频?删除后不可恢复！");
+      if(flag==true){
+        $.ajax({
+          type:"get",
+          url:'http://127.0.0.1:8084/video/deleteAllVideo',
+          data:{ids:str},
+          contentType:'application/json',
+          success:function(data){
+            location.reload();
+          },
+          error:function(data){
+            alert("出错了！");
+          }
+        })
+      }
+
+  }
+//  单个删除
+  function delbyid(id) {
+    var vname =$("#name"+id).text();
+    var flag = confirm("确认删除"+vname+",删除后不可恢复");
+    if(flag==true){
+    $.ajax({
+      type:"get",
+      url:'http://127.0.0.1:8084/video/deleteVideo',
+      data:{"id":id},
+      contentType:'application/json',
+      success:function(data){
+        location.reload();
+      },
+      error:function(data){
+        alert("出错了！");
+      }
+    })
+    }
+  }
+
+</script>
+<body style="background-color: #f5f5f5;">
+
+<div class="top">
+  <div class="top1"></div>
+
+  <div class="top2">
+    <div class="title1" id="title1">直播</div>
+    <div class="title2" id="title2">媒体库</div>
+    <div class="title3" id="title3">账户中心</div>
+    <div class="title4" id="title4">系统设置</div>
+  </div>
+
+  <div class="top3">
+    <span id="span_id" >直播用户</span>
+    <i class="fa fa-sort-desc" id="span_fa"></i>
+    <div id="li">
+      <div>
+
+        <div aria-hidden="true" class="li1 fa fa-sign-out" id="percen" onclick="userad()">个人中心</div>
+
+        <div  aria-hidden="true" class="li1 fa fa-university" onclick="toH()">我的主页</div>
+
+        <div aria-hidden="true" class="li1 fa fa-cog" onclick="out()">退出登录</div>
+      </div>
+
+    </div>
+<!--    <div class="erji" id="erji">-->
+<!--      <div onclick="perinfo()">1) 个人信息</div>-->
+<!--      <div onclick="liveing()">2) 直播统计</div>-->
+<!--      <div onclick="setting()">3) 系统通知</div>-->
+<!--    </div>-->
+  </div>
+
+</div>
+
+<div class="cen">
+  <div class="left">
+<div class="le-top">
+  媒体库
+</div>
+<div class="le-nr">
+  <p class="le-p">现有容量：<i>100</i>G</p>
+  <p class="le-p">已用容量：<i id="gbsize">10</i>G</p>
+  <p class="le-p">视频文件个数：<i id="filecount">22</i>个</p>
+</div>
+  </div>
+  <div class="right">
+    <div class="intop1">
+      <div class="dv1">
+        <div id="ck" onclick="checkboxf()">
+
+        全选
+      </div>
+      </div>
+      <div class="dv2" >
+      已选( <i class="ccount" id="ccount">0</i> )
+      </div>
+      <div class="dv3">
+
+        <div class="del" onclick="deleteAll()">
+          删除
+        </div>
+
+      </div>
+      <div class="dv4">
+        <div class="input-group">
+          <input type="text" placeholder="请输入频道关键字" id="nameText" class="form-control input-lg"><span   class="input-group-addon btn btn-primary glyphicon glyphicon-search" id="seach" onclick="mhse()"></span>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="intop2">
+     <div class="uplive" id="uplive" onclick="upstatus(0)">上架</div>
+      <div class="downlive" id="downlive" onclick="upstatus(4)">已下架</div>
+      <div class="toup" onclick="openupdiv()">上传视频</div>
+    </div>
+    <div class="list"  id="list">
+      <form style="width: 97%;">
+        <table class="table "  id="table">
+          <thead>
+          <tr>
+            <th style="padding-left: 25px;">封面</th>
+            <th>视频名称</th>
+            <th>视频类型</th>
+            <th>文件大小</th>
+            <th style="width: 330px;">操作</th>
+          </tr>
+          </thead>
+
+        </table>
+
+
+      </form>
+
+    </div>
+
+    <div class="no" id="no">
+      <span>暂无数据</span>
+    </div>
+  </div>
+  <center><ul id="pageLimit"  class="pagination"></ul></center>
+</div>
+<div id="updiv" class="updiv">
+  <div class="uping">
+      <div class="uptop">
+        <div class="insertlive">
+          <span>添加视频</span>
+        </div>
+        <img src="H_channel/img/liclose.png" onclick="ocupdiv()" >
+        <hr>
+      </div>
+    <input id="pagesize" style="display: none" value="">
+        <div class="uptable">
+          <div class="insert-table">
+            <form method="post" id="addForm" enctype="multipart/form-data">
+              <table cellpadding="0" cellspacing="0"  class="tb" >
+
+                  <td class="addname">
+                    <span style="color: red">*</span>
+                    VR视频
+                  </td>
+                  <td>
+                    <img class="Hd" id="Hd" src="H_channel/img/HDclose.png" onclick="opRcl()">
+                    <input style="display: none" value="2" id="Vrpt" name="videoType">
+                    <input style="display: none" value="" id="vid" name="videoId">
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="addname">
+                    <span style="color: red">*</span>
+                    频道名称
+                  </td>
+                  <td style="position: absolute;">
+                    <input id="cname" type="text" class="form-control" maxlength="30" name="videoName" placeholder="请输入直播频道名称" >
+                    <i class="channelname"> <span class="text-count">0</span>/15</i>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span style="color: red">*</span>
+                    视频简介
+                  </td>
+                  <td>
+                    <textarea class="liveinfo" name="videoBrief" id="liveinfo"></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span style="color: red">*</span>
+                    视频封面
+                  </td>
+                  <td>
+                    <div id="imgPreview">
+                      <div style="position: absolute;">
+                    <img src="H_channel/img/livefm.png" style="width: 278px;height: 138px;">
+                      </div>
+                      <div id="prompt3">
+                    <span id="imgSpan">
+
+                             <br/>
+                    <i class="aui-iconfont aui-icon-plus"></i>
+                      <!--AUI框架中的图标-->
+                    </span>
+                        <input type="file" id="file" name="channelCover" class="filepath" onchange="changepic(this)" accept="image/jpg,image/jpeg,image/png,image/PNG" value="">
+<!--图片封面路径-->
+                        <input id="coverimg" name="videoCover" style="display: none" value="">
+                        <!--当vaule值改变时执行changepic函数，规定上传的文件只能是图片-->
+                      </div>
+                      <img src="#" id="img3" />
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+                  <td>
+                    <span style="color: red">*</span>
+                    上传文件
+                  </td>
+                  <td>
+                    <input id="videosize" name="videoFileSize" style="display: none" value="">
+<!--视频返回路径-->
+<!--                    display: block;-->
+<!--                    position: relative;-->
+<!--                    top: 65px;-->
+<!--                    left: 75px;-->
+                    <input id="videolive" name="videoUrl" style="display: none" value="">
+                      <input type="file" class="wjbut"id="wjbut" value="">
+                    <span style="color: #ababab;" >*请上传.MP4/.MP3/.Ogg/.wma/.rmvb文件</span>
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </div>
+           <div class="qx" onclick="quxiao()">取消</div>
+          <div class="qr" id="xzqr" onclick="upvideo()">确认</div>
+          <div class="qr" id="xgqr" onclick="updatevideoxg()" style="display: none">确认</div>
+        </div>
+  </div>
+
+</div>
+</body>
+</html>
