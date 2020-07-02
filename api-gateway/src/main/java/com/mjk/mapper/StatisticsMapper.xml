@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mjk.mapper.StatisticsMapper" >
+  <resultMap id="BaseResultMap" type="com.mjk.model.Statistics" >
+    <id column="statistics_id" property="statisticsId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="total_time" property="totalTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    statistics_id, user_id, channel_id, total_time, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from statistics
+    where statistics_id = #{statisticsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from statistics
+    where statistics_id = #{statisticsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mjk.model.Statistics" >
+    insert into statistics (statistics_id, user_id, channel_id, 
+      total_time, create_time)
+    values (#{statisticsId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{channelId,jdbcType=INTEGER}, 
+      #{totalTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mjk.model.Statistics" >
+    insert into statistics
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="statisticsId != null" >
+        statistics_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="channelId != null" >
+        channel_id,
+      </if>
+      <if test="totalTime != null" >
+        total_time,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="statisticsId != null" >
+        #{statisticsId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="totalTime != null" >
+        #{totalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mjk.model.Statistics" >
+    update statistics
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null" >
+        channel_id = #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="totalTime != null" >
+        total_time = #{totalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where statistics_id = #{statisticsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mjk.model.Statistics" >
+    update statistics
+    set user_id = #{userId,jdbcType=INTEGER},
+      channel_id = #{channelId,jdbcType=INTEGER},
+      total_time = #{totalTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where statistics_id = #{statisticsId,jdbcType=INTEGER}
+  </update>
+</mapper>

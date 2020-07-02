@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mjk.mapper.ChannelMapper" >
+  <resultMap id="BaseResultMap" type="com.mjk.model.Channel" >
+    <id column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="channel_name" property="channelName" jdbcType="VARCHAR" />
+    <result column="channel_logo" property="channelLogo" jdbcType="VARCHAR" />
+    <result column="channel_cover" property="channelCover" jdbcType="VARCHAR" />
+    <result column="channel_background" property="channelBackground" jdbcType="VARCHAR" />
+    <result column="channel_type" property="channelType" jdbcType="INTEGER" />
+    <result column="channel_way" property="channelWay" jdbcType="INTEGER" />
+    <result column="channel_brief" property="channelBrief" jdbcType="VARCHAR" />
+    <result column="channel_click" property="channelClick" jdbcType="VARCHAR" />
+    <result column="channel_path" property="channelPath" jdbcType="INTEGER" />
+    <result column="channel_btime" property="channelBtime" jdbcType="TIMESTAMP" />
+    <result column="channel_etime" property="channelEtime" jdbcType="TIMESTAMP" />
+    <result column="channel_vcard" property="channelVcard" jdbcType="VARCHAR" />
+    <result column="channel_pattern" property="channelPattern" jdbcType="VARCHAR" />
+    <result column="channel_record" property="channelRecord" jdbcType="VARCHAR" />
+    <result column="channel_maxpersion" property="channelMaxpersion" jdbcType="INTEGER" />
+    <result column="channel_speak" property="channelSpeak" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    channel_id, channel_name, channel_logo, channel_cover, channel_background, channel_type, 
+    channel_way, channel_brief, channel_click, channel_path, channel_btime, channel_etime, 
+    channel_vcard, channel_pattern, channel_record, channel_maxpersion, channel_speak
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from channel
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from channel
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mjk.model.Channel" >
+    insert into channel (channel_id, channel_name, channel_logo, 
+      channel_cover, channel_background, channel_type, 
+      channel_way, channel_brief, channel_click, 
+      channel_path, channel_btime, channel_etime, 
+      channel_vcard, channel_pattern, channel_record, 
+      channel_maxpersion, channel_speak)
+    values (#{channelId,jdbcType=INTEGER}, #{channelName,jdbcType=VARCHAR}, #{channelLogo,jdbcType=VARCHAR}, 
+      #{channelCover,jdbcType=VARCHAR}, #{channelBackground,jdbcType=VARCHAR}, #{channelType,jdbcType=INTEGER}, 
+      #{channelWay,jdbcType=INTEGER}, #{channelBrief,jdbcType=VARCHAR}, #{channelClick,jdbcType=VARCHAR}, 
+      #{channelPath,jdbcType=INTEGER}, #{channelBtime,jdbcType=TIMESTAMP}, #{channelEtime,jdbcType=TIMESTAMP}, 
+      #{channelVcard,jdbcType=VARCHAR}, #{channelPattern,jdbcType=VARCHAR}, #{channelRecord,jdbcType=VARCHAR}, 
+      #{channelMaxpersion,jdbcType=INTEGER}, #{channelSpeak,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mjk.model.Channel" >
+    insert into channel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="channelId != null" >
+        channel_id,
+      </if>
+      <if test="channelName != null" >
+        channel_name,
+      </if>
+      <if test="channelLogo != null" >
+        channel_logo,
+      </if>
+      <if test="channelCover != null" >
+        channel_cover,
+      </if>
+      <if test="channelBackground != null" >
+        channel_background,
+      </if>
+      <if test="channelType != null" >
+        channel_type,
+      </if>
+      <if test="channelWay != null" >
+        channel_way,
+      </if>
+      <if test="channelBrief != null" >
+        channel_brief,
+      </if>
+      <if test="channelClick != null" >
+        channel_click,
+      </if>
+      <if test="channelPath != null" >
+        channel_path,
+      </if>
+      <if test="channelBtime != null" >
+        channel_btime,
+      </if>
+      <if test="channelEtime != null" >
+        channel_etime,
+      </if>
+      <if test="channelVcard != null" >
+        channel_vcard,
+      </if>
+      <if test="channelPattern != null" >
+        channel_pattern,
+      </if>
+      <if test="channelRecord != null" >
+        channel_record,
+      </if>
+      <if test="channelMaxpersion != null" >
+        channel_maxpersion,
+      </if>
+      <if test="channelSpeak != null" >
+        channel_speak,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="channelId != null" >
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="channelName != null" >
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelLogo != null" >
+        #{channelLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelCover != null" >
+        #{channelCover,jdbcType=VARCHAR},
+      </if>
+      <if test="channelBackground != null" >
+        #{channelBackground,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=INTEGER},
+      </if>
+      <if test="channelWay != null" >
+        #{channelWay,jdbcType=INTEGER},
+      </if>
+      <if test="channelBrief != null" >
+        #{channelBrief,jdbcType=VARCHAR},
+      </if>
+      <if test="channelClick != null" >
+        #{channelClick,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPath != null" >
+        #{channelPath,jdbcType=INTEGER},
+      </if>
+      <if test="channelBtime != null" >
+        #{channelBtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelEtime != null" >
+        #{channelEtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelVcard != null" >
+        #{channelVcard,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPattern != null" >
+        #{channelPattern,jdbcType=VARCHAR},
+      </if>
+      <if test="channelRecord != null" >
+        #{channelRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMaxpersion != null" >
+        #{channelMaxpersion,jdbcType=INTEGER},
+      </if>
+      <if test="channelSpeak != null" >
+        #{channelSpeak,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mjk.model.Channel" >
+    update channel
+    <set >
+      <if test="channelName != null" >
+        channel_name = #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelLogo != null" >
+        channel_logo = #{channelLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelCover != null" >
+        channel_cover = #{channelCover,jdbcType=VARCHAR},
+      </if>
+      <if test="channelBackground != null" >
+        channel_background = #{channelBackground,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        channel_type = #{channelType,jdbcType=INTEGER},
+      </if>
+      <if test="channelWay != null" >
+        channel_way = #{channelWay,jdbcType=INTEGER},
+      </if>
+      <if test="channelBrief != null" >
+        channel_brief = #{channelBrief,jdbcType=VARCHAR},
+      </if>
+      <if test="channelClick != null" >
+        channel_click = #{channelClick,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPath != null" >
+        channel_path = #{channelPath,jdbcType=INTEGER},
+      </if>
+      <if test="channelBtime != null" >
+        channel_btime = #{channelBtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelEtime != null" >
+        channel_etime = #{channelEtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelVcard != null" >
+        channel_vcard = #{channelVcard,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPattern != null" >
+        channel_pattern = #{channelPattern,jdbcType=VARCHAR},
+      </if>
+      <if test="channelRecord != null" >
+        channel_record = #{channelRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMaxpersion != null" >
+        channel_maxpersion = #{channelMaxpersion,jdbcType=INTEGER},
+      </if>
+      <if test="channelSpeak != null" >
+        channel_speak = #{channelSpeak,jdbcType=INTEGER},
+      </if>
+    </set>
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mjk.model.Channel" >
+    update channel
+    set channel_name = #{channelName,jdbcType=VARCHAR},
+      channel_logo = #{channelLogo,jdbcType=VARCHAR},
+      channel_cover = #{channelCover,jdbcType=VARCHAR},
+      channel_background = #{channelBackground,jdbcType=VARCHAR},
+      channel_type = #{channelType,jdbcType=INTEGER},
+      channel_way = #{channelWay,jdbcType=INTEGER},
+      channel_brief = #{channelBrief,jdbcType=VARCHAR},
+      channel_click = #{channelClick,jdbcType=VARCHAR},
+      channel_path = #{channelPath,jdbcType=INTEGER},
+      channel_btime = #{channelBtime,jdbcType=TIMESTAMP},
+      channel_etime = #{channelEtime,jdbcType=TIMESTAMP},
+      channel_vcard = #{channelVcard,jdbcType=VARCHAR},
+      channel_pattern = #{channelPattern,jdbcType=VARCHAR},
+      channel_record = #{channelRecord,jdbcType=VARCHAR},
+      channel_maxpersion = #{channelMaxpersion,jdbcType=INTEGER},
+      channel_speak = #{channelSpeak,jdbcType=INTEGER}
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </update>
+</mapper>

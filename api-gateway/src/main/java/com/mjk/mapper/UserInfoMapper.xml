@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mjk.mapper.UserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.mjk.model.UserInfo" >
+    <id column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_createtime" property="userCreatetime" jdbcType="TIMESTAMP" />
+    <result column="user_updatetime" property="userUpdatetime" jdbcType="TIMESTAMP" />
+    <result column="user_company" property="userCompany" jdbcType="VARCHAR" />
+    <result column="user_code" property="userCode" jdbcType="VARCHAR" />
+    <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    info_id, user_id, user_name, user_createtime, user_updatetime, user_company, user_code, 
+    user_email
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_info
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mjk.model.UserInfo" >
+    insert into user_info (info_id, user_id, user_name, 
+      user_createtime, user_updatetime, user_company, 
+      user_code, user_email)
+    values (#{infoId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{userCreatetime,jdbcType=TIMESTAMP}, #{userUpdatetime,jdbcType=TIMESTAMP}, #{userCompany,jdbcType=VARCHAR}, 
+      #{userCode,jdbcType=VARCHAR}, #{userEmail,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mjk.model.UserInfo" >
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="userCreatetime != null" >
+        user_createtime,
+      </if>
+      <if test="userUpdatetime != null" >
+        user_updatetime,
+      </if>
+      <if test="userCompany != null" >
+        user_company,
+      </if>
+      <if test="userCode != null" >
+        user_code,
+      </if>
+      <if test="userEmail != null" >
+        user_email,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCreatetime != null" >
+        #{userCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userUpdatetime != null" >
+        #{userUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userCompany != null" >
+        #{userCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="userCode != null" >
+        #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mjk.model.UserInfo" >
+    update user_info
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCreatetime != null" >
+        user_createtime = #{userCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userUpdatetime != null" >
+        user_updatetime = #{userUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userCompany != null" >
+        user_company = #{userCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="userCode != null" >
+        user_code = #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mjk.model.UserInfo" >
+    update user_info
+    set user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_createtime = #{userCreatetime,jdbcType=TIMESTAMP},
+      user_updatetime = #{userUpdatetime,jdbcType=TIMESTAMP},
+      user_company = #{userCompany,jdbcType=VARCHAR},
+      user_code = #{userCode,jdbcType=VARCHAR},
+      user_email = #{userEmail,jdbcType=VARCHAR}
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </update>
+</mapper>

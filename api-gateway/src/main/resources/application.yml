@@ -1,0 +1,39 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: api-gateway
+
+management:
+  port: 8023
+
+  eureka:
+    client:
+      register-with-eureka: false
+
+eureka:
+  client:
+    service-url.defaultZone: http://127.0.0.1:8666/eureka
+
+
+
+# user.ribbon.listOfServers=127.0.0.1:8083,127.0.0.1:8082
+logging.config:
+  classpath: log4j2.xml
+logbook.write.level: TRACE
+logbook.format.style: http
+
+
+file.path: /Users/wangjialuo/opt/imgs
+domain.name: 127.0.0.1:8088
+file.prefix: http://127.0.0.1:8081/images
+
+user.service.name: user
+house.service.name: house
+comment.service.name: comment
+
+spring.sleuth.sampler.percentage: 1
+spring.zipkin.baseUrl: http://localhost:9411
+
+spring.boot.admin.url: http://localhost:8070
